@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/aui_font.css">
+    <link rel="stylesheet" href="../../css/base_icon.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/frame0.css">
+    <style>
+        .more.active {
+            color: #000000;
+            ;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="view" v-cloak>
+        <ul class="wrap">
+            <li class="list" v-for="(x, index) in ffList" @click="goUserInfo(x)">
+                <div class="content-wrap">
+                    <div class="tx img-h">
+                        <img :src="imgurl+x.user_head" @load="imgCss(imgurl+x.user_head, $event)"
+                            onerror="this.onerror=null;this.src='../../image/touxiang.png'" alt="">
+                        <span class="img-tag flex">
+                            <i class="aui-iconfont aui-icon-image" style="font-size: 12px;margin-right: 3px;"></i>
+                            <span class="img-num">{{x.imgcount || 0}}</span>
+                        </span>
+                    </div>
+                    <div class="content">
+                        <div class="name-wrap flex">
+                            <span class="name">{{ x.user_name}}</span>
+                            <span class="girl-tag tag"
+                                v-if="x.is_identity_authentication == 2 && x.user_sex == '女'"></span>
+                            <span class="real-tag tag" v-if="x.is_identity_authentication == 2"></span>
+                            <span class="vip-tag tag" v-if="x.is_vip >0 && x.user_sex == '男'"></span>
+                        </div>
+                        <div class="tag-wrap flex-w">
+                            <span class="tag">{{ x.city || '未知' }}</span>
+                            <span class="tag" v-if="x.user_age">{{x.user_age}}岁 · {{x.constellation}}</span>
+                            <span class="tag">{{ x.occupation || '未设置' }}</span>
+                            <span class="tag area-tag"><i
+                                    class="aui-iconfont aui-icon-location"></i><span>{{ x.user_distance || 未知 }}</span></span>
+                            <span class="tag no-online-tag" v-if="x.is_online == 0 || !x.is_online">离线</span>
+                            <span class="tag online-tag" v-if="x.is_online == 1">在线</span>
+                            <!-- <span class="tag online-tag" >{{x.last_login_datetime}}</span> -->
+                            <span class="tag money-tag" v-if="x.img_auth == 1"><i
+                                    class="base-icon index-hb-icon"></i><span>付费相册</span></span>
+                            <span class="tag lock-tag" v-if="x.img_auth == 2"><i
+                                    class="base-icon index-lock-icon"></i><span>申请浏览</span></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- <span class="more" :class="{'active': x.love == 1}" @click.stop @click="sc(x.user_id, index);">
+                    <i class="aui-iconfont aui-icon-star"></i>
+                </span> -->
+                <span class="more" @click.stop @click="_more(index);">
+                    <i class="aui-iconfont aui-icon-more"></i>
+                </span>
+            </li>
+        </ul>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script src="../../script/wximg.js"></script>
+<script>
+    var view = new Vue({
+        el: '#view',
+        data: {
+            imgurl: imgurl,
+            ffList: [],
+        },
+        methods: {
+            // 跳转 查看用户详情
+            goUserInfo: function (data) {
+                go_userInfo(data.user_id, data.user_name, data.user_sex)
+            },
+            // 收藏
+            sc: function (uid, index) {
+                var _this = this;
+                var status = _this.ffList[index].love;
+                var url = status == 0 ? 'attention_user.php' : 'cancel_attention.php';
+                _ajax(url, function (ret, err) {
+                    console.log(JSON.stringify(ret))
+                    console.log(JSON.stringify(err))
+                    if (ret && ret.code == 200) {
+                        var msg = status == 0 ? '收藏成功' : '取消收藏成功';
+                        _msg(msg);
+                        _this.ffList[index].love = status == 0 ? 1 : 0;
+                    }
+                }, {
+                    user_id: $api.getStorage('userid'),
+                    to_user: uid,
+                })
+            },
+            // 更多
+            _more: function (index) {
+                var _this = this;
+                var uid = _this.ffList[index].user_id;
+                var love = _this.ffList[index].love;
+                var buttons = love == 0 ? ['收藏', '拉黑'] :  ['取消收藏', '拉黑'] ; 
+                _action('', buttons, function (bIndex) {
+                    if (bIndex == 1) {
+                        var _u = love == 0 ? 'attention_user.php' : 'cancel_attention.php'
+                        // 收藏
+                        _ajax(_u, function (ret, err) {
+                            console.log(JSON.stringify(ret))
+                            console.log(JSON.stringify(err))
+                            if (ret && ret.code == 200) {
+                                _msg('操作成功');
+                                _this.ffList[index].love = love == 0 ? 1 : 0;
+                            }else{
+                                _msg('操作失败');
+                            }
+                        }, {
+                            user_id: $api.getStorage('userid'),
+                            to_user: uid, 
+                        })
+                    } else if (bIndex == 2) {
+                        // 拉黑
+                        _ajax('add_black_list.php', function (ret, err) {
+                            if (ret && ret.code == 200) {
+                                _msg('拉黑成功');
+                               $('.list').eq(index).addClass('new-hide');
+                            }else{
+                                _msg('操作失败');
+                            }
+                        }, {
+                            user_id: $api.getStorage('userid'), 
+                            to_user: uid, 
+                        })
+                    }
+                })
+            },
+            _url: function (param, url) {
+                _url(param, url);
+            },
+            // 图片自适应
+            imgCss: function (url, event) {
+                var e = event.currentTarget;
+                imgCss(url, function (w, h) {
+                    if (w < h) {
+                        $(e).parent().addClass('img-w').removeClass('img-h');
+                    }
+                })
+            },
+        }
+    })
+
+    apiready = function () {
+        var key = api.pageParam['key'];
+        var param = {
+            user_id: $api.getStorage('userid'),
+            name: key,
+            longitude: $api.getStorage('lon'),
+            latitude: $api.getStorage('lat')
+        };
+        _shangla(function () {
+            _lists('search_user_by_name.php', 0, 1, param);
+        })
+
+        _scrollToBottom(function () {
+            if (heigutgao == 1) {
+                pagenum++;
+                _lists('search_user_by_name.php', pagenum, '', param);
+            }
+        })
+
+    }
+</script>
+
+</html>

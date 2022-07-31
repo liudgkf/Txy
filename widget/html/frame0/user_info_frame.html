@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/aui_font.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/base_icon.css">
+    <style>
+        html,
+        body {
+            background: #eee;
+        }
+
+        .w-bg {
+            background: #fff;
+            margin-bottom: 10px;
+        }
+
+        .wrap .tag-wrap {
+            margin-top: 7px;
+            /* max-width: 70vw; */
+        }
+
+        .wrap .tag-wrap .tag {
+            font-size: 12px;
+            /* color: #673AB7;
+            background: #e2d6f7; */
+            /* color: #b7b3c1; */
+            color: #666;
+            background: #edecf4;
+            padding: 0 10px;
+            height: 20px;
+            border-radius: 10px;
+            margin-top: 5px;
+            margin-right: 3px;
+            display: flex;
+            align-items: center;
+        }
+
+        .wrap .tag-wrap .tag.area-tag {
+            /* background: #c4ddf1;
+            color: #2196f3; */
+            /* background: #e6f2fb;
+            color: #73bcf7; */
+        }
+
+        .wrap .tag-wrap .tag.online-tag {
+            background: #e1f7c7;
+            color: #4caf50;
+        }
+
+        .wrap .tag-wrap .tag.money-tag {
+            background: #f9d3e0;
+            color: #e91e63;
+        }
+
+        .wrap .name-wrap>div {
+            margin-top: 5px;
+        }
+
+        .wrap .name-wrap .tag {
+            font-size: 10px;
+            color: #fff;
+            border-radius: 2px;
+            height: 16px;
+            width: 25px;
+            background: #000000;
+            margin-right: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+
+        .wrap .name-wrap .tag.girl-tag {
+            /* background: linear-gradient(24deg, #000000, #ffeb3b, #000000); */
+            background-image: url('../../image/icon/girl.png');
+            background-color: none;
+            width: 32px;
+            height: 14px;
+        }
+
+        .wrap .name-wrap .tag.real-tag {
+            /* background: linear-gradient(24deg, #4caf50, #ffeb3b, #4caf50); */
+            background-image: url('../../image/icon/real.png');
+            background-color: none;
+            width: 32px;
+            height: 14px;
+        }
+
+        .top-wrap {
+            position: relative;
+        }
+
+        .top-wrap .tx {
+            width: 80px;
+            height: 80px;
+            margin-right: 0;
+            overflow: hidden;
+        }
+
+        .top-wrap .tx.img-h img {
+            height: 80px;
+        }
+
+        .top-wrap .tx.img-w img {
+            width: 80px;
+        }
+
+        /* 关注 */
+        .like {
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 12px;
+            color: #757575;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            padding: 3px 5px;
+        }
+
+        .like .iconfont {
+            font-size: 12px;
+            margin-right: 5px;
+        }
+
+        .like.active {
+            color: #000000;
+            border: 1px solid #000000;
+        }
+
+        /* 动态 */
+        .dynamic .img-wrap .img {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-left: 5px;
+        }
+
+        /* 相册 */
+        .xiangce .xc-wrap .img {
+            position: relative;
+            width: calc((100vw - 20px - 15px) / 4);
+            height: calc((100vw - 20px - 15px) / 4);
+            border-radius: 10px;
+            margin-bottom: 5px;
+            overflow: hidden;
+            margin-right: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .xiangce .xc-wrap .img.img-w img {
+            width: calc((100vw - 20px - 15px) / 4);
+        }
+
+        .xiangce .xc-wrap .img.img-h img {
+            height: calc((100vw - 20px - 15px) / 4);
+        }
+
+        .xiangce .xc-wrap .img:nth-child(4n) {
+            margin-right: 0;
+        }
+
+        /* .xiangce .xc-wrap .img img {
+            width: 100%;
+        } */
+
+        .xiangce .xc-wrap .img:nth-child(4n) {
+            margin-right: 0;
+        }
+
+        .xiangce .xc-wrap .img.no-look {
+            border: 2px solid #e74c3c;
+            width: calc((100vw - 20px - 15px) / 4 - 4px);
+            height: calc((100vw - 20px - 15px) / 4 - 4px);
+        }
+
+        .xiangce .xc-wrap .img.no-look .img-icon {
+            background-image: url('../../image/icon/fen.png');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            z-index: 1;
+            width: 20px;
+            height: 20px;
+        }
+
+        .xiangce .xc-wrap .img.no-look.yifen {
+            border: 2px solid #aaa;
+        }
+
+        .xiangce .xc-wrap .img.no-look.yifen .img-icon {
+            background-image: url('../../image/icon/yifen.png');
+        }
+
+        .xiangce .xc-wrap .img.hb .img-icon {
+            background-image: url('../../image/icon/hb.png');
+        }
+
+        .xiangce .xc-wrap .img.no-look img {
+            filter: blur(8px);
+        }
+
+        .xiangce .xc-wrap .img.no-look .img-tip {
+            font-size: 10px;
+            color: #e74c3c;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .xiangce .xc-wrap .tag {
+            position: absolute;
+            top: 0;
+            right: 0;
+            color: #fff;
+            background: #64567d;
+            border-radius: 0 0 0 10px;
+            padding: 2px 5px;
+            font-size: 10px;
+        }
+
+        .xiangce .title {
+            padding: 5px 10px;
+            border-bottom: 1px solid #eee;
+            /* width: calc(100% - 20px); */
+        }
+
+        /* 个人资料 */
+        .zl-wrap .li {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            font-size: 14px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .zl-wrap .li .title {
+            width: 20vw;
+        }
+
+        /* 资料限制 */
+        .data-lock {
+            color: #757575;
+            font-size: 14px;
+            line-height: 40px;
+        }
+
+        .data-lock img {
+            width: 50px;
+        }
+
+        .data-lock button {
+            background: #000000;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        /* 脚部 */
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100vw;
+            padding: 15px 0;
+            background: #f7f6fb;
+            font-size: 14px;
+            color: #757575;
+        }
+
+        footer .iconfont {
+            font-size: 16px;
+            color: #757575;
+        }
+
+        footer .li {
+            display: flex;
+            align-items: center;
+        }
+
+        .title {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .tip {
+            text-align: center;
+        }
+
+        /* 底部按钮 */
+        .icon-wrap {
+            /* background: linear-gradient(24deg, #fff, #ba9fe8, #000000, #4208A7); */
+            /* border-radius: 50%; */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 25px;
+            height: 25px;
+            /* box-shadow: 0px 0px 10px #000000; */
+        }
+
+        .icon-wrap img {
+            width: 15px;
+            height: 15px;
+        }
+
+        .link-font {
+            color: #2196f3;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="view" v-cloak>
+        <div class="wrap ">
+            <div style="margin-bottom: 60px;">
+                <!-- 头部 -->
+                <div class="top-wrap flex-c flex-col w-bg" style="padding: 30px 0;">
+                    <div class="tx img-h" @click="_url({imgArr:[data.head_300], iIndex:0}, 'frame1/dy_img_win')">
+                        <img :src="imgurl + data.head_300" @load="imgCss(imgurl + data.head_300, $event)"
+                            onerror="this.onerror=null;this.src='../../image/touxiang.png'" alt="">
+                    </div>
+                    <div class="tag-wrap flex-w">
+                        <span class="tag" v-if="data.city">{{ data.city }}</span>
+                        <span class="tag" v-if="data.age">{{ data.age }}岁 · {{data.constellation}}</span>
+                        <span class="tag" v-if="data.occupation">{{ data.occupation }}</span>
+                        <span class="tag area-tag" v-if="data.user_distance">
+                            <i class="aui-iconfont aui-icon-location"></i>
+                            <span v-if="data.user_distance == 'null'">{{ '未知'}}</span>
+                            <span v-if="data.user_distance != 'null'">{{ data.user_distance || '未知'}}</span>
+                        </span>
+                        <span class="tag online-tag" v-if="data.is_online == 1">在线</span>
+                        <span class="tag no-online-tag" v-if="data.is_online == 0 || !data.is_online">离线</span>
+                        <!-- <span class="tag online-tag">{{data.last_login_datetime}}</span> -->
+                    </div>
+                    <div class="real name-wrap new-margin-t-10">
+                        <div class="flex" v-if="isRenZheng == 2">
+                            <span class="real-tag tag"></span>
+                            <span class="font-s">TA通过面容识别认证真实性</span>
+                        </div>
+                        <div class="flex" v-if="isRenZheng == 2 && data.sex == '女'">
+                            <span class="girl-tag tag"></span>
+                            <span class="font-s">TA已获得陌觅女神认证</span>
+                        </div>
+                    </div>
+                    <div class="flex like" :class="{'active': data.love==1}" onclick="guanzhu()">
+                        <i class="iconfont icon-guanzhu"></i>
+                        <span v-if="data.love==1">取消喜欢</span>
+                        <span v-if="data.love==0">加入喜欢</span>
+                    </div>
+                </div>
+                <div v-if="!(data.img_auth == '2' && !(data.state == 1 || data.state == 3))">
+                    <!-- 动态 -->
+                    <div style="padding: 15px;" class="flex-bt dynamic w-bg "
+                        @click="_url({url:'frame4/Broadcast_frame', title:'Ta的动态', uid:data.id})">
+                        <span class="title">Ta的动态</span>
+                        <!-- <div class="img-wrap flex">
+                            <div class="img flex-c"><img src="../../image/touxiang.png" alt=""></div>
+                            <div class="img flex-c"><img src="../../image/touxiang.png" alt=""></div>
+                        </div> -->
+                    </div>
+                    <!-- 相册 -->
+                    <div class="xiangce w-bg" v-if="imgList.length != 0">
+                        <span class="title" style="padding: 15px;">TA的相册</span>
+                        <div class="xc-wrap new-padding-10 flex-w" style="padding: 15px;"
+                            v-if="!(data.img_auth == '1' && !(data.state == 2 || data.state == 3))">
+                            <div @click="_url({index: index, imgArr:imgList, name: data.name, touserid: data.id}, 'frame0/img_filter_win')"
+                                class="img img-h" v-for="(item, index) in imgList"
+                                :class="{'no-look':(item.burn == 1 || Number(item.packet) >0), 'hb':Number(item.packet) >0, 'yifen':item.type == 0}">
+                                <img :src="imgurl + item.picthumb[0]" @load="imgCss(imgurl + item.picthumb[0], $event)"
+                                    onerror="this.onerror=null;this.src='../../image/touxiang.png'" alt="">
+                                <span class="tag" v-if="isRenZheng == 2">本人</span>
+                                <div class="img-icon"></div>
+                                <p class="img-tip" v-if="item.type == 1 && item.burn == 1 && Number(item.packet) > 0">
+                                    阅后即焚红包照片</p>
+                                <p class="img-tip" v-if="item.type == 1 && item.burn == 1 && Number(item.packet) == 0">
+                                    阅后即焚照片</p>
+                                <p class="img-tip" v-if="item.burn == 0 && Number(item.packet) > 0">红包照片</p>
+                                <p class="img-tip" v-if="item.type == 0">已焚毁</p>
+                            </div>
+                            <!-- <div class="img no-look yifen">
+                                <img src="../../image/touxiang.png" alt="">
+                                <span class="tag">本人</span>
+                                <div class="img-icon"></div>
+                                <p class="img-tip">已焚毁</p>
+                            </div>
+                            <div class="img no-look">
+                                <img src="../../image/touxiang.png" alt="">
+                                <span class="tag">本人</span>
+                                <div class="img-icon"></div>
+                                <p class="img-tip">阅后即焚照片</p>
+                            </div>
+                            <div class="img img-h">
+                                <img src="../../image/test/01.jpg" alt="">
+                                <span class="tag">本人</span>
+                            </div>-->
+                        </div>
+                        <div class="data-lock flex-c flex-col new-padding-10"
+                            v-if="data.img_auth == '1' && imgList.length != 0 && !(data.state == 2 || data.state == 3)">
+                            <img src="../../image/room.png" alt="">
+                            <p>该用户设置了付费相册</p>
+                            <button onclick="authimg()">解锁相册（{{ data.photo_price || '0'}}元），会员免费</button>
+                        </div>
+                    </div>
+                    <!-- 个人资料 -->
+                    <div class="zl-wrap w-bg">
+                        <ul class="ul">
+                            <li class="li">
+                                <span class="title">身高</span>
+                                <span class="desc">{{ data.stature==='未设置'?data.stature:data.stature+'cm' }}</span>
+                            </li>
+                            <li class="li">
+                                <span class="title">体重</span>
+                                <span class="desc">{{ data.weight==='未设置'?data.weight:data.weight+'kg'}}</span>
+                            </li>
+                            <li class="li" v-if="data.offten_city">
+                                <span class="title">常驻城市</span>
+                                <span class="desc">{{ data.offten_city }}</span>
+                            </li>
+                            <li class="li" v-if="data.dy_program && data.dy_program[0] ">
+                                <span class="title">交友节目</span>
+                                <span class="desc">
+                                    <span>{{ data.dy_program.join('/')}}</span>
+                                </span>
+                            </li>
+                            <li class="li" v-if="data.dy_conditions && data.dy_conditions[0] ">
+                                <span class="title">期望对象</span>
+                                <span class="desc">
+                                    <span>{{ data.dy_conditions.join('/') }}</span>
+                                </span>
+                            </li>
+                            <li class="li" v-if="data.wxcount">
+                                <span class="title">微信</span>
+                                <span class="desc" onclick="showLink()" v-if="data.link == 0">已填写，点击查看</span>
+                                <span class="desc" v-if="data.link == 1">{{data.wxcount}} <span class="link-font"
+                                        @click="copyText(data.wxcount)">复制</span></span>
+                            </li>
+                            <li class="li" v-if="data.qq">
+                                <span class="title">QQ</span>
+                                <span class="desc" onclick="showLink()" v-if="data.link == 0">已填写，点击查看</span>
+                                <span class="desc" v-if="data.link == 1">{{ data.qq }} <span class="link-font"
+                                        @click="copyText(data.qq)">复制</span></span>
+                            </li>
+                            <li class="li flex-col" style="align-items: flex-start;" v-if="data.slogan">
+                                <span class="title new-padding-b-10">个人介绍</span>
+                                <span class="desc">{{data.slogan}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <p class="tip font-s new-padding-10">请勿通过平台进行不法交易，如被举报核实将作封号处理</p>
+                </div>
+                <div class="data-lock flex-c flex-col"
+                    v-if="data.img_auth == '2' && !(data.state == 1 || data.state == 3)">
+                    <img src="../../image/room.png" alt="">
+                    <p>该用户设置了限制，查看资料需要请求他的同意</p>
+                    <button onclick="apply()">申请查看</button>
+                </div>
+            </div>
+            <footer v-if="data.id != myuserid">
+                <!-- <footer > -->
+                <ul class="ul flex-a">
+                    <li class="li" @click="showDetail('frame0/pj_modal', {uid: data.id})">
+                        <div class="icon-wrap">
+                            <img src="../../image/icon/ic_commenttab.png" alt="">
+                        </div>
+                        <span>评价</span>
+                    </li>
+                    <li class="li" tapmode onclick="openChat()">
+                        <div class="icon-wrap">
+                            <img src="../../image/icon/ic_chattab.png" alt="">
+                        </div>
+                        <span>私聊</span>
+                    </li>
+                    <li class="li" tapmode onclick="showLink()">
+                        <div class="icon-wrap">
+                            <img src="../../image/icon/ic_addresstab.png" alt="">
+                        </div>
+                        <span>社交账号</span>
+                    </li>
+                </ul>
+            </footer>
+        </div>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script src="../../script/wximg.js"></script>
+<script>
+    var myuserid = $api.getStorage('userid');
+    var touserid;
+    var lon = $api.getStorage('lon') || 113.320234;
+    var lat = $api.setStorage('lat') || 23.022241;
+    var view = new Vue({
+        el: '#view',
+        data: {
+            imgurl: imgurl,
+            data: {},
+            myuserid: $api.getStorage('userid'),
+            isVip: $api.getStorage('isVip'),
+            isRenZheng: 0,
+            imgList: [], // 相册
+        },
+        methods: {
+            _url: function (param, url) {
+                _url(param, url);
+            },
+            // 图片自适应
+            imgCss: function (url, event) {
+                var e = event.currentTarget;
+                imgCss(url, function (w, h) {
+                    if (w < h) {
+                        $(e).parent().addClass('img-w').removeClass('img-h');
+                    }
+                })
+            },
+            showDetail: function (url, data, topH, footerH) {
+                showDetail(url, data, topH, footerH)
+            },
+            // 复制
+            copyText: function (text) {
+                var clipBoard = api.require('clipBoard');
+                clipBoard.set({
+                    value: text
+                }, function (ret, err) {
+                    console.log(JSON.stringify(ret))
+                    console.log(JSON.stringify(err))
+                    if (ret.status) {
+                        _msg('复制成功');
+                    } else {
+                        _msg('复制失败');
+                    }
+                });
+            }
+        }
+    })
+
+    apiready = function () {
+        touserid = api.pageParam['user_id'];
+
+        // getPhone();
+        // getReal();
+        // getInfo();
+        // xiangce();
+        // getPing();
+
+        _listener('viewappear', function () {
+            getReal();
+            getInfo();
+            xiangce();
+            getPing();
+
+        })
+
+        _listener('update_vip', function () {
+            view.isVip = $api.getStorage('isVip')
+        })
+        _listener('img_filter', function () {
+            view.isVip = $api.getStorage('isVip')
+        })
+    }
+
+    // 获取用户信息
+    function getInfo() {
+        _ajax('user_info.php', function (ret, err) {
+            console.log(JSON.stringify(ret))
+            console.log(JSON.stringify(err))
+            if (ret && ret.code == 200) {
+                view.data = ret.result;
+            }
+        }, {
+            user_id: touserid, //被看用户id
+            to_user: myuserid, //我的用户id
+            longitude: lon,
+            latitude: lat,
+        })
+    }
+
+    // 获取认证状态
+    function getReal() {
+        _ajax('Home/User/isrenzheng', function (ret, err) {
+            console.log(JSON.stringify(ret))
+            console.log(JSON.stringify(err))
+            if (ret && ret.code == 200) {
+                view.isRenZheng = ret.result.is_identity_authentication;
+            }
+        }, {
+            user_id: touserid,
+        })
+    }
+
+
+    // 获取手机号
+    function getPhone() {
+        _ajax('Home/User/getphone', function (ret, err) {
+            console.log(JSON.stringify(ret))
+            console.log(JSON.stringify(err))
+            if (ret && ret.code == 201) {
+                if (ret.msg == '请充值会员！') {
+                    _alert('请先充值会员', function () {
+                        _url({
+                            url: 'frame4',
+                            title: '开通会员',
+                            winName: 'index_win'
+                        })
+                    })
+                } else {
+                    _alert('今天你访问超额了', function () {
+                        api.closeWin();
+                    })
+                }
+            } else if (ret && ret.code == 200) {
+                getReal();
+                getInfo();
+                xiangce();
+                getPing();
+            }
+        }, {
+            user_id: myuserid,
+        })
+    }
+
+    // 用户相册
+    function xiangce() {
+        _ajax('user_img_list.php', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret && ret.code == 200) {
+                view.imgList = ret.result;
+            }
+        }, {
+            user_id: touserid,
+            to_user: myuserid,
+        })
+    }
+
+    // 关注
+    function guanzhu() {
+        var url = view.data.love == 0 ? 'attention_user.php' : 'cancel_attention.php';
+        var msg = view.data.love == 0 ? '关注成功' : '取消关注';
+        _ajax(url, function (ret, err) {
+            console.log(JSON.stringify(ret));
+            if (ret && ret.code == 200) {
+                _msg(msg);
+                view.data.love = view.data.love == 0 ? 1 : 0;
+            }
+        }, {
+            user_id: myuserid,
+            to_user: touserid,
+        })
+    }
+
+    // 获取用户评价
+    function getPing() {
+        _ajax('Home/Dymanic/evalist', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+        }, {
+            main_id: touserid,
+        })
+    }
+
+    // 更多
+    function _more() {
+        var buttons = ['拉黑(屏蔽双方)', '匿名举报'];
+        _action('', buttons, function (index) {
+            if (index != (buttons.length + 1)) {
+                if (index == 1) {
+                    // 拉黑
+                    _ajax('add_black_list.php', function (ret, err) {
+                        console.log(JSON.stringify(ret))
+                        console.log(JSON.stringify(err))
+                        _msg(ret.msg);
+                    }, {
+                        to_user: touserid,
+                        user_id: myuserid,
+                    })
+                } else if (index == 2) {
+                    // 举报
+                    _url({
+                        url: 'frame0/ju_bao_frame',
+                        title: '匿名举报',
+                        uid: touserid
+                    })
+
+                }
+            }
+        })
+    }
+
+    // 申请查看
+    function apply() {
+        var obj = {
+            title: '向该用户申请查看资料',
+            msg: '申请时，需要你的一张照片给对方查看',
+            buttons: ['发送照片', '取消'],
+        };
+        _confirm(obj, function (bIndex) {
+            if (bIndex == 1) {
+                openPic(function (ret) {
+                    _ajaxFile('Home/User/requestimg', function (rets, errs) {
+                        _msg(rets.msg)
+                    }, {
+                        user_id: touserid,
+                        to_user: myuserid,
+                    }, {
+                        pic: ret.data,
+                    })
+                })
+            }
+        })
+    }
+
+
+    // 解锁相册
+    function authimg() {
+        _ajax('home/user/vipimg', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret.code == 200) {
+                var obj = {
+                    title: '解锁该用户的付费相册',
+                    msg: '今日您剩余' + ret.num + '次查看他人付费相册。解锁后，您可以永久免费查看该用户的相册。请确认操作',
+                };
+                _confirm(obj, function (bIndex) {
+                    if (bIndex == 1) {
+                        _ajax('home/user/Incxiang', function (rets, errs) {
+                            console.log(JSON.stringify(rets));
+                            console.log(JSON.stringify(errs));
+                            if (rets && rets.code == 200) {
+                                view.data.img_auth = 2;
+                            } else {
+                                _msg(rets.msg);
+                            }
+                        }, {
+                            user_id: myuserid,
+                            to_user: touserid,
+                        })
+                    }
+                })
+            } else if (ret.code == 201) {
+                _alert('您还未认证，请先去认证', function () {
+                    _url({
+                        url: 'frame4/authentication_frame',
+                        title: '认证身份'
+                    });
+                })
+            } else if (ret.code == 202) {
+                _alert('您还不是会员呢~，前去购买', function () {
+                    _url({
+                        url: 'frame4',
+                        title: '开通会员'
+                    })
+                })
+            } else if (ret.code == 204) {
+                var obj = {
+                    title: '解锁该用户的付费相册',
+                    msg: '您今日免费查看他人付费相册次数已用完，但你可以付费查看~解锁后，您可以永久免费查看该用户的相册。请确认您的操作',
+                    btn: ['付费查看', '取消'],
+                };
+                _confirm(obj, function (bIndex) {
+                    if (bIndex == 1) {
+                        _ajax('Home/User/authimg', function (rets, errs) {
+                            console.log(JSON.stringify(rets));
+                            console.log(JSON.stringify(errs));
+                            if (rets && rets.code == 200) {
+                                view.data.img_auth = 2;
+                            } else {
+                                _msg(rets.msg);
+                            }
+                        }, {
+                            user_id: touserid,
+                            to_user: myuserid,
+                        })
+
+                    }
+                })
+            } else if (ret.code == 205) {
+                view.data.img_auth = 2;
+            } else {
+                _msg(ret.msg);
+            }
+        }, {
+            user_id: myuserid,
+            to_user: touserid,
+        })
+    }
+
+    // 私聊
+    function openChat() {
+        judgeQx(function () {
+            _url({
+                txt: view.data.name,
+                touserid: view.data.id,
+                url: 'frame0/liaotian',
+                title: '与' + view.data.name + '的聊天'
+            })
+        })
+    }
+
+    // 社交账号
+    function showLink() {
+        judgeQx(function () {
+            view.data.link = 1;
+            _msg('已获取联系方式');
+        })
+    }
+
+    // 判断权限
+    function judgeQx(callback) {
+        _ajax('home/user/vipsee', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret.code == 200) {
+                if (view.data.sex == '男') {
+                    callback();
+                } else {
+                    var obj = {
+                        msg: '您今日可私聊并看查他人联系方式次数还剩余' + ret.num + '次,请确定以下操作',
+                    };
+                    _confirm(obj, function (bIndex) {
+                        if (bIndex == 1) {
+                            _ajax('home/user/getlink', function (rets, errs) {
+                                console.log(JSON.stringify(rets));
+                                console.log(JSON.stringify(errs));
+                                if (rets && rets.code == 200) {
+                                    callback();
+                                } else {
+                                    _msg(rets.msg);
+                                }
+                            }, {
+                                user_id: myuserid,
+                                to_user: touserid,
+                            })
+                        }
+                    })
+                }
+            } else if (ret.code == 201) {
+                _alert('您还未认证，请先去认证', function () {
+                    _url({
+                        url: 'frame4/authentication_frame',
+                        title: '认证身份'
+                    });
+                })
+            } else if (ret.code == 202) {
+                _alert('您还不是会员呢~，前去购买', function () {
+                    _url({
+                        url: 'frame4',
+                        title: '开通会员'
+                    })
+                })
+            } else if (ret.code == 205) {
+                callback();
+            } else if (ret.code == 220 && ret.money) {
+                var obj = {
+                    msg: '您今日会员特权使用次数已用完,您可以支付' + ret.money + '查看该用户全部信息。请确定以下操作',
+                    btn: ['购买', '取消'],
+                };
+                _confirm(obj, function (bIndex) {
+                    if (bIndex == 1) {
+                        _ajax('home/user/buylian', function (rets, errs) {
+                            console.log(JSON.stringify(rets));
+                            console.log(JSON.stringify(errs));
+                            if (rets && rets.code == 200) {
+                                callback();
+                            } else {
+                                _msg(rets.msg);
+                            }
+                        }, {
+                            user_id: myuserid,
+                            to_user: touserid,
+                        })
+                    }
+                })
+            }
+        }, {
+            user_id: myuserid,
+            to_user: touserid,
+        })
+    }
+</script>
+
+</html>

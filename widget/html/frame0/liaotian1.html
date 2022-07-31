@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>放飞科技</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <style>
+        .chat-wrap {
+            font-size: 14px;
+            background: #fff;
+            padding: 10px;
+            margin-bottom: 55px;
+        }
+
+        .chat-wrap .list {
+            margin-bottom: 20px;
+        }
+
+        /* 头像 */
+        .chat-wrap .tx {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+        }
+
+        .chat-wrap .tx.img-w img {
+            width: 40px;
+        }
+
+        .chat-wrap .tx.img-h img {
+            height: 40px;
+        }
+
+        /* 内容 */
+        .chat-wrap .c-wrap {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .chat-wrap .c-wrap.my {
+            justify-content: flex-end;
+        }
+
+        .chat-wrap .c-wrap.my .tx {
+            margin-right: 0;
+            margin-left: 10px;
+        }
+
+        .chat-wrap .content {
+            background: #eee;
+            padding: 5px;
+            max-width: 60vw;
+            border-radius: 5px;
+        }
+
+        /* 图片 */
+        .chat-wrap .c-wrap .img {
+            width: calc(60vw - 20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .chat-wrap .c-wrap .img img {
+            width: calc(60vw - 20px);
+        }
+
+        /* 输入框 */
+        #input-footer {
+            padding: 10px 5px;
+            background: #eee;
+            position: fixed;
+            bottom: 0;
+            width: 100vw;
+            max-width: 750px;
+            min-width: 320px;;
+        }
+
+        .input-wrap input {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 7px 5px;
+            background: #fff;
+            font-size: 14px;
+        }
+
+        .input-wrap .send-btn {
+            background: #673AB7;
+            color: #fff;
+            font-size: 14px;
+            padding: 7px 3px;
+            word-break: keep-all;
+            margin-left: 10px;
+            border-radius: 5px;
+        }
+
+        .time {
+            font-size: 12px;
+            background: #aaa;
+            color: #fff;
+            border-radius: 3px;
+            padding: 5px 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="view">
+        <ul class="wrap chat-wrap">
+            <div v-for="(m, inde) in ffList">
+                <p class="flex-c" v-if="m.showtime">
+                    <span class="time">{{m.time}}</span>
+                </p>
+                <li class="list" v-if="m.self == 0">
+                    <div class="c-wrap you">
+                        <div class="tx img-h">
+                            <img :src="imgurl+m.head_portrait" @load="imgCss(imgurl+m.head_portrait, $event)"
+                                onerror="this.onerror=null;this.src='../image/touxiang.png'" alt="">
+                            <!-- <img :src="m.img" @load="imgCss(m.img, $event)" onerror="this.onerror=null;this.src='../image/touxiang.png'" alt=""> -->
+                        </div>
+                        <div class="content" v-if="m.type == 0" v-html="dealContent(m.content)"></div>
+                        <div class="content" v-if="m.type == 1">
+                            <div class="img img-h">
+                                <img :src="imgurl+m.content" @load="imgCss(imgurl+m.content, $event)"
+                                    onerror="this.onerror=null;this.src='../image/error-img.png'" alt="">
+                                <!-- <img :src="m.content" @load="imgCss(m.content, $event)" onerror="this.onerror=null;this.src='../image/error-img.png'" alt=""> -->
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list" v-if="m.self == 1">
+                    <div class="c-wrap my">
+                        <div class="content" v-if="m.type == 0" v-html="dealContent(m.content)"></div>
+                        <div class="content" v-if="m.type == 1">
+                            <div class="img img-h">
+                                <img :src="imgurl+m.content" @load="imgCss(imgurl+m.content, $event)"
+                                    onerror="this.onerror=null;this.src='../image/error-img.png'" alt="">
+                                <!-- <img :src="m.content" @load="imgCss(m.content, $event)" onerror="this.onerror=null;this.src='../image/error-img.png'" alt=""> -->
+                            </div>
+                        </div>
+                        <div class="tx img-h">
+                            <img :src="imgurl+m.head_portrait" @load="imgCss(imgurl+m.head_portrait, $event)"
+                                onerror="this.onerror=null;this.src='../image/touxiang.png'" alt="">
+                            <!-- <img :src="m.img" @load="imgCss(m.img, $event)" onerror="this.onerror=null;this.src='../image/touxiang.png'" alt=""> -->
+                        </div>
+                    </div>
+                </li>
+            </div>
+        </ul>
+        <!-- <footer id="input-footer">
+            <div class="input-wrap flex">
+                <input type="text" style="width: 100%;">
+                <button class="send-btn" onclick="sendMsg()">发送</button>
+            </div>
+        </footer> -->
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/liaotian/emotion.js"></script>
+<script src="../../script/liaotian/uichat.js"></script>
+<script>
+    // var myuserid = 304;
+    // var touserid = 295;
+    var view = new Vue({
+        el: '#view',
+        data: {
+            myuserid: myuserid,
+            imgurl: imgurl,
+            ffList: [],
+            // ffList: resultJson.data,
+        },
+        methods: {
+            // 跳转 查看用户详情
+            goUserInfo: function (data) {
+                go_userInfo(data.user_id, data.user_name, data.user_sex)
+            },
+            _url: function (param, url) {
+                _url(param, url);
+            },
+            // 图片自适应
+            imgCss: function (url, event) {
+                var e = event.currentTarget;
+                imgCss(url, function (w, h) {
+                    if (w < h) {
+                        $(e).parent().addClass('img-w').removeClass('img-h');
+                    }
+                })
+            },
+            // 处理表情
+            dealContent: function (str) {
+                return getMesge(str);
+            }
+        }
+    })
+    var touserid = pageParam['touserid'];
+    judgeLogin()
+    // 监听回车
+    window.onkeydown = function (e) {
+        if (e.keyCode == 13) {
+            sendMsg();
+        }
+    }
+    // 发送消息
+    function sendMsg() {
+        var content = $.trim($('.input-wrap input').val());
+        if (!content) {
+            _msg('内容不能为空');
+            return;
+        }
+        $('.input-wrap input').val('');
+        _ajax('c=Privatechat&a=addTalk', function (ret) {
+            _log(JSON.stringify(ret))
+            if (ret && ret.status == 200) {
+                getMsgList(0)
+            }
+        }, {
+            content: content,
+            type: 0,
+            userid: myuserid,
+            touserid: touserid,
+        })
+    }
+    getNewMsg();
+    getMsgList(0)
+    // 滚动到顶部
+    _scrollToTop(function () {
+        if (heigutgao == 1) {
+            pagenum++;
+            getMsgList(pagenum);
+        }
+    })
+
+    // 获取消息列表
+    function getMsgList(page) {
+        heigutgao = 0;
+        pagenum = page;
+        _ajax('c=Privatechat&a=getMsgList', function (ret) {
+            _log(JSON.stringify(ret))
+            if (ret && ret.code == 200) {
+                if (page == 0) {
+                    view.ffList = [];
+                }
+                view.ffList = ret.result.concat(view.ffList);
+                if (ret.result.length > 0) {
+                    heigutgao = 1
+                }
+            }
+        }, {
+            userid: myuserid,
+            touserid: touserid,
+            page: page,
+        })
+    }
+    
+    // 获取新消息
+    function getNewMsg() {
+        _ajax('c=Privatechat&a=getNewMsg', function (ret) {
+            _log(JSON.stringify(ret))
+            if (ret && ret.code == 200) {
+                if (ret.result.length > 0) {
+                    view.ffList = view.ffList.concat(ret.result);
+                }
+                var _pageParam = getParam();
+                if(_pageParam && _pageParam['url'] == 'frame0/liaotian'){
+                    var dt = setTimeout(function () {
+                        clearTimeout(dt);
+                        dt = null;
+                        getNewMsg();
+                    }, 3000)
+                }
+            }
+        }, {
+            userid: myuserid,
+            touserid: touserid,
+            time: 40,
+            urlType: 'get'
+        })
+    }
+
+    //得到替换后的消息内容
+    function getMesge(str) {
+        if (!str) {
+            return '';
+        }
+        str = str.replace(/\[(.+?)\]/g, function (a, b) {
+            var url = '../res/img/emotion/' + getEmotionUrl(a) + '.png';
+            return '<img src=' + url + ' border="0" width="25"/>';
+        });
+        str = entityToString(str);
+        return str;
+    }
+    // 实体字符转html代码
+    function entityToString(entity) {
+        // 若无实体字符则不转换
+        if (entity.indexOf('&lt' == -1)) return entity;
+        var div = document.createElement('div');
+        div.innerHTML = entity;
+        var res = div.innerText || div.textContent;
+        return res;
+    }
+    //根据表情名获取表情图片路径
+    function getEmotionUrl(text) {
+        for (var i = 0; i < emotionUrl.length; i++) {
+            if (text == emotionUrl[i].text) {
+                return emotionUrl[i].name;
+            }
+        }
+    }
+</script>
+
+</html>

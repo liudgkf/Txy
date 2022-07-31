@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>Document</title>
+	<link rel="stylesheet" href="./css/api.css">
+	<style>
+		.bg {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: calc(100vw - 20px);
+			height: 100vh;
+			/* background-image: url('./image/login_bg.png'); */
+			background-repeat: no-repeat;
+			background-size: contain;
+			padding: 10px;
+			font-size: 14px;
+			/* background-color: #051D3B; */
+		}
+	</style>
+</head>
+
+<body>
+	<div class="bg"></div>
+</body>
+<script src="./script/api.js"></script>
+<script src="./script/zepto.js"></script>
+<script src="./script/ffkj.js"></script>
+<script src="./script/push.js"></script>
+<script>
+	apiready = function () {
+		var push = new Push();
+		if (myuserid) {
+			push.setAlias(myuserid);
+		}
+		openMTJ(); // 打开百度统计
+
+		// 通知极光推送SDK当前应用进入前台。
+		api.addEventListener({
+			name: 'resume'
+		}, function () {
+			onPageStart('root');
+			push.linstener(function (ret, err) {
+				console.log(JSON.stringify(ret))
+				console.log(JSON.stringify(err))
+				setWarnning()
+				console.log(JSON.stringify(err))
+			})
+		});
+		push.linstener(function (ret, err) {
+			console.log(JSON.stringify(ret))
+			console.log(JSON.stringify(err))
+			setWarnning()
+		})
+		// 通知极光推送SDK当前应用退入到后台。
+		api.addEventListener({
+			name: 'pause'
+		}, function () {
+			onPageEnd('root');
+			// alert(2)
+			push.rm()
+		});
+
+		// 安卓监听 点击
+		api.addEventListener({
+			name: 'appintent'
+		}, function (ret, err) {
+			console.log(JSON.stringify(ret))
+			console.log(JSON.stringify(err))
+			if (ret && ret.appParam.ajpush) {
+				var obj = ret.appParam.ajpush.extra;
+				if (obj.dy_id) {
+					_url({
+						id: obj.dy_id,
+						url: 'frame1/dy_detail',
+						title: '详情'
+					})
+				} else {
+					_url({
+						url: 'frame0/user_info_frame',
+						title: obj.name,
+						user_id: obj.userid,
+						moreType: 1
+					})
+				}
+				// _url({ txt: obj.name, touserid: obj.userid, url: 'frame0/liaotian', title: '与' + name + '的聊天' })
+			}
+		})
+
+		// ios监听 点击
+		api.addEventListener({
+			name: 'noticeclicked'
+		}, function (ret, err) {
+			if (ret && ret.value) {
+				// judgeType()
+			}
+		})
+
+		// 进入前台
+		_listener('resume', function (ret) {
+			setOnline(1)
+		})
+		// 进入后台
+		_listener('pause', function (ret) {
+			setOnline(0)
+		})
+
+		$api.fixStatusBar($api.dom('.bg'));
+		_heibai(1);
+		judgeNet();
+		getPermission();
+		//三秒后显示
+		setTimeout(function () {
+			// 上架判断
+			_ajax('a.php', function (ret, err) {
+				if (ret && ret[0]) {
+					$api.setStorage('shang', ret[0].pshang);
+					if (ret[0].pshang == 1) { // 上架
+						if ($api.getStorage('userid')) {
+							_url({ slidBackEnabled: 0 }, 'shang_win');
+						}else{
+							_url({ slidBackEnabled: 0 }, 'user/login_win')
+						}
+						
+					} else { // 非上架
+						if ($api.getStorage('userid')) {
+							_url({ slidBackEnabled: 0 }, 'index_win');
+						}else{
+							_url({ slidBackEnabled: 0 }, 'user/login_win')
+						}
+						
+					}
+				} else {
+					if ($api.getStorage('userid')) {
+						_url({ slidBackEnabled: 0 }, 'index_win');
+					}else{
+						_url({ slidBackEnabled: 0 }, 'user/login_win')
+					}
+				}
+			})
+			// 移除启动图
+			api.removeLaunchView({
+				animation: {
+					type: 'fade',
+					duration: 500
+				}
+			});
+		}, 1000)
+
+
+		getMsgCount(); // 获取新消息
+	}
+
+
+
+	// 推送 获取消息数量
+	function getMsgCount() {
+		if (!$api.getStorage('userid')) {
+			var dt = setTimeout(function () {
+				clearTimeout(dt);
+				dt = null;
+				getMsgCount();
+			}, 3000);
+			return;
+		}
+		_ajax('Home/Privatechat/getreadcount', function (ret, err) {
+			console.log(JSON.stringify(ret))
+			console.log(JSON.stringify(err))
+			// console.log(JSON.stringify(err))
+			var result = ret[0];
+			var count = result.chat_count + result.message_count;
+			api.setAppIconBadge({ //桌面红点
+				badge: count,
+			});
+			$api.setStorage('footNum', count);
+			_send('footNum', {
+				count: count
+			});
+
+			if (ret[0]['message'] == 1) {
+				setWarnning();
+			}
+			// 设置为已读
+			// _ajax('Home/Privatechat/changeread', function (rets, errs) {
+			var dt = setTimeout(function () {
+				clearTimeout(dt);
+				dt = null;
+				getMsgCount();
+			}, 3000);
+			// }, {
+			// 	touserid: $api.getStorage('userid')
+			// })
+		}, {
+			user_id: $api.getStorage('userid'),
+		})
+	}
+</script>
+
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/aui_font.css">
+    <link rel="stylesheet" href="../../css/base_icon.css">
+    <link rel="stylesheet" href="../../css/frame1.css">
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div id="view" v-cloak>
+        <!-- 个人广播 -->
+        <ul class="wrap">
+            <!-- 约会详情 -->
+            <li class="list">
+                <div class="flex-bt" style="align-items:flex-start;">
+                    <div class="left flex">
+                        <div class="tx flex-c img-h" @click="go_userInfo(ffInfo.userid, ffInfo.name, ffInfo.sex)">
+                            <img :src="imgurl+ffInfo.head_100" @load="imgCss(imgurl+ffInfo.head_100, $event)" onerror="this.onerror=null;this.src='../../image/touxiang.png'" alt="">
+                            <i class="base-icon dy-male-icon" v-if="ffInfo.sex == '男'"></i>
+                            <i class="base-icon dy-female-icon" v-if="ffInfo.sex == '女'"></i>
+                        </div>
+                        <div>
+                            <div class="name-wrap flex">
+                                <span class="name">{{ffInfo.name}}</span>
+                                <!-- <span v-if="m.is_identity_authentication >0 && m.sex != '女'" class="girl-tag tag">女神</span>
+                                <span v-if="m.is_identity_authentication >0 && m.sex == '女'" class="real-tag tag">真人</span>
+                                <span v-if="m.is_vip >0" class="vip-tag tag">VIP</span> -->
+                                <!-- <i v-if="ffInfo.is_vip >0" class="base-icon dy-vip-icon" style="width: 25px;"></i>
+                                <i v-if="ffInfo.is_identity_authentication >0 && ffInfo.sex != '女'" class="base-icon dy-real-icon" style="width: 32px;"></i>
+                                <i v-if="ffInfo.is_identity_authentication >0 && ffInfo.sex == '女'" class="base-icon dy-girl-icon" style="width: 32px;"></i> -->
+                            </div>
+                            <span class="time">{{ffInfo.addtime}}</span>
+                        </div>
+                    </div>
+                    <!-- <div class="more flex-c" @click.stop="more(ffInfo.dy_id);">
+                        <i class="aui-iconfont aui-icon-more"></i>
+                    </div> -->
+                </div>
+                <div class="dy-content-wrap new-padding-10">
+                    <div class="tri"></div>
+                    <ul class="ul">
+                        <li class="li" v-if="ffInfo.content">
+                            <i class="base-icon dy-content-icon"></i>
+                            <div class="dy-content">{{ffInfo.content}}</div>
+                        </li>
+                        <!-- <li class="li">
+                            <i class="base-icon dy-theme-icon"></i>
+                            <div class="dy-content">视频聊天</div>
+                        </li> -->
+                        <li class="li" v-if="ffInfo.datetime">
+                            <i class="base-icon dy-time-icon"></i>
+                            <div class="dy-content">{{ffInfo.datetime}}</div>
+                        </li>
+                        <li class="li" v-if="ffInfo.call">
+                            <i class="base-icon dy-person-icon"></i>
+                            <div class="dy-content">{{ffInfo.call}}</div>
+                        </li>
+                        <li class="li" v-if="ffInfo.filter">
+                            <i class="base-icon dy-money-icon"></i>
+                            <div class="dy-content">{{ffInfo.filter}}</div>
+                        </li>
+                        
+                        <li class="li" v-if="ffInfo.citys">
+                            <i class="base-icon dy-area-icon"></i>
+                            <div class="dy-content">{{ffInfo.citys}}</div>
+                        </li>
+                    </ul>
+                    <div class="img-wrap flex-w" v-if="ffInfo.sumbImage && ffInfo.sumbImage.length > 0 && ffInfo.sumbImage[0]">
+                        <div class="img img-h " v-for="(s, sindex) in ffInfo.sumbImage" @click="_url({imgArr:ffInfo.masterimg, iIndex:sindex}, 'frame1/dy_img_win')">
+                            <img :src="imgurl+s" @load="imgCss(imgurl+s, $event)" onerror="this.onerror=null;this.src='../../image/error-img.png'" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="over" v-if="ffInfo.overdue == 1"></div>
+            </li>
+            <!-- 点赞列表 -->
+            <div class="zan-wrap w-bg flex-bt new-margin-tb-10 new-padding-10" v-if="ffInfo.zan && ffInfo.zan.length > 0">
+                <div class="flex">
+                    <i class="base-icon dy-zan-icon"></i>
+                    <ul class="tx-ul flex">
+                        <li class="li" v-for="(m, index) in ffInfo.zan" v-if="index<3">
+                            <div class="img img-h">
+                                <img :src="imgurl+m.head_100" @load="imgCss(imgurl+m.head_100, $event)" onerror="this.onerror=null;this.src='../../image/touxiang.png'" alt="">
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="theme-font">共{{ffInfo.zan.length}}人点赞</div>
+            </div>
+            <!-- 报名列表 -->
+            <div class="enroll-wrap  w-bg new-margin-tb-10 new-padding-10" v-if="ffList.length > 0 && myuserid == ffInfo.userid">
+                <h3 class="new-margin-b-10">{{ffList.length}}人已报名</h3>
+                <ul class="e-wrap">
+                    <li class="li flex-bt" v-for="(m, index) in ffList">
+                        <div class="flex">
+                            <div class="img img-h" @click="go_userInfo(m.user_id, m.user_name, m.user_sex)">
+                                <img :src="imgurl+m.user_head" @load="imgCss(imgurl+m.user_head, $event)" onerror="this.onerror=null;this.src='../../image/touxiang.png'" alt="">
+                            </div>
+                            <span class="name">{{m.user_name}}</span>
+                        </div>
+                        <span class="theme-font" @click="getContact(m.user_id)">联系TA</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 评论列表 -->
+            <div class="comment-wrap w-bg new-margin-tb-10 new-padding-10" v-if="ffInfo.text && ffInfo.text.length > 0">
+                <ul class="c-ul">
+                    <li class="li" v-for="(m, index) in ffInfo.text">
+                        <div class="flex-bt" style="align-items:flex-start;">
+                            <div class="left flex">
+                                <div class="tx img-h">
+                                    <img :src="imgurl+m.head_100" @load="imgCss(imgurl+m.head_100, $event)" onerror="this.onerror=null;this.src='../../image/touxiang.png'" alt="">
+                                </div>
+                                <div>
+                                    <div class="name-wrap flex-c">
+                                        <span class="name">{{ m.name }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dy-content-wrap new-padding-10">
+                            <div class="tri"></div>
+                            <div class="c-content theme-font">
+                                {{m.content}}
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </ul>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script src="../../script/wximg.js"></script>
+<script>
+    var dy_id;
+    var view = new Vue({
+        el: '#view',
+        data: {
+            myuserid: $api.getStorage('userid'), 
+            imgurl: imgurl,
+            ffList: [],
+            ffInfo: {},
+            inputObj: {id:0, uid:0},  // 评论 广播id
+        },
+        methods: {
+            // 联系对方
+            getContact: function(id){
+                _ajax('home/user/vipsee', function(ret, err){
+                    console.log(JSON.stringify(ret));
+                    console.log(JSON.stringify(err));
+                    if(ret){
+                        if(ret.code == 200 && ret.num > 0){
+                            var msg = '你剩余' + ret.num + '次会员特权，是否使用1次特权查看她的联系方式';
+                            var btn = ['选择TA', '取消'];
+                            _confirm({msg: msg, btn:btn}, function(bIndex){
+                                if(bIndex == 1){
+                                    showDetail('frame1/link_modal', {uid: id})
+                                }
+                            })
+                        }else if(ret.code == 205){
+                            showDetail('frame1/link_modal', {uid: id})
+                        }else {
+                            _msg(ret.msg);
+                        }
+                    }
+                }, {
+                    user_id : $api.getStorage('userid'),
+                    to_user : id,
+                })
+            },
+            _url: function (param, url) {
+                _url(param, url);
+            },
+            // 图片自适应
+            imgCss: function (url, event) {
+                console.log(url)
+                var e = event.currentTarget;
+                imgCss(url, function (w, h) {
+                    if (w < h) {
+                        $(e).parent().addClass('img-w').removeClass('img-h');
+                    } 
+                })
+            },
+            // 查看用户资料
+            go_userInfo: function (id, name, sex) {
+                go_userInfo(id, name, sex);
+            },
+            // 清除html
+            clearHtml:function(s){
+                return clearHtml(s);
+            }
+
+        }
+    })
+    apiready = function () {
+        dy_id = api.pageParam['id'];
+
+        getDynamic();
+        getEnroll();
+    }
+
+
+    // 获取约会详情
+    function getDynamic(){
+        _ajax('Home/Dymanic/dycommentlsts', function(ret, err){
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if(ret && ret.code == 200){
+                view.ffInfo = ret.result;
+            }
+        }, {dy_id: dy_id})
+    }
+
+    // 获取报名列表
+    function getEnroll(){
+        _ajax('Home/Dymanic/enrolllist', function(ret, err){
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if(ret && ret.code == 200){
+                view.ffList = ret.data;
+            }
+        }, {dy_id : dy_id})
+    }
+</script>
+</html>

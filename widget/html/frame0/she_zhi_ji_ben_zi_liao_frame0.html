@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/news.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/login.css" />
+    <style>
+        
+
+        input {
+            outline: none;
+            width: 90%;
+            color: #f3f3f3;
+            font-size: 14px;
+        }
+
+        .content {
+            /*padding:3.5%;*/
+            color: #f3f3f3;
+        }
+
+        .content ul li {
+            line-height: 40px;
+            padding: 0 14px;
+            margin-bottom: 1px;
+            background: rgba(204, 204, 204, 0.48);
+        }
+
+        .content ul li i {
+            float: right;
+        }
+
+        .content ul li .must {
+            color: red;
+        }
+
+        .clicks {
+            width: 90%;
+            font-size: 14px;
+        }
+
+        .footer {
+            width: 95%;
+            margin: 15px auto 0;
+        }
+
+        .btn {
+            width: 100%;
+            outline: none;
+            font-size: 14px;
+            color: white;
+            border: 1px solid;
+            line-height: 3;
+            border-radius: 1.5em;
+            background: rgba(204, 204, 204, 0.48);
+        }
+
+        .ios-select-widget-box.olay {
+            background: initial;
+        }
+
+        ::-webkit-input-placeholder {
+            /* WebKit browsers */
+            color: #bebebe;
+        }
+
+        :-moz-placeholder {
+            /* Mozilla Firefox 4 to 18 */
+            color: #bebebe;
+        }
+
+        ::-moz-placeholder {
+            /* Mozilla Firefox 19+ */
+            color: #bebebe;
+        }
+
+        :-ms-input-placeholder {
+            /* Internet Explorer 10+ */
+            color: #bebebe;
+        }
+
+        .pushImg {
+            color: #fff;
+            width: 6em;
+            height: 6em;
+            margin: 0 auto;
+            border: 1px solid;
+            border-radius: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .pushImg img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .content ul .annotation {
+            background: inherit;
+            line-height: inherit;
+            padding: 12px 14px 6px;
+            font-size: 12px;
+        }
+
+        .annotation .h5 {
+            font-size: 16px;
+            color: #ba9fe8;
+        }
+
+        .textarea {
+            width: 100%;
+            height: 100%;
+            line-height: 1.5;
+            color: #000000;
+            outline: none;
+        }
+
+        .js-introduce {
+            margin: 0 10px 10px 0;
+            padding: 2px 8px;
+            border: 1px solid;
+            border-radius: 3px;
+        }
+
+        .js-agreement {
+            text-decoration: underline;
+        }
+
+        /**/
+        .js-prp {
+            display: none;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .js-prp .ul {
+            display: none;
+            position: absolute;
+            top: 80px;
+            left: 0;
+            background: #fff;
+            margin: 0 5%;
+            width: 90%;
+            font-size: 14px;
+            color: #6d6d6d;
+            line-height: 2.8;
+        }
+
+        .js-prp .h2 {
+            font-weight: normal;
+            font-size: 16px;
+            text-align: center;
+            border-bottom: 1px solid #dedbdb;
+            color: #000000;
+        }
+
+        .js-prp .li {
+            padding: 0 1em;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .js-prp .input {
+            width: 10px;
+            height: 10px;
+            border: 2px solid;
+            border-radius: 50%;
+            margin-right: 0.5em;
+        }
+
+        .js-prp .current .input {
+            background: #df6ef2;
+            border-color: #650775;
+        }
+
+        .js-prp .foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            color: #18c1ff;
+        }
+
+        .js-prp .body {
+            height: 160px;
+            overflow: auto;
+        }
+
+        /*选择地区*/
+        .express-area {
+            border-bottom: 1px solid #ddd;
+            background-color: #fff;
+        }
+
+        .express-area a {
+            display: block;
+            padding: .5rem;
+            background: url(../img/link-arrow.png) no-repeat 98% 50%;
+            background-size: .55rem .55rem;
+        }
+
+        .express-area dl {
+            position: relative;
+            line-height: 1.2rem;
+            color: #4d525d;
+        }
+
+        .express-area dl dt {
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-size: .7rem;
+            line-height: 1.2rem;
+        }
+
+        .express-area dl dd {
+            padding-top: .1rem;
+            padding-right: .8rem;
+            margin-left: 3.5rem;
+            text-align: justify;
+            font-size: .65rem;
+            line-height: 1rem;
+        }
+
+        @media (min-width: 721px) and (max-width: 1300px) {
+            .express-area a {
+                padding: .3rem;
+            }
+
+            .express-area dl dt {
+                font-size: .5rem;
+                line-height: 1rem;
+            }
+
+            .express-area dl dd {
+                padding-right: .6rem;
+                margin-left: 3rem;
+                font-size: .4rem;
+                line-height: .8rem;
+            }
+        }
+
+        /*选择地区弹层*/
+        .express-area-box {
+            position: absolute;
+            bottom: -100%;
+            left: 50%;
+            z-index: 15;
+            width: 320px;
+            margin-left: -160px;
+            background-color: #fff;
+            color: #4d525d;
+        }
+
+        .express-area-box header {
+            position: relative;
+            border-top: 1px solid #e2e2e2;
+            border-bottom: 1px solid #e2e2e2;
+        }
+
+        .express-area-box header h3 {
+            margin: 0 1.675rem;
+            text-align: center;
+            font-size: .8rem;
+            line-height: 2.25rem;
+        }
+
+        .express-area-box header .back,
+        .express-area-box header .close {
+            position: absolute;
+            top: 0;
+            width: 1.675rem;
+            height: 2.25rem;
+        }
+
+        .express-area-box header .back {
+            display: none;
+            left: 0;
+            background: url(../img/back.png) no-repeat center;
+            background-size: .45rem .75rem;
+        }
+
+        .express-area-box header .close {
+            right: 0;
+            background: url(../img/close-area.png) no-repeat center;
+            background-size: .675rem .675rem;
+        }
+
+        .express-area-box article {
+            height: 250px;
+            overflow-y: scroll;
+        }
+
+        .area-list li {
+            padding: .5rem;
+            border-bottom: 1px solid #e2e2e2;
+            text-align: justify;
+            font-size: .7rem;
+            line-height: 1.25rem;
+        }
+
+        @media (min-width: 721px) and (max-width: 1300px) {
+            .express-area-box {
+                width: 224px;
+                margin-left: -112px;
+            }
+
+            .express-area-box header h3 {
+                font-size: .7rem;
+                line-height: 1.7rem;
+            }
+
+            .express-area-box header .back,
+            .express-area-box header .close {
+                height: 1.7rem;
+            }
+
+            .express-area-box article {
+                height: 120px;
+            }
+
+            .area-list li {
+                padding: .3rem;
+                font-size: .6rem;
+                line-height: 1rem;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .express-area-box {
+                position: fixed;
+                left: 0;
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+
+        /*遮罩层*/
+        .mask {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 12;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, .5);
+        }
+
+        @media (max-width: 720px) {
+            .mask {
+                position: fixed;
+            }
+        }
+
+        input::-webkit-input-placeholder {
+            /* WebKit, Blink, Edge */
+            color: #f3f3f3;
+        }
+
+        input:-moz-placeholder {
+            /* Mozilla Firefox 4 to 18 */
+            color: #f3f3f3;
+        }
+
+        input::-moz-placeholder {
+            /* Mozilla Firefox 19+ */
+            color: #f3f3f3;
+        }
+
+        input:-ms-input-placeholder {
+            /* Internet Explorer 10-11 */
+            color: #f3f3f3;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="view" v-cloak class="login-bg">
+
+        <div style="text-align: center;padding: 22px;">
+            <div class="pushImg" onclick="changeHeads()">上传头像</div>
+        </div>
+        <div class="content">
+            <ul>
+                <li>
+                    <input type="text" placeholder="昵称" id="name" />
+                </li>
+                <li>
+                    <span id="City" class="clicks" onclick="selectCity('city')">{{ param.city || '请选择城市'}}</span>
+                    <i class="iconfont icon-prev-copy"></i>
+                </li>
+                <li>
+                    <span id="showCity" class="clicks" onclick="_url({event:'selectOfftenCity'}, 'frame1/city_win')">{{ param.offten_city || '请选择约会范围'}}</span>
+                    <i class="iconfont icon-prev-copy"></i>
+                </li>
+                <li style="margin-bottom: 20px;">
+                    <span class="clicks" onclick="myScroll('age', 1, '年龄', [18, 101])">
+                        <span id="ages">{{ param.age ? param.age + '岁' : '年龄'}}</span>
+                    </span>
+                    <i class="iconfont icon-prev-copy"></i>
+                </li>
+                <li>
+                    <span id="showIncome" class="clicks"
+                        onclick="myScroll('occupation', 0, '职业')">{{param.occupation || '职业'}}</span>
+                    <i class="iconfont icon-prev-copy"></i>
+                </li>
+                <li class="js-girl">
+                    <span class="clicks" onclick="myScroll('stature', 1, '身高', [140, 220])">
+                        <span id="showHei">{{ param.stature ? param.stature + 'cm' : '身高'}}</span>
+                    </span>
+                    <i class="iconfont icon-prev-copy"></i>
+                </li>
+                <li class="js-girl">
+                    <span class="clicks" onclick="myScroll('weight', 1, '体重', [40, 100])">
+                        <span id="showWei">{{ param.weight ? param.weight + 'kg' : '体重'}}</span>
+                    </span>
+                    <i class="iconfont icon-prev-copy"></i>
+                </li>
+                <li class="js-girl">
+                    <span class="clicks" onclick="selectCup()">
+                        <span id="showbust">{{ param.bust ? param.bust + ' ' + param.cup :  '胸围'}}</span>
+                    </span>
+                    <i class="iconfont icon-prev-copy"></i>
+                </li>
+                <li class="js-girl">
+                    <span class="clicks" id="style"
+                        onclick="myScroll('style', 2, '风格')">{{ param.style || '打扮风格'}}</span>
+                    <i class="iconfont icon-prev-copy"></i>
+                </li>
+                <li class="js-girl">
+                    <span class="clicks" id="language"
+                        onclick="myScroll('language', 2, '语言')">{{ param.language || '语言'}}</span>
+                    <i class="iconfont icon-prev-copy"></i>
+                </li>
+                <li class="js-girl">
+                    <input type="hidden" name="marryState" id="marryState" value="">
+                    <span id="showMarry" class="clicks"
+                        onclick="myScroll('emotion', 0, '情感状态')">{{ param.emotion || '情感状态'}}</span>
+                    <i class="iconfont icon-prev-copy"></i>
+                </li>
+                <li class="js-girl">
+                    <span class="clicks" id="dateActivity"
+                        onclick="myScroll('dy_program', 2, '约会节目')">{{param.dy_program || '约会节目'}}</span>
+                    <i class="iconfont icon-prev-copy"></i>
+                </li>
+                <li class="js-girl">
+                    <span class="clicks" id="dateConditions"
+                        onclick="myScroll('dy_conditions', 0, '期望对象')">{{param.dy_conditions || '期望对象'}}</span>
+                    <i class="iconfont icon-prev-copy"></i>
+                </li>
+                <li class="annotation" class="js-girl">
+                    <p class="h5">约会联系方式</p>
+                    <p>用户需向你付费才能查看，请最少填写1种联系方式</p>
+                </li>
+                <li>
+                    <input type="text" value="" placeholder="微信" id="wxcount" />
+                </li>
+                <li>
+                    <input type="number" value="" placeholder="QQ" id="qq" />
+                </li>
+                <li class="annotation">
+                    <p class="h5">个人介绍</p>
+                    <p>吸引人的个人介绍可以大大提高异性的约会欲望哦</p>
+                </li>
+                <li style="font-size: 14px;padding: 14px;height: 6em;">
+                    <textarea class="textarea" placeholder="个人介绍、约会要求。。。" id="self_slogan"></textarea>
+                </li>
+                <li class="annotation" style="display: flex;flex-wrap: wrap;" id="biaoqian">
+                    <span class="js-introduce" v-for="(t, tindex) in tagList" @click="addTag(t)">{{t}}</span>
+                </li>
+            </ul>
+        </div>
+        <div class="footer">
+            <button class="btn" onclick="tijiao()">
+                填写完毕，完成注册
+            </button>
+        </div>
+        <p style="color: #958fb0;font-size: 12px;text-align: center;padding: 14px 0 32px;" 
+            onclick="_url({url:'frame1/tongyi', title:'用户协议'})"> 注册表示用户已阅读并同意<span class="js-agreement">《用户协议》</span>
+        </p>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery_min.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/ffkj.js"></script>
+<script type="text/javascript" src="../../script/selectJson.js"></script>
+<script type="text/javascript" src="../../script/shangtu.js"></script>
+<script type="text/javascript" src="../../script/push.js"></script>
+<script type="text/javascript">
+    var showDate = new Vue({
+        el: '#view',
+        data: {
+            // 参数 对象
+            param: {
+                sex: '',
+                city: '',
+                offten_city: '', // 约会范围
+                age: '',
+                occupation: '', // 职业
+                stature: '', // 身高
+                weight: '',
+                bust: '', // 胸围
+                cup: '', // 罩杯
+                style: '', // 风格
+                language: '', // 语言
+                emotion: '', // 情感状态
+                dy_program: '', // 约会节目
+                dy_conditions: '', // 约会条件
+            },
+            tagList: [], // 标签列表
+        },
+        methods: {
+            _url: function (pageParam, url, login) {
+                _url(pageParam, url, login);
+            },
+            // 添加标签到个人介绍
+            addTag: function (text) {
+                var textarea = $('.textarea').val();
+                $('.textarea').val(textarea + ' ' + text);
+            },
+        }
+    })
+   
+    apiready = function () {
+        showDate.param.sex = $api.getStorage('sex');
+        if (showDate.param.sex == '男') {
+            $('.js-girl').hide();
+        }
+        getTags();
+
+        // 监听 选择约会范围
+        _listener('selectOfftenCity', function(ret){
+            console.log(JSON.stringify(ret));
+            if(ret){
+                var city = ret.value.city;
+                city = city.join(',');
+                showDate.param.offten_city = city;
+            }
+        })
+    };
+
+    // 获取分类标签
+    function getTags() {
+        var sex = showDate.param.sex == '男' ? 1 : 2;
+        _ajax('home/user/tags', function (ret, err) {
+            if (ret.code == 200) {
+                showDate.tagList = ret.data;
+            }
+        }, {
+            sex: sex
+        })
+    }
+
+    // 上传 头像
+    function changeHeads() {
+        selectAction.shang_tu(function (url) {
+            _url({ url: url }, 'clip')
+            api.addEventListener({
+                name: 'clip',
+            }, function (ret, err) {
+                if (ret) {
+                    $('.pushImg').html('<img src="' + ret.value.url + '?' + Math.random() + '"/>');
+                }
+            });
+        });
+    }
+    //提交
+    function tijiao() {
+        var phone = api.pageParam['phone'];
+        var password = api.pageParam['password'];
+        var send_code = api.pageParam['send_code'];
+        var userid = $api.getStorage('userid');
+        var name = $.trim($('#name').val());
+        var wxcount = $.trim($('#wxcount').val());
+        var qq = $.trim($('#qq').val());
+        var self_slogan = $.trim($('#self_slogan').val());
+        var resultUrl = $('.pushImg img').attr('src'); // 头像
+        if (!name) {
+            _msg('昵称还没未填写');
+            return;
+        }
+        if (!resultUrl) {
+            _msg('您还未上传头像');
+            return;
+        }
+        if (!(wxcount || qq)) {
+            _msg('约会联系方式最少填写一种');
+            return;
+        }
+        if (!showDate.param.city) {
+            _msg('城市还没未填写');
+            return;
+        }
+        if (!showDate.param.offten_city) {
+            _msg('约会范围还未填写');
+            return;
+        }
+        if (!showDate.param.age) {
+            _msg('年龄还未填写');
+            return;
+        }
+        var data = {
+            user_id: userid,
+            phone: phone,
+            password: password,
+            send_code: send_code,
+            name: name,
+            wxcount: wxcount,
+            qq: qq,
+            self_slogan: self_slogan,
+        }
+        data = Object.assign(data, showDate.param);
+        _ajaxFile('register.php', function (ret, err) {
+            console.log(JSON.stringify(ret))
+            console.log(JSON.stringify(err))
+            if (ret.code == '200') {
+                _msg('提交成功')
+                var push = new Push();
+                push.setAlias(ret.ID);
+                $api.setStorage('userid', ret.ID);
+                _send('fresh');
+                _url({ slidBackEnabled: 0 }, 'index_win');
+                _send('firstLogin');
+            } else {
+                _msg(ret.msg);
+            }
+        }, data, { head: resultUrl })
+    }
+
+
+    // 滚动选择
+    function myScroll(ziduan, type, title, arr) {
+        var btnArr = [];
+        if (type == 1) { // 单选 规则
+            for (var i = arr[0]; i < arr[1]; i++) {
+                var obj = {
+                    "name": i
+                };
+                btnArr.push(obj);
+            }
+        } else if (type == 2) { // 多选
+            _url({ url: 'user/user_filter', title: '选择', arr: _paramObj[ziduan], ziduan: ziduan, winName: 'frame0/she_zhi_ji_ben_zi_liao_frame'})
+            return;
+        } else { // 单选 不规则
+            btnArr = _paramObj[ziduan];
+        }
+        openUIActionSelector(btnArr, {
+            col: 1,
+            title: title
+        }, function (ret, err) {
+            if (ret.eventType == 'ok') {
+                getUserFilter(ziduan, ret.level1)
+            }
+        })
+    }
+
+    // 选择胸围
+    function selectCup() {
+        var data = [];
+        for (var i = 30; i < 41; i++) {
+            var obj = {
+                "name": i,
+                "sub": []
+            };
+            // A-I 罩杯
+            for (var j = 0; j < 10; j++) {
+                obj.sub.push({
+                    "name": String.fromCharCode(65 + j)
+                })
+            }
+            data.push(obj);
+        }
+        openUIActionSelector(data, {
+            col: 2,
+            title: '胸围'
+        }, function (ret, err) {
+            if (ret.eventType == 'ok') {
+                console.log(JSON.stringify(ret))
+                showDate.param.bust = ret.level1;
+                showDate.param.cup = ret.level2;
+            }
+        })
+    }
+
+    // 选择城市
+    function selectCity(ziduan) {
+        var path = 'widget://res/city.json';
+        openUIActionSelector(path, {
+            col: 3,
+            title: '城市'
+        }, function (ret, err) {
+            if (ret.eventType == 'ok') {
+                console.log(ret.level2)
+                getUserFilter(ziduan, ret.level2)
+            }
+        })
+    }
+
+    // 修改
+    function getUserFilter(ziduan, value) {
+        showDate.param[ziduan] = value;
+    }
+</script>
+
+</html>

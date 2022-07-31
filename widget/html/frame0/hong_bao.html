@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <style>
+        html, body {
+            background: none;
+        }
+        .bg {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .wrap {
+            position: fixed;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .wrap .img {
+            position: relative;
+        }
+
+        .wrap img.red-bg {
+            width: 70vw;
+        }
+
+        .wrap img.red-click {
+            position: absolute;
+            width: 100px;
+            bottom: 10%;
+            left: 50%;
+            margin-left: -50px;
+        }
+
+        .close img {
+            margin-top: 20px;
+            width: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg"></div>
+    <div class="wrap flex-c flex-col">
+        <div class="img">
+            <img class="red-bg" src="../../image/icon/mp_bg_luckybag.png" alt="">
+            <img class="red-click" src="../../image/icon/mp_btn_openluckybag.png" alt="" onclick="openRed()">
+        </div>
+        <div class="close">
+            <img src="../../image/icon/close.png" alt="" onclick="closeFrame()">
+        </div>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script>
+    var id;
+    apiready = function(){
+        id = api.pageParam['id'];
+    }
+        
+    // 关闭
+    function closeFrame() {
+        api.closeFrame();
+    }
+
+    // 打开红包
+    function openRed() {
+        _ajax('home/privatechat/receive', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            var msg = ret.msg;
+            _msg(msg);
+            if(ret.code == 200){
+                
+                _url({id: id}, 'frame0/hong_bao_detail');
+                closeFrame();
+            }
+        }, {
+            chat_id: id,
+            user_id: $api.getStorage('userid'),
+        })
+    }
+</script>
+
+</html>

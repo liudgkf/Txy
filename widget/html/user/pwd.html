@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/login.css">
+    <style>
+        .login-bg {
+            padding: 10px 0;
+            width: 100vw;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="login-bg">
+        <div class="wrap">
+            <ul class="input-wrap w-bg">
+                <li class="li phone">
+                    <span class="name">+86</span>
+                    <input type="text" placeholder="请输入手机号">
+                </li>
+                <li class="li code">
+                    <span class="name">验证码</span>
+                    <input type="text" placeholder="请输入收到的验证码">
+                    <span class="get-code new-theme-color forget" data-status=0 tapmode onclick="getCode()">发送验证码</span>
+                </li>
+                <li class="li pwd">
+                    <span class="name">设置密码</span>
+                    <input type="password" placeholder="请设置登录密码">
+                </li>
+                <!-- <li class="li pwd2">
+                    <span>确认密码</span>
+                    <input type="password" placeholder="请再次输入密码">
+                </li> -->
+            </ul>
+            <button class="new-btn" tapmode onclick="submit()">立即重置</button>
+        </div>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/login.js"></script>
+<script src="../../script/code.js"></script>
+<script src="../../script/keyboard.js"></script>
+<script src="../../script/push.js"></script>
+<script>
+    // 下一步
+    function submit() {
+
+        var phone = $.trim($('.phone input').val());
+        var pwd = $.trim($('.pwd input').val());
+        // var pwd2 = $.trim($('.pwd2 input').val());
+        var code = $.trim($('.code input').val());
+        if (!checkMobile(phone)) {
+            _msg('请输入正确的手机号');
+            return;
+        }
+        if (!(pwd && pwd.length >= 6)) {
+            _msg('密码不能为空并且不少于6位');
+            return;
+        }
+        // if (pwd != pwd2) {
+        //     _msg('两次密码不一致');
+        //     return;
+        // }
+        if (!phone) {
+            _msg('手机号未填写');
+            return;
+        }
+        if (!code || code != yzCode || phone != yzPhone) {
+            _msg('验证码不正确');
+            return;
+        }
+
+        _ajax('change_password.php', function(ret, err){
+            if(ret && ret.code == 200){
+                _msg('修改密码成功');
+                _login()
+            }else{
+                _msg(ret.msg);
+            }
+        }, {
+            phone: phone,
+            password: pwd,
+        })
+        
+    }
+</script>
+</html>

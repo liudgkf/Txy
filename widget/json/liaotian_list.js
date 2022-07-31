@@ -1,0 +1,101 @@
+var retJson = {
+    "code": 200,
+    "result": [{
+        "userid": "42000896",
+        "id": "238",
+        "content": "你你你你斯柯达福建省放假啊你你你你斯柯达福建省放假啊你你你你斯柯达福建省放假啊你你你你斯柯达福建省放假啊",
+        "touserid": "42000896",
+        "status": 0,
+        "state": null,
+        "addtime": "2020-03-20 22:47:57",
+        "name": "浮生若梦",
+        "sumb_headimg": "20200312/2e9b124e3589f56005f2f68cecc0efaf.jpg",
+        "count": "0",
+        "type": 0
+    }, {
+        "userid": "42001172",
+        "id": "237",
+        "content": "999",
+        "touserid": "42001172",
+        "status": 3,
+        "state": null,
+        "addtime": "2020-03-20 21:02:27",
+        "name": "六六",
+        "sumb_headimg": "20200312/a7e52453936b5238ee558f9a6738285c.jpg",
+        "count": "0",
+        "type": 0
+    }, {
+        "userid": "42001410",
+        "id": "236",
+        "content": "啊",
+        "touserid": "42001410",
+        "status": null,
+        "state": null,
+        "addtime": "2020-03-20 20:56:47",
+        "name": "简简单单",
+        "sumb_headimg": "20200320/205424sa7fyvd2.jpg",
+        "count": "0",
+        "type": 0
+    }, {
+        "userid": "42000908",
+        "id": "235",
+        "content": "987",
+        "touserid": "42000908",
+        "status": null,
+        "state": null,
+        "addtime": "2020-03-20 20:13:08",
+        "name": "飘渺",
+        "sumb_headimg": "20200312/7e19dc9ba620149708c9258b6f331571.jpg",
+        "count": "0",
+        "type": 0
+    }, {
+        "userid": "42001417",
+        "id": "230",
+        "content": "123456789",
+        "touserid": "42001417",
+        "status": null,
+        "state": null,
+        "addtime": "2020-03-20 17:40:46",
+        "name": "测试女性",
+        "sumb_headimg": "20200319/1c36aa3f1242a02f41d867a3f5021b65.jpg",
+        "count": "0",
+        "type": 0
+    }, {
+        "userid": "42000897",
+        "id": "187",
+        "content": "1233",
+        "touserid": "42000897",
+        "status": null,
+        "state": null,
+        "addtime": "2020-03-20 16:48:48",
+        "name": "八级大狂风",
+        "sumb_headimg": "20200312/2e074fffb663726060e8bf2eab5f38bb.jpg",
+        "count": "0",
+        "type": 0
+    }, {
+        "userid": "42000898",
+        "id": "168",
+        "content": "你好",
+        "touserid": "42000898",
+        "status": null,
+        "state": null,
+        "addtime": "2020-03-18 16:12:35",
+        "name": "逸",
+        "sumb_headimg": "20200312/844ecfabab88670283dd910dbcbf9e69.jpg",
+        "count": "0",
+        "type": 0
+    }, {
+        "userid": "42000899",
+        "id": "166",
+        "content": "KK",
+        "touserid": "42000899",
+        "status": null,
+        "state": null,
+        "addtime": "2020-03-18 16:05:19",
+        "name": "王南",
+        "sumb_headimg": "20200312/3b602ea9ecb5033bc8705ba464a86ad8.jpg",
+        "count": "0",
+        "type": 0
+    }],
+    "count": 0
+}

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui_font.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/news.css" />
+    <style>
+        .top {
+            width: 100%;
+            height: 120px;
+            text-align: center;
+        }
+
+        .top p:first-child {
+            padding-top: 35px;
+            color: #787878;
+        }
+
+        .top p:last-child {
+            font-size: 25px;
+            font-weight: 600;
+            line-height: 40px;
+        }
+
+        .list {
+            background: white;
+        }
+
+        .list ul li {
+            display: flex;
+            padding-left: 8px;
+            font-size: 14px;
+            line-height: 3;
+            color: #484848;
+            border-bottom: 1px solid #f1f1f1;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .list ul li i {
+            margin-right: 5px;
+        }
+
+        .header {
+            display: flex;
+            border-bottom: 1px solid #ccc;
+            background: #fff;
+            line-height: 2.8em;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .header .hd {
+            flex: 1;
+            border-bottom: 2px solid transparent;
+        }
+
+        .header .current {
+            border-color: #9a78ea;
+            color: #9a78ea;
+        }
+
+        .m-content {
+            background: #fff;
+            font-size: 14px;
+            padding: 18px 16px 0 16px;
+        }
+
+        .money {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            padding: 26px 0;
+            border-bottom: 1px solid #f1f1f1;
+            font-size: 15px;
+            color: #180a33;
+            font-weight: bold;
+        }
+
+        .money_size {
+            font-size: 24px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            text-align: center;
+            width: 100%;
+            background: #fff;
+            line-height: 2;
+            color: #000000;
+            ;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .js-part2 {
+            display: none;
+        }
+
+        /*.list ul .js-part2{display: none;}*/
+        
+       footer>div {
+           width: 50vw;
+           background: #f7f6fb;
+           padding-top: 15px;
+           font-size: 14px;
+       }
+        footer img {
+            width: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="view" v-cloak>
+        <section class="m-content">
+            <p class="js-part1" style="color: #000000;;">
+                每当有人付费查看你的相册或向你发红包，所得收益会进入到钱包。每当你举报女士用户成功，系统都会自动把你查看该女士相册或联系方式的费用退回到这里。你可以随时提现（处理时间2
+                个工作日内），提现将收取10%手续费。</p>
+            <div class="money">
+                <div class="part js-part1">
+                    <p>账户余额</p>
+                    <p><span class="money_size" id="myMoney">{{myMoney}}</span>元</p>
+                </div>
+                <div class="part js-part1">
+                    <p>可提现</p>
+                    <p><span class="money_size" id="txMoney">{{myMoney}}</span>元</p>
+                </div>
+            </div>
+            <div class="list">
+                <ul>
+                    <li class="js-part1 zfb" onclick="changePay();">
+                        <span>支付宝账号：</span>
+                        <div>
+                            <span class="font-s" v-if="ffInfo.zhifucount == 'null'">立即绑定</span>
+                            <span class="font-s" v-if="ffInfo.zhifucount != 'null'">{{ffInfo.zhifucount}}</span>
+                            <i class="aui-iconfont aui-icon-right"></i>
+                        </div>
+                    </li>
+                    <li class="js-part1" @click="_url({url:'frame4/chong_zhi_ji_lu_frame', title:'充值记录'})">
+                        <span>充值记录</span>
+                        <i class="aui-iconfont aui-icon-right"></i>
+                    </li>
+                    <li class="js-part1" @click="_url({url:'frame4/ti_xian_ji_lu_frame', title:'提现记录'})">
+                        <span>提现记录</span>
+                        <i class="aui-iconfont aui-icon-right"></i>
+                    </li>
+                    <li class="js-part1" @click="_url({url:'frame4/gou_mai_ji_lu_frame', title:'购买记录'})">
+                        <span>购买记录</span>
+                        <i class="aui-iconfont aui-icon-right"></i>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <footer class="footer">
+            <div style="border-right: 1px solid #fff;" class="flex-col flex-c" @click="_url({url: 'frame4/chong_zhi_fu_wu_frame', title:'充值'})">
+                <img src="../../image/chong.png" alt="">
+                充值
+            </div>
+            <div class="flex-col flex-c" onclick="tixian()">
+                <img src="../../image/tixian.png" alt="">
+                提现
+            </div>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery_min.js"></script>
+<script type="text/javascript" src="../../script/ffkj.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript">
+    var view = new Vue({
+        el: '#view',
+        data: {
+            imgurl: imgurl,
+            ffList: [],
+            ffInfo: {},
+            myMoney: 0
+        },
+        methods: {
+            _url: function (param, url) {
+                _url(param, url);
+            },
+
+        }
+    })
+    apiready = function () {
+        // 提现/充值后 刷新用户余额
+        _listener('money_get', function(ret){
+            getMyMoney();
+        })
+       
+        // 刷新用户信息 重新获取提现信息
+        _listener('pay_refresh', function () {
+            getMyMoney();
+        })
+
+        getMyMoney();
+    };
+
+    // 获取余额
+    function getMyMoney() {
+        _ajax('user_volley.php', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret && ret.code == 200) {
+                view.myMoney = ret.volley;
+                getUserInfo();
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+        })
+    }
+
+
+    // 获取提现账号信息
+    function getUserInfo() {
+        _ajax('user_info.php', function (ret, err) {
+            if (ret && ret.code == 200) {
+                view.ffInfo = ret.result;
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+            longitude: $api.getStorage('lon'),
+            latitude: $api.getStorage('lat')
+        })
+        
+    }
+
+    // 打开提现窗口
+    function tixian(){
+        if(!view.ffInfo.zhifucount || !parseInt(view.ffInfo.paypwd)){
+            changePay();
+            return;
+        }
+        _url({url:'frame4/ti_xian_frame', title: '提现'})
+    }
+
+    // 修改提现信息
+    function changePay() {
+        if (!parseInt(view.ffInfo.paypwd)) {
+            showDetail('frame4/paypwd', {
+                phone: view.ffInfo.phone
+            });
+        } else {
+            showDetail('frame4/change_pay', {
+                zhifuname: view.ffInfo.zhifuname,
+                zhifucount: view.ffInfo.zhifucount
+            });
+        }
+    }
+</script>
+
+</html>

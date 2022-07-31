@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/api.css">
+    <link rel="stylesheet" href="../css/news.css">
+    <link rel="stylesheet" href="../css/aui_font.css">
+    <style>
+        header {
+            background: #000000;
+            color: #ffffff;
+        }
+        .title {
+            font-size: 18px;
+        }
+        
+    </style>
+</head>
+<body>
+    <header>
+        <div class="head new-padding-10 flex-c">
+            <div class="title"></div>
+        </div>
+    </header>
+</body>
+<script src="../script/api.js"></script>
+<script src="../script/ffkj.js"></script>
+<script>
+    var moreType = 0;
+    apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+        $api.text($api.dom('.title'), api.pageParam['title']);
+        if(api.pageParam['keyback'] == 1){
+            keyback();
+        }else{
+            _listener('keyback', function(){
+                _closeToWin();
+            })
+        }
+        _openFrame(api.pageParam['url'], '', '1', api.pageParam);
+    }
+        
+</script>
+</html>

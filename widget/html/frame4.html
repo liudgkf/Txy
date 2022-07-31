@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/api.css">
+    <link rel="stylesheet" href="../css/news.css">
+    <style>
+        html,
+        body {
+            background: #eee;
+        }
+
+        .top {
+            /* background: linear-gradient(-24deg, #9965ff, 10%, #160932); */
+            /* background: linear-gradient(-24deg, #000000, 10%, #160932); */
+            background: #fff;
+            color: #ba9fe8;
+            font-size: 14px;
+            line-height: 25px;
+        }
+
+        .top .tip.font-s {
+            /* color: #000000; */
+            color: #789092;
+            /* text-shadow: 0px 1px 1px orange; */
+        }
+        .top .tip span {
+            background: #e5f3f3;
+            border-radius: 20px;
+            padding: 0 10px;
+        }
+        .top .t-list {
+            margin-bottom: 10px;
+        }
+        .title {
+            line-height: 40px;
+            /* color: #757575; */
+            color: #000000;
+            font-size: 14px;
+        }
+
+        .w-bg {
+            background: #fff;
+        }
+
+        /* vip套餐 */
+        .vip-wrap {
+            display: -webkit-box;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .v-list {
+            border-radius: 5px;
+            box-shadow: 0 1px 7px 0 rgba(0, 0, 0, 0.5);
+            margin: 0 10px;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .v-list.active {
+            box-shadow: 0 1px 7px 0 #673ab7;
+            border: 3px solid #673ab7;
+            color: #673ab7;
+        }
+
+        .v-list .time {
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 50px;
+        }
+
+        .hot {
+            position: absolute;
+            right: 0;
+            top: 5px;
+            background: red;
+            color: #fff;
+            border-radius: 3px 0 0 3px;
+            padding: 1px 5px;
+            font-size: 10px;
+        }
+
+        /* 支付方式 */
+        .p-list {
+            display: flex;
+            align-items: center;
+            padding: 20px 0;
+            margin: 0 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            color: #555555;
+        }
+
+        .p-list:last-child {
+            border-bottom: none;
+        }
+
+        .p-list.active {
+            background-image: url('../image/select4.png');
+            background-repeat: no-repeat;
+            background-size: 20px 20px;
+            background-position: 100% center;
+        }
+
+        .p-list img {
+            width: 20px;
+            margin-right: 10px;
+        }
+
+        .submit {
+            width: calc(100vw - 20px);
+            margin: 20px 10px;
+            line-height: 40px;
+            background: #673ab7;
+            color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 1px 7px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .zhanwei {
+            width: 5px;
+            height: 50px;
+        }
+
+        /* 头部 */
+        header {
+            background: #FAEED1;
+            color: #B6A580;
+            font-size: 12px;
+            text-align: center;
+            padding: 7px 0;
+            position: sticky;
+            top: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="view" v-cloak>
+        <header v-if="userInfo.is_vip > 0">您已开通会员，有效期至{{userInfo.vip_end_datetime}}</header>
+        <div class="top new-padding-10">
+            <!-- <p class="title" style="color: #f3f3f3;">会员特权</p> -->
+            <p class="title">会员特权</p>
+            <ul class="tip font-s">
+                <li class="t-list"> <span>看的更多</span> 每天不限次数查看女士</li>
+                <li class="t-list"> <span>看的更省</span> 每天10次免费机会查看付费相册或联系方式</li>
+                <li class="t-list"> <span>看的更久</span> 每天阅后即焚照片的时间从2秒提升到6秒</li>
+                <li class="t-list"> <span>约的更爽</span> 免费发布节目广播</li>
+            </ul>
+        </div>
+        <p class="title new-padding-lr-10">选择套餐</p>
+        <div class="vip-wrap-bg w-bg new-padding-10">
+            <ul class="vip-wrap ">
+                <li class="v-list" :class="{'active': index == 2}" v-for="(m, index) in ffInfo" @click="selectVip(m, $event)">
+                    <span class="name">{{ m.vip_name }}</span>
+                    <span class="time">{{ m.chang }}</span>
+                    <div class="money"><b>{{ (m.pingjun).toFixed(2) }}</b>元/月</div>
+                    <span class="hot" v-if="m.hot == 1">推荐</span>
+                </li>
+                <span class="zhanwei"></span>
+                <!-- <li class="v-list" >
+                    <span class="name">会员</span>
+                    <span class="time">一个月</span>
+                    <div class="money"><b>99</b>元/月</div>
+                    <span class="hot">hot</span>
+                </li> -->
+            </ul>
+        </div>
+        <p class="title new-padding-lr-10">支付方式</p>
+        <ul class="pay-wrap w-bg">
+            <li class="p-list  active" data-type=2 onclick="selectPay(this)">
+                <img src="../image/pay/wx.png" alt="">
+                <span>微信支付</span>
+            </li>
+            <li class="p-list coin" data-type=0 onclick="selectPay(this)">
+                <img src="../image/pay/yue.png" alt="">
+                <span>零钱支付</span>
+            </li>
+            <!--  <li class="p-list zfb" data-type=1  onclick="selectPay(this)">
+                <img src="../image/pay/zfb.png" alt="">
+                <span>支付宝支付</span>
+            </li>-->
+
+            <li class="p-list">
+                <span>支付金额: <b style="color: #673ab7;">{{ vipObj.vip_price }}</b> 元</span>
+            </li>
+        </ul>
+        <button class="submit" onclick="submit()">立即购买</button>
+    </div>
+
+</body>
+<script src="../script/api.js"></script>
+<script src="../script/jquery_min.js"></script>
+<script src="../script/vue.js"></script>
+<script src="../script/ffkj.js"></script>
+<script src="../script/zhifu.js"></script>
+<script>
+    var regType;
+    var showDate = new Vue({
+        el: '#view',
+        data: {
+            ffInfo: {}, // vip 套餐列表
+            vipObj: {}, // 选择的vip类型
+            userInfo: {}, // 用户资料
+        },
+        methods: {
+            _url: function (pageParam, url, login) {
+                _url(pageParam, url, login);
+            },
+            // 选择套餐类型
+            selectVip: function (vip, event) {
+                var _this = this;
+                _this.vipObj = vip;
+                var e = event.currentTarget;
+                $(e).addClass('active').siblings().removeClass('active');
+            },
+
+        }
+    })
+
+    apiready = function () {
+        // 若是注册时购买会员 隐藏余额支付
+        regType = api.pageParam['type'];
+        if (regType) {
+            $('.coin').remove();
+            $('.zfb').addClass('active');
+        }
+        getVip();
+        getUserInfo();
+    }
+
+
+    // 获取用户信息
+    function getUserInfo() {
+        _ajax('user_info.php', function (ret, err) {
+            console.log(JSON.stringify(ret))
+            if (ret && ret.code == 200) {
+                showDate.userInfo = ret.result;
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+            longitude: $api.getStorage('lon'),
+            latitude: $api.getStorage('lat')
+        })
+    }
+
+
+    // 确定
+    function submit() {
+        var index = $('.pay-wrap .active').attr('data-type'); // 0零钱 1支付宝 2微信
+        console.log(index);
+        if (regType) {
+            buyRegVip(index)
+        } else {
+            buyVip(index)
+        }
+    }
+    // 获取订单号 登录后购买会员
+    function buyVip(index) {
+        _ajax('Home/User/vip_buy', function (ret, err) {
+            console.log(JSON.stringify(ret))
+            console.log(JSON.stringify(err))
+            if (ret && ret.code == 200) {
+                getPay(index, ret.vip_order);
+            } else {
+                _msg(ret.result)
+            }
+        }, {
+            type: showDate.vipObj.type,
+            user_id: $api.getStorage('userid'),
+            price: showDate.vipObj.vip_price,
+            leixing: index,
+        })
+    }
+
+    // 获取订单号 注册时购买会员
+    function buyRegVip(index) {
+        var phone = api.pageParam['phone'];
+        var password = api.pageParam['password'];
+        _ajax('Home/User/regvip', function (ret, err) {
+            if (ret.code == 200) {
+                getPay(index, ret.vip_order);
+            }
+        }, {
+            phone: phone,
+            password: password,
+        })
+    }
+
+    // 调起支付
+    function getPay(index, ordernum) {
+        _loading();
+        var notifyurl = base_url + 'apis/pay/notify.php?type=2';
+        var url = 'http://www.fondfell.com/pays/addo.php';
+        _ajaxOrign(url, function (ret, err) {
+            var pays = new pay(showDate.vipObj.vip_price, ordernum, base_url + 'apis/', 2);
+            if (index == 0) {
+                _loadingClose();
+                if (ret && ret.code == 200) {
+                    _msg(ret.msg);
+                    paySuccess();
+                } else if (ret.code == 201) {
+                    _msg('余额不足');
+                }
+            } else if (index == 1) {
+                pays.zhifubao(function (win) {
+                    _loadingClose();
+                    if (win) {
+                        _msg('支付成功');
+                        paySuccess();
+                    } else {
+                        _msg('支付失败');
+                    }
+                });
+            } else if (index == 2) {
+                pays.weixinzhifu(function (win) {
+                    _loadingClose();
+                    if (win) {
+                        _msg('支付成功');
+                        paySuccess();
+                    } else {
+                        _msg('支付失败');
+                    }
+                });
+            }
+        }, {
+            money: showDate.vipObj.vip_price,
+            user_id: 8,
+            shopnum: ordernum,
+            notifyurl: notifyurl
+        })
+    }
+
+    // 支付成功后 处理
+    function paySuccess() {
+        // 返利
+        _ajax('reward_rebate.php', function (ret, err) {}, {
+            z_id: $api.getStorage('userid'),
+            money: showDate.vipObj.vip_price,
+        })
+        if (regType) {
+            // 注册购买 成功后跳转到设置个人资料
+            var phone = api.pageParam['phone'];
+            var password = api.pageParam['password'];
+            _url({
+                url: 'frame0/she_zhi_ji_ben_zi_liao_frame',
+                title: '完善资料',
+                phone: phone,
+                password: password,
+                send_code: '会员'
+            })
+        } else {
+            _send('fresh');
+            timerWin();
+        }
+    }
+
+    // 获取套餐列表
+    function getVip() {
+        _ajax('home/user/vipstyle', function (ret, err) {
+            if (ret.code == 200) {
+                showDate.ffInfo = ret.data;
+                showDate.vipObj = showDate.ffInfo[2];
+            }
+        })
+    }
+
+    // 选择支付方式
+    function selectPay(obj) {
+        $(obj).addClass('active').siblings().removeClass('active');
+    }
+</script>
+
+</html>

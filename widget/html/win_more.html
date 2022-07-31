@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/news.css">
+    <link rel="stylesheet" href="../css/aui_font.css">
+    <style>
+        header {
+            background: #000000;
+            color: #fff;
+        }
+        .title {
+            font-size: 16px;
+        }
+        .left img {
+            width: 25px;
+            height: 25px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="head flex-bt new-padding-10">
+            <div class="left" tapmode onclick="_closeToWin()"><img src="../image/back2.png" alt=""></div>
+            <div class="title"></div>
+            <div class="right flex-c" tapmode onclick="gomore()"></div>
+        </div>
+    </header>
+</body>
+<script src="../script/api.js"></script>
+<script src="../script/jquery_min.js"></script>
+<script src="../script/ffkj.js"></script>
+<script>
+    apiready = function(){
+        if(api.pageParam['title']){
+            $api.html($api.dom('.title'), api.pageParam['title']);
+        }
+        if(api.pageParam['moreTitle']){
+            $('.right').text(api.pageParam['moreTitle'])
+        }else{
+            $('.right').html('<i class="aui-iconfont aui-icon-more"></i>');
+        }
+        _openFrame(api.pageParam['url'], '', '1', api.pageParam);
+    }
+
+    // 更多按钮
+    function gomore(){
+        api.execScript({
+            frameName: api.pageParam['url'],
+            script: 'gomore()'
+        })
+    }
+</script>
+</html>

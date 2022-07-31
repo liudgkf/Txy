@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/api.css">
+    <link rel="stylesheet" href="../css/news.css">
+    <!-- <link rel="stylesheet" href="../css/aui_font.css"> -->
+    <style>
+        header {
+            background: #fff;
+            color: #000;
+        }
+
+        header .aui-iconfont {
+            font-size: 20px;
+            /* font-weight: bold; */
+        }
+
+        .title {
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .left {
+            position: absolute;
+            left: 10px;
+            font-size: 12px;
+        }
+        .back {
+            width: 10vw;
+            text-align: center;
+        }
+        .back img {
+            width: 8px;
+            margin-right: 20px;;
+        }
+
+        .more {
+            font-size: 12px;
+            border: 1px solid #aaa;
+            color: #aaa;
+            border-radius: 3px;
+            font-weight: normal;
+            padding: 2px;
+            position: absolute;
+            right: 10px;
+        }
+        .more.active {
+            border: 1px solid #8962d0;
+            color: #8962d0;
+        }
+        .post-btn {
+            color:#8962d0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="head new-padding-10 flex-c">
+            <!-- <div class="back" tapmode onclick="_closeToWin()"><i class="aui-iconfont aui-icon-left"></i></div> -->
+            <div class="left flex">
+                <div class="back" tapmode onclick="_closeToWin()"><img src="../image/icon/back.png" alt=""></div>
+                <button class="post-btn" onclick="selectPost()">发布</button>
+            </div>
+            <div class="title"></div>
+            <div class="more " onclick="_more()">仅显示在线用户</div>
+        </div>
+    </header>
+</body>
+<script src="../script/api.js"></script>
+<script src="../script/ffkj.js"></script>
+<script src="../script/jquery_min.js"></script>
+<script>
+    var moreType = 0;
+    apiready = function () {
+        $api.fixStatusBar($api.dom('header'));
+        $api.text($api.dom('.title'), api.pageParam['title']);
+        if (api.pageParam['keyback'] == 1) {
+            keyback();
+        } else {
+            _listener('keyback', function () {
+                _closeToWin();
+            })
+        }
+        _openFrame(api.pageParam['url'], '', '1', api.pageParam);
+    }
+
+    // 选择发布的类型
+    function selectPost() {
+        var buttons = ['发动态', '发活动'];
+        var urlArr = ['frame1/fa_dong_tai', 'frame1/fa_bu_yue_hui']
+        _action('', buttons, function (index) {
+            if (index != (buttons.length + 1)) {
+                _url({
+                    type: index - 1,
+                    url: urlArr[index - 1],
+                    title: '发布'
+                });
+            }
+        })
+    }
+
+    // 显示在线
+    function _more(){
+        $('.more').toggleClass('active');
+        api.execScript({
+            frameName: api.pageParam['url'],
+            script: 'showOnLine()'
+        })
+    }
+</script>
+
+</html>

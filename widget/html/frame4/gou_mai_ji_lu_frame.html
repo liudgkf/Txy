@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/news.css"/>
+    <style>
+    	ul li{
+    		width:89%;
+    		padding:2% 3%;
+    		margin:0 auto;
+    		background:white;
+    		margin-top:10px;
+    		font-size:14px;
+    	}
+    	ul li .top,ul li .foot{
+    		line-height:35px;
+    		border-bottom:1px dotted #D1D1D1;
+    		color:#565656;
+    	}
+     	ul li .time{
+    		float:right;
+    	}
+    	ul li .middle{
+    		padding:8px 0;
+    	}
+    	ul li .middle p:first-child{
+    		font-size:12px;
+    		color:#828282;
+    		line-height:20px;
+    		display:inline;
+    	}
+    	ul li .middle p:last-child{
+    		font-size:14px;
+    		color:#FC6B49;
+    		font-weight:600;
+    	}
+    	ul li .foot{
+    		border-top:1px dotted #D1D1D1;
+    		border-bottom:0;
+    		color:#828282;
+    	}
+
+    	.null{
+    		width:100%;
+    		text-align:center;
+    		margin:55px auto 0;
+    	}
+    	.null img{
+    		width:55%;
+    	}
+    	.null p{
+    		width:100%;
+    		text-align:center;
+    		line-height:35px;
+    		color:#484848;
+    	}
+    	
+    	#no_more,.load_more{
+    		text-align:center;
+    		line-height:35px;
+    		color:#787878;
+    		font-size:14px;
+    	}
+    </style>
+</head>
+<body>
+	<div class="content" id="view" v-cloak>
+		<ul>
+			<li v-for="(i, index) in ffList">
+				<div class="top"><span>{{ i.state }}</span><span class="time">{{ i.time }}</span></div>
+				<div class="middle">
+					<p>{{ i.content }}</p>
+					<p>￥{{ i.price }}</p>
+				</div>
+				<div class="foot">
+					支付方式：{{ i.type }}
+				</div>
+			</li>
+		</ul>
+	</div>
+	<div id="no_more">没有更多了</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery_min.js"></script>
+<script type="text/javascript" src="../../script/ffkj.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript">
+	var view = new Vue({
+		el : '#view',
+		data : {
+			ffList : [],
+		}
+	});
+	apiready = function(){
+		var param = {user_id: $api.getStorage('userid')};
+        _shangla(function () {
+            _lists('user_pay.php', 0, 1, param);
+        })
+
+        _scrollToBottom(function(){
+            if(heigutgao == 1){
+                pagenum++;
+                _lists('user_pay.php', pagenum, '', param);
+            }
+        })
+
+    }
+</script>
+</html>

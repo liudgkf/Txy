@@ -1,0 +1,127 @@
+.login-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: calc(100vw - 20px);
+    height: 100vh;
+    /* background-image: url('../image/login_bg.png'); */
+    /* background-color: #051D3B; */
+    background-color: #EEEFF1;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    padding: 10px;
+    font-size: 14px;
+    overflow-y: auto;
+}
+
+.new-btn {
+    /* border: 1px solid #03A9F4;; */
+    /* border: 1px solid #AAA;; */
+}
+
+/* 第三方登录 */
+.other-login {
+    position: fixed;
+    bottom: 10vw;
+    width: calc(100vw - 20px);
+}
+.line-wrap {
+    position: relative;
+}
+.line {
+    width: 30%;
+    height: 1px;
+    background: #CCCCCC;
+}
+.line-wrap .tip {
+    /* color: #ffffff; */
+    /* color: #000; */
+    color: #999999;
+    font-size: 12px;
+    padding: 0 20px;
+}
+
+.login-img img {
+    /* width: 30px;
+    margin-top: 30px; */
+    width: 36px;
+    margin: 15px 10px;
+    border-radius: 50%;
+}
+
+/* 登录input */
+.input-wrap .li{
+   border-bottom: 1px solid #eee; 
+   /* color: #eee; */
+   color: #000;
+   padding: 10px;
+   display: flex;
+   align-items: center;
+   position: relative;
+}
+.input-wrap .li span {
+    width: 80px;
+}
+.input-wrap .li span.name {
+    font-weight: bold;
+    font-size: 12px;
+}
+.input-wrap .li input {
+    padding: 10px 0;
+    padding-left: 10px;
+    /* color: #eee; */
+    color: #000;
+    font-size: 12px;
+    width: 100%;
+}
+.input-wrap .li input::placeholder {
+    color: #AEB3B7;
+    font-size: 12px;
+}
+.input-wrap .li.footer {
+    background: #AAA;
+    border-bottom: none;
+    padding: 5px 10px;
+}
+.input-wrap .li.footer span {
+    width: auto;
+}
+/* 忘记密码 */
+.input-wrap .forget {
+    position: absolute;
+    right: 10px;
+    text-align: right;
+    font-size: 12px;
+}
+
+
+/* 协议 */
+.xieyi {
+    /* color: #eee; */
+    color: #999999;
+    font-size: 12px;
+}
+.xieyi a {
+    color: #2196f3;
+}
+.box {
+    width: 15px;
+    height: 15px;
+    margin-right: 10px;
+    border: 1px solid #aaa;
+}
+.check .box {
+    background-image: url('../image/select.png');
+    background-repeat: no-repeat;
+    background-color: #000000;
+    background-size: 100% 100%;
+}
+
+/* 下一步 */
+.next-btn {
+    background: rgba(250, 159, 202, 0.2);
+    /* color: #fff; */
+    color: #000;
+    border: 1px solid ;
+  
+}

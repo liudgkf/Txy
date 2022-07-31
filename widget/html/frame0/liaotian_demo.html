@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <link href="../../css/liaotian/mui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="../../css/liaotian/app.css" />
+    <link href="../../css/liaotian/mui.imageviewer.css" rel="stylesheet" />
+    <link href="../../css/liaotian/main.css" rel="stylesheet" />
+    <link href="../../css/liaotian/reset.css" rel="stylesheet" />
+    <style>
+        html,
+        body {
+            margin: 0px;
+            padding: 0px;
+            height: 100%;
+            overflow: hidden;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            background: #f7f7f7;
+        }
+
+        footer {
+            position: fixed;
+            width: 100%;
+            min-height: 50px;
+            border-top: solid 1px #bbb;
+            left: 0px;
+            bottom: 0px;
+            overflow: hidden;
+            z-index: 1515151515;
+            background-color: #fafafa;
+        }
+
+        .footer-left {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 100%;
+            padding: 12px 4px;
+        }
+
+        .footer-right {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            right: 0px;
+            bottom: 0px;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 100%;
+            padding: 12px 5px;
+            display: inline-block;
+        }
+
+        .footer-center {
+            height: 100%;
+            padding: 5px 0px;
+            margin-left: 100px;
+            margin-right: 50px;
+        }
+
+        .footer-center [class*=input] {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .footer-center .input-text {
+            background: #fff;
+            border: solid 1px #ddd;
+            padding: 10px;
+            font-size: 16px !important;
+            line-height: 18px !important;
+            font-family: verdana !important;
+            overflow: hidden;
+        }
+
+        .footer-center .input-sound {
+            background-color: #eee;
+        }
+
+        .mui-content {
+            height: 100%;
+            padding: 0px 0px 50px 0px;
+            background-color: #f7f7f7;
+            overflow: hidden;
+        }
+
+        #msg-list {
+            height: 100%;
+            overflow: scroll;
+        }
+
+        #msg-list::-webkit-scrollbar {
+            display: block;
+            background-color: #f5f5f5;
+        }
+
+        .msg-item {
+            padding: 8px;
+            clear: both;
+            list-style: none;
+        }
+
+        .msg-item .mui-item-clear {
+            clear: both;
+        }
+
+        .msg-item .msg-user {
+            width: 38px;
+            height: 38px;
+            border: solid 1px #d3d3d3;
+            display: inline-block;
+            background: #fff;
+            border-radius: 3px;
+            vertical-align: top;
+            text-align: center;
+            float: left;
+            color: #ddd;
+        }
+
+        .msg-item .msg-user-img {
+            width: 38px;
+            height: 38px;
+            display: inline-block;
+            border-radius: 3px;
+            vertical-align: top;
+            text-align: center;
+            float: left;
+            color: #ddd;
+        }
+
+        .msg-item .msg-content {
+            display: inline-block;
+            border-radius: 5px;
+            border: solid 1px #d3d3d3;
+            background-color: #fff;
+            color: #333;
+            padding: 8px;
+            vertical-align: top;
+            font-size: 15px;
+            position: relative;
+            margin: 0px 8px;
+            max-width: 75%;
+            min-width: 35px;
+            float: left;
+        }
+
+        .msg-item .msg-content .msg-content-inner {
+            overflow-x: hidden;
+        }
+
+        .msg-item .msg-content .msg-content-arrow {
+            position: absolute;
+            border: solid 1px #d3d3d3;
+            border-right: none;
+            border-top: none;
+            background-color: #fff;
+            width: 10px;
+            height: 10px;
+            left: -5px;
+            top: 12px;
+            -webkit-transform: rotateZ(45deg);
+            transform: rotateZ(45deg);
+        }
+
+        .msg-item-self .msg-user,
+        .msg-item-self .msg-content {
+            float: right;
+        }
+
+        .msg-item-self .msg-content .msg-content-arrow {
+            left: auto;
+            right: -5px;
+            -webkit-transform: rotateZ(225deg);
+            transform: rotateZ(225deg);
+        }
+
+        /* 信息框颜色 */
+        .msg-item-self .msg-content,
+        .msg-item-self .msg-content .msg-content-arrow {
+            background-color: #fff;
+            color: #000;
+            border-color: #fff;
+            /* background-color: #9eea6a;
+            color: #000;
+            border-color: #9eea6a; */
+        }
+
+
+
+        footer .mui-icon {
+            color: #0CC567;
+        }
+
+        footer .mui-icon:active {
+            color: #007aff !important;
+        }
+
+        footer .mui-icon-paperplane:before {
+            content: "发送";
+        }
+
+        footer .mui-icon-paperplane {
+            /*-webkit-transform: rotateZ(45deg);
+            transform: rotateZ(45deg);*/
+            font-size: 16px;
+            word-break: keep-all;
+            line-height: 100%;
+            padding-top: 6px;
+            color: rgba(0, 135, 250, 1);
+        }
+
+        #msg-sound {
+            -webkit-user-select: none !important;
+            user-select: none !important;
+        }
+
+        .rprogress {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 140px;
+            height: 140px;
+            margin-left: -70px;
+            margin-top: -70px;
+            background-image: url(../images/arecord.png);
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 30px 30px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 5px;
+            display: none;
+            -webkit-transition: .15s;
+        }
+
+        .rschedule {
+            background-color: rgba(0, 0, 0, 0);
+            border: 5px solid rgba(0, 183, 229, 0.9);
+            opacity: .9;
+            border-left: 5px solid rgba(0, 0, 0, 0);
+            border-right: 5px solid rgba(0, 0, 0, 0);
+            border-radius: 50px;
+            box-shadow: 0 0 15px #2187e7;
+            width: 46px;
+            height: 46px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-left: -23px;
+            margin-top: -23px;
+            -webkit-animation: spin 1s infinite linear;
+            animation: spin 1s infinite linear;
+        }
+
+        .r-sigh {
+            display: none;
+            border-radius: 50px;
+            box-shadow: 0 0 15px #2187e7;
+            width: 46px;
+            height: 46px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-left: -23px;
+            margin-top: -23px;
+            text-align: center;
+            line-height: 46px;
+            font-size: 40px;
+            font-weight: bold;
+            color: #2187e7;
+        }
+
+        .rprogress-sigh {
+            background-image: none !important;
+        }
+
+        .rprogress-sigh .rschedule {
+            display: none !important;
+        }
+
+        .rprogress-sigh .r-sigh {
+            display: block !important;
+        }
+
+        .rsalert {
+            font-size: 12px;
+            color: #bbb;
+            text-align: center;
+            position: absolute;
+            border-radius: 5px;
+            width: 130px;
+            margin: 5px 5px;
+            padding: 5px;
+            left: 0px;
+            bottom: 0px;
+        }
+
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .cancel {
+            background-color: darkred;
+        }
+
+        .footer-left-1 {
+            float: left;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 100%;
+            padding: 12px 4px;
+        }
+
+        .footer-left {
+            float: left;
+            top: 0px;
+        }
+
+        footer {
+            height: auto;
+        }
+
+        .time {
+            text-align: center;
+        }
+
+        .time span {
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 2px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+        }
+
+        .footer-center {
+            width: 100% !important;
+            margin: 0;
+        }
+
+        .msg-name {
+            font-size: 12px;
+            color: #333;
+            margin-left: 50px;
+            display: none;
+        }
+
+        .msg-item-self .msg-name {
+            text-align: right;
+            margin-right: 50px;
+            margin-left: 0;
+        }
+
+        /* 红包 */
+        .red-wrap {
+            position: relative;
+        }
+
+        .red-wrap .game {
+            position: absolute;
+            top: 15px;
+            left: 70px;
+
+        }
+
+        .red-wrap .game p {
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .red-wrap .game p.red-game-text {
+            color: #f5d03d;
+            font-size: 14px;
+        }
+
+        .red-wrap .game-type {
+            position: absolute;
+            font-size: 10px;
+            color: #757575;
+            bottom: 0px;
+            left: 15px;
+            ;
+        }
+
+        .msg-item-self .red-wrap .game-type {
+            left: 5px;
+            ;
+        }
+
+        .red-envelope .msg-content {
+            background-color: transparent;
+            border-color: transparent;
+            padding-left: 0;
+            /* margin-left: 0; */
+            padding-top: 0;
+        }
+
+        .msg-item-self.red-envelope .msg-content {
+            padding-right: 0;
+            /* margin-right: 0; */
+            padding-top: 0;
+        }
+
+        .red-envelope .msg-content img {
+            width: 216px;
+        }
+
+        .red-envelope .msg-content .red-img {
+            background-image: url('../../image/icon/bg_luckybagdialog.png');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            width: 216px;
+            height: 72px;
+        }
+
+        .red-envelope .msg-content .red-img.red-img-no {
+            background-image: url('../../image/icon/mp_bg_luckybagdialog_d.png');
+        }
+
+        .red-envelope .msg-content .red-img.icon-img {
+            background-image: url('../../image/icon/bg_luckybagdialog_style2.png');
+        }
+
+        .red-envelope .msg-content .red-img.icon-img-no {
+            background-image: url('../../image/icon/bg_luckybagdialog_style2_d.png');
+        }
+
+        /* 撤回 */
+        .recall {
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        /* 视频 */
+        .msg-video {
+            position: relative;
+        }
+
+        .msg-video img {
+            max-width: 100px;
+        }
+
+        .video-icon {
+            background-image: url('../../image/icon/album_ic_playclip.png');
+            background-repeat: no-repeat;
+            background-size: 100%;
+            width: 25px;
+            height: 25px;
+            display: inline-block;
+            position: absolute;
+            top: 50%;
+            left: 50px;
+            margin-top: -12.5px;
+            margin-left: -12.5px;
+        }
+        .hongbao-msg {
+            font-size: 12px;
+            text-align: center;
+            color: #999;
+        }
+        .hongbao-msg span {
+            color: orange;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mui-content">
+        <div class="loadmore" style="display:none;height:30px;line-height:30px;font-size:14px;text-align: center;"> 正在加载更多...</div>
+        <div id="msg-list">
+            <div class="time"><span>2020-12-23 12:12</span></div>
+            <div class="recall"><span>你撤回一条消息</span></div>
+            <div class="hongbao-msg">xxx领取了你的<span>红包</span></div>
+            <!-- 我的 -->
+            <li class="msg-item msg-item-self" msg-type="text">
+                <img class="msg-user" src="../../image/touxiang.png" />
+                <div class="msg-content-wrap">
+                    <div class="msg-name">张三</div>
+                    <div class="msg-content">
+                        <div class="msg-content-inner">
+                            文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容
+                            文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容
+                            文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容
+                        </div>
+                        <div class="msg-content-arrow"></div>
+                    </div>
+                    <div class="timeSec">
+                    </div>
+                    <div class="mui-item-clear"></div>
+                </div>
+            </li>
+            <li class="msg-item msg-item-self" msg-type="text">
+                <img class="msg-user" src="../../image/touxiang.png" />
+                <div class="msg-content-wrap">
+                    <div class="msg-name">张三</div>
+                    <div class="msg-content">
+                        <div class="msg-content-inner">
+                            <div class="msg-video">
+                                <img src="../../image/test/02.jpg" alt="">
+                                <i class="video-icon"></i>
+                            </div>
+                        </div>
+                        <div class="msg-content-arrow"></div>
+                    </div>
+                    <div class="timeSec">
+                    </div>
+                    <div class="mui-item-clear"></div>
+                </div>
+            </li>
+            <li class="msg-item msg-item-self" msg-type="text">
+                <img class="msg-user" src="../../image/touxiang.png" />
+                <div class="msg-content-wrap">
+                    <div class="msg-name">张三</div>
+                    <div class="msg-content">
+                        <div class="msg-content-inner">
+                            <img class="msg-content-image load" src="../../image/test/01.jpg"
+                                style="max-width: 100px;" />
+                        </div>
+                        <div class="msg-content-arrow"></div>
+                    </div>
+                    <div class="timeSec">
+                    </div>
+                    <div class="mui-item-clear"></div>
+                </div>
+            </li>
+            <li class="msg-item msg-item-self" msg-type="text">
+                <img class="msg-user" src="../../image/touxiang.png" />
+                <div class="msg-content-wrap">
+                    <div class="msg-name">张三</div>
+                    <div class="msg-content">
+                        <div class="msg-content-inner">
+                            <span class="play-state" style="margin-top:3px;">
+                                <img src="../../res/img/yy.png" alt="" style="width:25px;height:25px;" />
+                            </span>
+                        </div>
+                        <div class="msg-content-arrow"></div>
+                    </div>
+                    <div class="timeSec">
+                        <div style="line-height:50px;float:right;font-size:14px;color:#999;">15s"</div>
+                    </div>
+                    <div class="mui-item-clear"></div>
+                </div>
+            </li>
+            <li class="msg-item msg-item-self red-envelope" msg-type="redpaper">
+                <img class="msg-user" src="../../image/touxiang.png" />
+                <div class="msg-content-wrap">
+                    <div class="msg-name">张三</div>
+                    <div class="msg-content">
+                        <div class="msg-content-inner">
+                            <div class="red-wrap">
+                                <div class="red-img"></div>
+                                <div class="game">
+                                    <p class="red-game-text">小小意思，拿去浪吧</p>
+                                    <p class="red-game">等待领取</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeSec">
+                    </div>
+                    <div class="mui-item-clear"></div>
+                </div>
+            </li>
+            <li class="msg-item msg-item-self red-envelope" msg-type="redpaper">
+                <img class="msg-user" src="../../image/touxiang.png" />
+                <div class="msg-content-wrap">
+                    <div class="msg-name">张三</div>
+                    <div class="msg-content">
+                        <div class="msg-content-inner">
+                            <div class="red-wrap">
+                                <div class="red-img red-img-no"></div>
+                                <div class="game">
+                                    <p class="red-game-text">小小意思，拿去浪吧</p>
+                                    <p class="red-game">等待领取</p>
+                                </div>
+                                <!-- <p class="game-type">扫雷红包游戏</p> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeSec">
+                    </div>
+                    <div class="mui-item-clear"></div>
+                </div>
+            </li>
+            <li class="msg-item msg-item-self red-envelope" msg-type="redpaper">
+                <img class="msg-user" src="../../image/touxiang.png" />
+                <div class="msg-content-wrap">
+                    <div class="msg-name">张三</div>
+                    <div class="msg-content">
+                        <div class="msg-content-inner">
+                            <div class="red-wrap">
+                                <div class="red-img icon-img"></div>
+                                <div class="game">
+                                    <p class="red-game-text">小小意思，拿去浪吧</p>
+                                    <p class="red-game">等待领取</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeSec">
+                    </div>
+                    <div class="mui-item-clear"></div>
+                </div>
+            </li>
+            <li class="msg-item msg-item-self red-envelope" msg-type="redpaper">
+                <img class="msg-user" src="../../image/touxiang.png" />
+                <div class="msg-content-wrap">
+                    <div class="msg-name">张三</div>
+                    <div class="msg-content">
+                        <div class="msg-content-inner">
+                            <div class="red-wrap">
+                                <div class="red-img icon-img-no"></div>
+                                <div class="game">
+                                    <p class="red-game-text">小小意思，拿去浪吧</p>
+                                    <p class="red-game">等待领取</p>
+                                </div>
+                                <!-- <p class="game-type">扫雷红包游戏</p> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeSec">
+                    </div>
+                    <div class="mui-item-clear"></div>
+                </div>
+            </li>
+
+            <!-- 对方的 -->
+            <li class="msg-item" msg-type="text">
+                <img class="msg-user" src="../../image/touxiang.png" />
+                <div class="msg-content-wrap">
+                    <div class="msg-name">张三</div>
+                    <div class="msg-content">
+                        <div class="msg-content-inner">
+                            文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容
+                            文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容
+                            文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容文本内容
+                        </div>
+                        <div class="msg-content-arrow"></div>
+                    </div>
+                    <div class="timeSec">
+                    </div>
+                    <div class="mui-item-clear"></div>
+                </div>
+            </li>
+            <li class="msg-item" msg-type="text">
+                <img class="msg-user" src="../../image/touxiang.png" />
+                <div class="msg-content-wrap">
+                    <div class="msg-name">张三</div>
+                    <div class="msg-content">
+                        <div class="msg-content-inner">
+                            <div class="msg-video">
+                                <img src="../../image/test/02.jpg" alt="">
+                                <i class="video-icon"></i>
+                            </div>
+                        </div>
+                        <div class="msg-content-arrow"></div>
+                    </div>
+                    <div class="timeSec">
+                    </div>
+                    <div class="mui-item-clear"></div>
+                </div>
+            </li>
+            <li class="msg-item" msg-type="text">
+                <img class="msg-user" src="../../image/touxiang.png" />
+                <div class="msg-content-wrap">
+                    <div class="msg-name">张三</div>
+                    <div class="msg-content">
+                        <div class="msg-content-inner">
+                            <img class="msg-content-image load" src="../../image/test/01.jpg"
+                                style="max-width: 100px;" />
+                        </div>
+                        <div class="msg-content-arrow"></div>
+                    </div>
+                    <div class="timeSec">
+                    </div>
+                    <div class="mui-item-clear"></div>
+                </div>
+            </li>
+            <li class="msg-item" msg-type="text">
+                <img class="msg-user" src="../../image/touxiang.png" />
+                <div class="msg-content-wrap">
+                    <div class="msg-name">张三</div>
+                    <div class="msg-content">
+                        <div class="msg-content-inner">
+                            <span class="play-state" style="margin-top:3px;">
+                                <img src="../../res/img/yy.png" alt=""
+                                    style="width:25px;height:25px;-webkit-transform:rotate(180deg);" />
+                            </span>
+                        </div>
+                        <div class="msg-content-arrow"></div>
+                    </div>
+                    <div class="timeSec">
+                        <div style="line-height:50px;font-size:14px;color:#999;">15s"</div>
+                    </div>
+                    <div class="mui-item-clear"></div>
+                </div>
+            </li>
+            <li class="msg-item red-envelope" msg-type="redpaper">
+                <img class="msg-user" src="../../image/touxiang.png" />
+                <div class="msg-content-wrap">
+                    <div class="msg-name">张三</div>
+                    <div class="msg-content">
+                        <div class="msg-content-inner">
+                            <div class="red-wrap">
+                                <div class="red-img"></div>
+                                <div class="game">
+                                    <p class="red-game-text">小小意思，拿去浪吧</p>
+                                    <p class="red-game">等待领取</p>
+                                </div>
+                                <!-- <p class="game-type">扫雷红包游戏</p> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeSec">
+                    </div>
+                    <div class="mui-item-clear"></div>
+                </div>
+            </li>
+            <li class="msg-item red-envelope" msg-type="redpaper">
+                <img class="msg-user" src="../../image/touxiang.png" />
+                <div class="msg-content-wrap">
+                    <div class="msg-name">张三</div>
+                    <div class="msg-content">
+                        <div class="msg-content-inner">
+                            <div class="red-wrap">
+                                <div class="red-img red-img-no"></div>
+                                <div class="game">
+                                    <p class="red-game-text">小小意思，拿去浪吧</p>
+                                    <p class="red-game">等待领取</p>
+                                </div>
+                                <!-- <p class="game-type">扫雷红包游戏</p> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeSec">
+                    </div>
+                    <div class="mui-item-clear"></div>
+                </div>
+            </li>
+            <li class="msg-item red-envelope" msg-type="redpaper">
+                <img class="msg-user" src="../../image/touxiang.png" />
+                <div class="msg-content-wrap">
+                    <div class="msg-name">张三</div>
+                    <div class="msg-content">
+                        <div class="msg-content-inner">
+                            <div class="red-wrap">
+                                <div class="red-img icon-img"></div>
+                                <div class="game">
+                                    <p class="red-game-text">小小意思，拿去浪吧</p>
+                                    <p class="red-game">等待领取</p>
+                                </div>
+                                <!-- <p class="game-type">扫雷红包游戏</p> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeSec">
+                    </div>
+                    <div class="mui-item-clear"></div>
+                </div>
+            </li>
+            <li class="msg-item red-envelope" msg-type="redpaper">
+                <img class="msg-user" src="../../image/touxiang.png" />
+                <div class="msg-content-wrap">
+                    <div class="msg-name">张三</div>
+                    <div class="msg-content">
+                        <div class="msg-content-inner">
+                            <div class="red-wrap">
+                                <div class="red-img icon-img-no"></div>
+                                <div class="game">
+                                    <p class="red-game-text">小小意思，拿去浪吧</p>
+                                    <p class="red-game">等待领取</p>
+                                </div>
+                                <!-- <p class="game-type">扫雷红包游戏</p> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeSec">
+                    </div>
+                    <div class="mui-item-clear"></div>
+                </div>
+            </li>
+        </div>
+    </div>
+    <div id="sound-alert" class="rprogress">
+        <div class="rschedule"></div>
+        <div class="r-sigh">!</div>
+        <div id="audio_tips" class="rsalert">手指上滑，取消发送</div>
+    </div>
+    <script src="../../script/api.js"></script>
+    <script src="../../script/jquery_min.js"></script>
+    <script src="../../script/liaotian/mui.min.js"></script>
+    <script src="../../script/liaotian/mui.imageViewer.js"></script>
+    <script src="../../script/liaotian/arttmpl.js"></script>
+    <script src="../../script/liaotian/shangtu.js"></script>
+    <script src="../../script/liaotian/emotion.js"></script>
+    <script src="../../script/liaotian/jquery.qqFace.js"></script>
+    <script src="../../script/ffkj.js"></script>
+    <script src="../../json/liaotian.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        var userid = $api.getStorage('userid');
+        var touserid = 0;
+        var userInfo = {};
+
+        var page = 0;
+        var loadImage = 0;
+        var isDown = true;
+
+        // 打开用户详情资料
+        function goUserInfo() {
+            var id = api.pageParam['touserid'];
+            var name = api.pageParam['txt'];
+            go_userInfo(id, name);
+        }
+
+        (function ($, doc) {
+            var MIN_SOUND_TIME = 800;
+            doc.getElementById('msg-list').addEventListener('scroll', function () {
+                var scrollT = this.scrollTop;
+                if (scrollT <= 20) {
+                    loadMore();
+                }
+            });
+            $api.dom('.mui-content').addEventListener('touchend', function () {
+                isDown = true;
+            });
+            //var $body1 = $api.dom('.mui-content');
+            var loaded = true;
+            var load_al = true;
+            var $loadmore = doc.querySelector('.loadmore');
+
+            // 初始化图片预览组件
+            $.init({
+                gestureConfig: {
+                    tap: true, //默认为true
+                    doubletap: true, //默认为false
+                    longtap: false, //默认为false
+                    swipe: true, //默认为true
+                    drag: true, //默认为true
+                    hold: true, //默认为false，不监听
+                    release: true, //默认为false，不监听
+                },
+            });
+            template.config('escape', false);
+            var LongAjaxGetMsg = function (userid, callback) {
+                var getMsgurl = phpurl + 'index.php?c=Privatechat&a=getNewMsg&userid=' + userid + '&touserid=' +
+                    touserid + '&time=40';
+                (function longPolling() {
+                    api.ajax({
+                        url: getMsgurl,
+                        method: 'get',
+                        timeout: 80,
+                    }, function (ret, err) {
+                        console.log(JSON.stringify(ret))
+                        if (ret) {
+                            var code = ret.code;
+                            if (code == 200) {
+                                var result = ret.result;
+                                callback && callback(result);
+                                longPolling();
+                            } else {
+                                longPolling();
+                            }
+                        } else {
+                            longPolling();
+                        }
+                    });
+                })();
+            };
+            var gaodu = "500px";
+            apiready = function () {
+                getUserInfo(); // 获取用户资料
+                gaodu = document.body.offsetHeight;
+                editor();
+                touserid = api.pageParam.touserid;
+                // _ajax('c=Privatechat&a=getMsgList', function (ret, err) {
+                //     console.log(JSON.stringify(ret))
+                //     console.log(JSON.stringify(err))
+                //     var code = ret.code;
+                //     if (code == 200) {
+                //         var result = ret.result;
+                //         addAllRecord(result);
+                //         LongAjaxGetMsg(userid, function (result) {
+                //             addAllRecord(result);
+                //         });
+                //     }
+                // }, {
+                //     userid: userid,
+                //     touserid: touserid,
+                //     page: page,
+                // })
+            };
+
+            // 历史消息列表
+            function loadMore() {
+                if (loaded && load_al && isDown) {
+                    console.log(loaded);
+                    loadtype = 0;
+                    $loadmore.style.display = 'block';
+                    page++;
+                    loaded = false;
+                    _ajax('c=Privatechat&a=getMsgList', function (ret, err) {
+                        isDown = false;
+                        loaded = true;
+                        var code = ret.code;
+                        if (code == 200) {
+                            var result = ret.result;
+                            addMore(result);
+                            $loadmore.style.display = 'none';
+                        } else if (code == 201) {
+                            load_al = false;
+                            loadtype = 1;
+                            $loadmore.style.display = 'none';
+                        }
+                    }, {
+                        userid: userid,
+                        touserid: touserid,
+                        page: page,
+                    })
+                }
+            }
+
+
+            var addMore = function (result) {
+                var len = result.length - 1;
+                for (var i = len; i >= 0; i--) {
+                    record.unshift(dealData(result[i]));
+                }
+                bindMoreMsg();
+            };
+            var addAllRecord = function (result) {
+                for (var i = 0; i < result.length; i++) {
+                    record.push(dealData(result[i]));
+                }
+                bindMsgList();
+            };
+            var record = [];
+            var ui = {
+                body: doc.querySelector('body'),
+                footer: doc.querySelector('footer'),
+                footerRight: doc.querySelector('.footer-right'),
+                footerLeft: doc.querySelector('.footer-left'),
+                btnMsgType: doc.querySelector('#msg-type'),
+                boxMsgText: doc.querySelector('#msg-text'),
+                boxMsgSound: doc.querySelector('#msg-sound'),
+                btnMsgImage: doc.querySelector('#msg-image'),
+                areaMsgList: doc.querySelector('#msg-list'),
+                boxSoundAlert: doc.querySelector('#sound-alert'),
+                content: doc.querySelector('.mui-content'),
+            };
+            var loadtype = 1;
+            //					var footerPadding = ui.footer.offsetHeight - ui.boxMsgText.offsetHeight;
+            var msgItemTap = function (msgItem, event) {
+                var msgType = msgItem.getAttribute('msg-type');
+                var msgContent = msgItem.getAttribute('msg-content');
+                console.log(msgContent);
+                if (msgType == 'sound') {
+                    var playState = msgItem.querySelector('.play-state');
+                    if (msgContent.indexOf('http') != -1) {
+                        var soundName = msgContent.split('/');
+                        soundName = soundName[soundName.length - 1];
+                        api.download({
+                            url: msgContent,
+                            savePath: 'fs://' + soundName,
+                            report: true,
+                            cache: true,
+                            allowResume: true,
+                        }, function (ret, err) {
+                            console.log(JSON.stringify(ret))
+                            console.log(JSON.stringify(err))
+                            if (ret.state == 1) {
+                                var path = ret.savePath;
+                                playState.innerHTML =
+                                    '<img src="../../res/img/yy.gif" alt="" style="width:25px;height:25px;"/>';
+                                api.startPlay({
+                                    path: path,
+                                }, function (rets, errs) {
+                                    playState.innerHTML =
+                                        '<img src="../../res/img/yy.png" alt="" style="width:25px;height:25px;"/>';
+                                });
+                            }
+                        });
+                    } else {
+                        playState.innerHTML =
+                            '<img src="../../res/img/yy.gif" alt="" style="width:25px;height:25px;"/>';
+                        api.startPlay({
+                            path: msgContent,
+                        }, function (rets, errs) {
+                            playState.innerHTML =
+                                '<img src="../../res/img/yy.png" alt="" style="width:25px;height:25px;"/>';
+                        });
+                    }
+                } else if (msgType == 'text') {
+                    var msgContent = msgItem.getAttribute('msg-content');
+                    console.log(msgContent);
+                    showAction(msgContent)
+                }
+            };
+            var imageViewer = new $.ImageViewer('.msg-content-image', {
+                dbl: false,
+            });
+            var lastScrollTop = 0;
+            var bindMoreMsg = function () {
+                ui.areaMsgList.innerHTML = template('msg-template', {
+                    'record': record,
+                });
+                var msgItems = ui.areaMsgList.querySelectorAll('.msg-item');
+                [].forEach.call(msgItems, function (item, index) {
+                    item.addEventListener('tap', function (event) {
+                        msgItemTap(item, event);
+                    }, false);
+                });
+                imageViewer.findAllImage();
+                if (loadtype == 1) {
+                    var sysType = api.systemType;
+                    var deviceModel = api.deviceModel;
+                    if (deviceModel == 'iPhone11,2') {
+                        var h = 44;
+                    } else if (sysType == 'ios') {
+                        ui.areaMsgList.scrollTop = ui.areaMsgList.scrollHeight + ui.areaMsgList.offsetHeight + 20;
+                        lastScrollTop = ui.areaMsgList.scrollHeight;
+                    } else {
+                        ui.areaMsgList.scrollTop = ui.areaMsgList.scrollHeight + ui.areaMsgList.offsetHeight;
+                        lastScrollTop = ui.areaMsgList.scrollHeight;
+                    }
+                } else {
+                    loadtype = 1;
+                    loadAllImage(function () {
+                        ui.areaMsgList.scrollTop = ui.areaMsgList.scrollHeight - lastScrollTop;
+                        lastScrollTop = ui.areaMsgList.scrollHeight;
+                    });
+                }
+            };
+            var bindMsgList = function () {
+                ui.areaMsgList.innerHTML = template('msg-template', {
+                    'record': record,
+                });
+                var msgItems = ui.areaMsgList.querySelectorAll('.msg-item');
+                [].forEach.call(msgItems, function (item, index) {
+                    item.addEventListener('tap', function (event) {
+                        msgItemTap(item, event);
+                    }, false);
+                });
+                imageViewer.findAllImage();
+                if (loadtype == 1) {
+                    var sysType = api.systemType;
+                    ui.areaMsgList.scrollTop = ui.areaMsgList.scrollHeight + ui.areaMsgList.offsetHeight;
+                    lastScrollTop = ui.areaMsgList.scrollHeight;
+                } else {
+                    loadtype = 1;
+                    loadAllImage(function () {
+                        ui.areaMsgList.scrollTop = ui.areaMsgList.scrollHeight - lastScrollTop;
+                        lastScrollTop = ui.areaMsgList.scrollHeight;
+                    });
+                }
+            };
+            window.addEventListener('resize', function () {
+                ui.areaMsgList.scrollTop = ui.areaMsgList.scrollHeight + ui.areaMsgList.offsetHeight;
+                lastScrollTop = ui.areaMsgList.offsetHeight;
+            }, false);
+            var send = function (msg) {
+
+                //msg.content = replace_em(msg.content);
+                toRobot(msg.content, msg.type, msg.second);
+                if (msg.type == 'text') {
+                    msg.content = getMesge(msg.content);
+                }
+                record.push(msg);
+                bindMsgList();
+            };
+
+
+            // 发送消息
+            var toRobot = function (content, type, second) {
+                if (type == 'text') {
+                    $api.post(phpurl + 'index.php?c=Privatechat&a=addTalk', {
+                        values: {
+                            content: content,
+                            type: 0,
+                            userid: userid,
+                            touserid: touserid,
+                        },
+                    }, function (ret) {
+                        //alert(JSON.stringify(ret))
+                        //alert(JSON.stringify(ret))
+                    });
+                } else if (type == 'image') {
+                    $api.post(phpurl + 'index.php?c=Privatechat&a=addTalk', {
+                        values: {
+                            type: 1,
+                            userid: userid,
+                            touserid: touserid,
+                        },
+                        files: {
+                            file: content,
+                        },
+                    }, function (ret) {});
+                } else if (type == 'sound') {
+                    $api.post(phpurl + 'index.php?c=Privatechat&a=addTalk', {
+                        values: {
+                            type: 2,
+                            userid: userid,
+                            touserid: touserid,
+                            second: second,
+                        },
+                        files: {
+                            file: content,
+                        },
+                    }, function (ret) {});
+                }
+            };
+
+            function msgTextFocus() {
+                ui.boxMsgText.focus();
+                setTimeout(function () {
+                    ui.boxMsgText.focus();
+                }, 150);
+            }
+            var setSoundAlertVisable = function (show) {
+                if (show) {
+                    ui.boxSoundAlert.style.display = 'block';
+                    ui.boxSoundAlert.style.opacity = 1;
+                } else {
+                    ui.boxSoundAlert.style.opacity = 0;
+                    //fadeOut 完成再真正隐藏
+                    setTimeout(function () {
+                        ui.boxSoundAlert.style.display = 'none';
+                    }, 200);
+                }
+            };
+            var chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+                'I',
+                'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            ];
+
+            function generateMixed(n) {
+                var res = '';
+                for (var i = 0; i < n; i++) {
+                    var id = Math.ceil(Math.random() * 35);
+                    res += chars[id];
+                }
+                return res;
+            }
+            var recordCancel = false;
+            var recorder = null;
+            var audio_tips = document.getElementById('audio_tips');
+            var startTimestamp = null;
+            var stopTimestamp = null;
+            var stopTimer = null;
+
+            function editor() {
+                var UIChatBox = api.require('UIChatBox');
+                UIChatBox.open({
+                    placeholder: '',
+                    maxRows: 4,
+                    emotionPath: 'widget://res/img/emotion',
+                    texts: {
+                        recordBtn: {
+                            normalTitle: '按住说话',
+                            activeTitle: '松开结束',
+                        },
+                        sendBtn: {
+                            title: '发送',
+                        },
+                    },
+                    styles: {
+                        inputBar: {
+                            borderColor: '#d9d9d9',
+                            bgColor: '#f2f2f2',
+                        },
+                        inputBox: {
+                            borderColor: '#B3B3B3',
+                            bgColor: '#FFFFFF',
+                        },
+                        emotionBtn: {
+                            normalImg: 'widget://res/img/face.png',
+                        },
+                        extrasBtn: {
+                            normalImg: 'widget://res/img/jia.png',
+                        },
+                        keyboardBtn: {
+                            normalImg: 'widget://res/img/jian_pan.png',
+                        },
+                        speechBtn: {
+                            normalImg: 'widget://res/img/lu_yin.png',
+                        },
+                        recordBtn: {
+                            normalBg: '#c4c4c4',
+                            activeBg: '#3dad12',
+                            color: '#000',
+                            size: 14,
+                        },
+                        indicator: {
+                            target: 'both',
+                            color: '#c4c4c4',
+                            activeColor: '#9e9e9e',
+                        },
+                        sendBtn: {
+                            titleColor: '#fff',
+                            bg: '#000000',
+                            activeBg: '#000000',
+                            titleSize: 14,
+                        },
+                    },
+                    extras: {
+                        titleSize: 10,
+                        titleColor: '#a3a3a3',
+                        btns: [{
+                            title: '图片',
+                            normalImg: 'widget://res/img/nim_message_plus_photo_normal.png',
+                            activeImg: 'widget://res/img/nim_message_plus_photo_normal.png',
+                        }, {
+                            title: '拍照',
+                            normalImg: 'widget://res/img/nim_message_plus_video_normal.png',
+                            activeImg: 'widget://res/img/nim_message_plus_video_normal.png',
+                            // }, {
+                            //     title: '位置',
+                            //     normalImg: 'widget://res/img/nim_message_plus_location_normal.png',
+                            //     activeImg: 'widget://res/img/nim_message_plus_location_normal.png',
+                        }, {
+                            title: '阅后即焚',
+                            normalImg: 'widget://res/img/message_plus_snapchat_normal.png',
+                            activeImg: 'widget://res/img/message_plus_snapchat_normal.png',
+                        }, {
+                            title: '现金红包',
+                            normalImg: 'widget://res/img/ic_sendluckybag.png',
+                            activeImg: 'widget://res/img/ic_sendluckybag.png',
+                        }, {
+                            title: '面具币红包',
+                            normalImg: 'widget://res/img/ic_maskdollar.png',
+                            activeImg: 'widget://res/img/ic_maskdollar.png',
+                        }, ],
+                    },
+                }, function (ret, err) {
+                    if (ret) {
+                        var type = ret.eventType;
+                        if (type == 'send') {
+                            var content = ret.msg;
+                            if (!$api.trim(content)) {
+                                _msg('内容不能为空');
+                                return
+                            }
+                            send({
+                                sender: 'self',
+                                type: 'text',
+                                headimg: userInfo.headimg,
+                                content: content,
+                                content_origin: content,
+                            });
+                        } else if (type == 'clickExtras') {
+                            var index = ret.index;
+                            if (index == 0) {
+                                pai_zhao('library', function (ret) {
+                                    send({
+                                        sender: 'self',
+                                        type: 'image',
+                                        content: ret,
+                                        content_origin: ret,
+                                        headimg: userInfo.headimg,
+                                    });
+                                });
+                            } else if (index == 1) {
+                                pai_zhao('camera', function (ret) {
+                                    send({
+                                        sender: 'self',
+                                        type: 'image',
+                                        content: ret,
+                                        content_origin: ret,
+                                        headimg: userInfo.headimg,
+                                    });
+                                });
+                            }
+                        }
+                        //				        alert(JSON.stringify(ret));
+                    } else {
+                        alert(JSON.stringify(err));
+                    }
+                });
+                UIChatBox.addEventListener({
+                    target: 'recordBtn',
+                    name: 'press',
+                }, function (ret, err) {
+                    if (ret) {
+                        recordCancel = false;
+                        if (stopTimer) {
+                            clearTimeout(stopTimer);
+                        }
+                        audio_tips.innerHTML = '手指上划，取消发送';
+                        ui.boxSoundAlert.classList.remove('rprogress-sigh');
+                        setSoundAlertVisable(true);
+                        startTimestamp = (new Date()).getTime();
+                        var name = generateMixed(10);
+                        api.startRecord({
+                            path: 'fs://' + name + '.amr',
+                        });
+                    } else {
+                        alert(JSON.stringify(err));
+                    }
+                });
+                UIChatBox.addEventListener({
+                    target: 'recordBtn',
+                    name: 'press_cancel',
+                }, function (ret, err) {
+                    if (ret) {
+                        stopTimestamp = (new Date()).getTime();
+                        if (stopTimestamp - startTimestamp < MIN_SOUND_TIME) {
+                            audio_tips.innerHTML = '录音时间太短';
+                            ui.boxSoundAlert.classList.add('rprogress-sigh');
+                            recordCancel = true;
+                            stopTimer = setTimeout(function () {
+                                setSoundAlertVisable(false);
+                            }, 800);
+                        } else {
+                            setSoundAlertVisable(false);
+                            api.stopRecord(function (ret, err) {
+                                if (ret) {
+                                    var second = ret.duration;
+                                    var path = ret.path;
+                                    recordCancel = false;
+                                    send({
+                                        sender: 'self',
+                                        type: 'sound',
+                                        headimg: userInfo.headimg,
+                                        content: path,
+                                        content_origin: path,
+                                        second: second,
+                                    });
+                                    //									$api.append($api.dom('.msg-content'), '<span>'+ second +'</span>');
+                                    bindMsgList();
+                                }
+                            });
+                        }
+                    } else {
+                        alert(JSON.stringify(err));
+                    }
+                });
+                //监听 inputBar
+                UIChatBox.addEventListener({
+                    target: 'inputBar',
+                    name: 'move'
+                }, function (ret, err) {
+                    // console.log("move:" + JSON.stringify(ret));
+                    document.body.scrollTop = ret.inputBarHeight + ret.panelHeight;
+
+                    var jianpangao = ret.inputBarHeight + ret.panelHeight;
+                    var suo = gaodu - jianpangao;
+                    var zhang = gaodu - ret.inputBarHeight;
+
+                    if (ret.panelHeight > 50) {
+                        document.getElementById('msg-list').style.height = suo + "px";
+                        document.getElementById('msg-list').scrollTop = "20000";
+                    } else {
+                        document.getElementById('msg-list').style.height = zhang + "px";
+                        document.getElementById('msg-list').scrollTop = "20000";
+                    }
+                });
+            }
+        }(mui, document));
+
+
+        // 处理数据
+        function dealData(data) {
+            var type = data.type;
+            var self = data.self;
+            data.pic_headimg = imgurl + data['head_portrait'];
+            var info = {
+                headimg: data.pic_headimg,
+                content: phpurl + data.content,
+                content_origin: phpurl + data.content,
+                showtime: data.showtime,
+                time: data.time,
+                userid: data.userid,
+            };
+            info.sender = self == 0 ? 'zs' : 'self';
+            if (type == 0) {
+                info.type = 'text';
+                info.content = getMesge(data.content);
+                info.content_origin = data.content;
+            } else if (type == 1) {
+                info.type = 'image';
+            } else if (type == 2) {
+                info.type = 'sound';
+                info.second = data.second;
+            }
+            return info;
+        }
+
+
+        // 打开拍照
+        function pai_zhao(sourceType, callback) {
+            api.getPicture({
+                sourceType: sourceType,
+                encodingType: 'jpg',
+                destinationType: 'url',
+                mediaValue: 'pic',
+                quality: 50,
+                saveToPhotoAlbum: false,
+            }, function (ret, err) {
+                if (ret && ret.data) {
+                    callback && callback(ret.data);
+                } else {
+                    api.toast({
+                        msg: '没有拍照',
+                    });
+                }
+            });
+        }
+
+
+        function loadAllImage(callback) {
+            var $imgs = $('.msg-content-image');
+            var len = $imgs.length - loadImage;
+            if (len == 0) {
+                callback && callback();
+                return;
+            }
+            var loadnum = 0;
+            $imgs.load(function () {
+                loadnum++;
+                loadImage++;
+                if (loadnum == len) {
+                    callback && callback();
+                }
+            });
+            $imgs.error(function () {
+                loadnum++;
+                loadImage++;
+                if (loadnum == len) {
+                    callback && callback();
+                }
+            });
+        };
+
+
+
+        //得到替换后的消息内容
+        function getMesge(str) {
+            if (!str) {
+                return '';
+            }
+            str = str.replace(/\[(.+?)\]/g, function (a, b) {
+                var url = '../../res/img/emotion/' + getEmotionUrl(a) + '.png';
+                return '<img src=' + url + ' border="0" width="25"/>';
+            });
+            str = entityToString(str);
+            return str;
+        }
+        // 实体字符转html代码
+        function entityToString(entity) {
+            // 若无实体字符则不转换
+            if (entity.indexOf('&lt' == -1)) return entity;
+            var div = document.createElement('div');
+            div.innerHTML = entity;
+            var res = div.innerText || div.textContent;
+            return res;
+        }
+        //根据表情名获取表情图片路径
+        function getEmotionUrl(text) {
+            for (var i = 0; i < emotionUrl.length; i++) {
+                if (text == emotionUrl[i].text) {
+                    return emotionUrl[i].name;
+                }
+            }
+        }
+
+        // 获取用户信息
+        function getUserInfo() {
+            _ajax('user_info.php', function (ret, err) {
+                console.log(JSON.stringify(ret))
+                if (ret && ret.code == 200) {
+                    userInfo.headimg = imgurl + ret.result.head_300;
+                }
+            }, {
+                user_id: $api.getStorage('userid'),
+                longitude: $api.getStorage('lon'),
+                latitude: $api.getStorage('lat')
+            })
+        }
+
+
+        // 菜单框
+        function showAction(text, id) {
+            var buttons = ['撤回', '复制', '删除'];
+            _action('', buttons, function (bIndex) {
+                if (bIndex == 1) {
+
+                } else if (bIndex == 2) {
+                    copyTxt(text);
+                } else if (bIndex == 3) {
+
+                }
+            })
+        }
+
+        // 复制
+        function copyTxt(text) {
+            var clipBoard = api.require('clipBoard');
+            clipBoard.set({
+                value: text
+            }, function (ret, err) {
+                console.log(JSON.stringify(ret))
+                console.log(JSON.stringify(err))
+                if (ret.status) {
+                    _msg('复制成功');
+                } else {
+                    _msg('复制失败');
+                }
+            });
+        }
+
+        var timeOutEvent;
+        $(".msg-content-inner").on({
+            touchstart: function (e) {
+                // 长按事件触发  
+                timeOutEvent = setTimeout(function () {
+                    timeOutEvent = 0;
+                    alert('你长按了');
+                }, 400);
+                //长按400毫秒   
+                // e.preventDefault();    
+            },
+            touchmove: function () {
+                clearTimeout(timeOutEvent);
+                timeOutEvent = 0;
+            },
+            touchend: function () {
+                clearTimeout(timeOutEvent);
+                if (timeOutEvent != 0) {
+                    // 点击事件  
+                    alert('你点击了');
+                }
+                // return false;
+            }
+        })
+    </script>
+</body>
+
+</html>

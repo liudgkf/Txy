@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <style>
+        html,
+        body {
+            background: #eeeeee;
+        }
+
+        /* 选择 */
+        .aui-clearfix {
+            clear: both;
+        }
+
+        .aui-clearfix:before {
+            display: table;
+            content: " ";
+        }
+
+        .aui-clearfix:after {
+            clear: both;
+        }
+
+        .list {
+            padding: 15px 10px;
+            font-size: 14px;
+            background: #fff;
+
+        }
+
+        .list.b-bottom {
+            border-bottom: 1px solid #eee;
+        }
+
+        .list .w-name {
+            width: 25vw;
+            text-align: center;
+            border-right: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .list .title {
+            font-weight: bold;
+        }
+
+        .list .content {
+            width: 75vw;
+        }
+
+        .list .yuan {
+            float: left;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        .list .btn {
+            color: #fff;
+            background: #aaa;
+            border-radius: 15px;
+            padding: 1px;
+            font-size: 12px;
+        }
+
+        .list .btn .text {
+            float: right;
+            padding: 0 5px;
+        }
+
+        .list .btn.open {
+            background: #000000;
+        }
+
+        .list .btn.open .yuan {
+            float: right;
+        }
+
+        .wrap {
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="view">
+        <p class="new-padding-10 font-n">APP未打开时</p>
+        <ul class="wrap" v-for="(m, index) in ffList">
+            <li class="list flex-bt b-bottom">
+                <div class="title">{{m.title}}</div>
+                <div class="btn aui-clearfix select-btn father yijia " :class="{'open':m.enable == 1}"
+                    @click="changeMode(0)">
+                    <span class="yuan"></span><span class="text">&nbsp;&nbsp;</span>
+                </div>
+            </li>
+            <li class="list flex-bt b-bottom" v-for="(c, cIndex) in m.child" v-if="m.enable == 1">
+                <div class="title">{{c.title}}</div>
+                <div class="btn aui-clearfix select-btn yijia " :class="{'open':c.enable == 1}"
+                    @click="changeMode(1, cIndex)">
+                    <span class="yuan"></span><span class="text">&nbsp;&nbsp;</span>
+                </div>
+            </li>
+        </ul>
+        <p class="new-padding-10 font-n">APP打开时</p>
+        <ul class="wrap">
+            <li class="list flex-bt b-bottom" id="voice">
+                <div class="title">声音</div>
+                <div class="btn aui-clearfix select-btn yijia " tapmode onclick="setVoice(this, 0)">
+                    <span class="yuan"></span><span class="text">&nbsp;&nbsp;</span>
+                </div>
+            </li>
+            <li class="list flex-bt b-bottom" id="shake">
+                <div class="title">震动</div>
+                <div class="btn aui-clearfix select-btn yijia " tapmode onclick="setVoice(this, 1)">
+                    <span class="yuan"></span><span class="text">&nbsp;&nbsp;</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!-- <ul class="wrap">
+        <li class="list flex-bt new-margin-b-10">
+            <div class="title">接收新消息通知</div>
+            <div class="btn aui-clearfix select-btn yijia" tapmode onclick="changeMode(this)">
+                <span class="yuan"></span>
+                <span class="text">&nbsp;&nbsp;</span>
+            </div>
+        </li>
+        <li class="list flex-bt b-bottom">
+            <div class="title">文章消息通知</div>
+            <div class="btn aui-clearfix select-btn yijia" tapmode onclick="changeMode(this)">
+                <span class="yuan"></span>
+                <span class="text">&nbsp;&nbsp;</span>
+            </div>
+        </li>
+        <li class="list flex-bt b-bottom">
+            <div class="title">资讯消息通知</div>
+            <div class="btn aui-clearfix select-btn yijia" tapmode onclick="changeMode(this)">
+                <span class="yuan"></span>
+                <span class="text">&nbsp;&nbsp;</span>
+            </div>
+        </li>
+        <li class="list flex-bt">
+            <div class="title">活动消息通知</div>
+            <div class="btn aui-clearfix select-btn yijia" tapmode onclick="changeMode(this)">
+                <span class="yuan"></span>
+                <span class="text">&nbsp;&nbsp;</span>
+            </div>
+        </li>
+    </ul> -->
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/vue.js"></script>
+<script>
+    var view = new Vue({
+        el: '#view',
+        data: {
+            imgurl: imgurl,
+            ffList: [],
+            ffInfo: {},
+        },
+        methods: {
+            _url: function (param, url) {
+                _url(param, url);
+            },
+            changeMode: function (type, index) {
+                var _this = this;
+                var data = {};
+                if (type == 0) {
+                    // 关闭父级
+                    data = _this.ffList[0];
+                } else {
+                    // 关闭子级
+                    data = _this.ffList[0].child[index];
+                }
+                
+                _ajax('api/Personal/pushSet', function (ret, err) {
+                    console.log(JSON.stringify(ret))
+                    console.log(JSON.stringify(err))
+                    var msg = ret.code == 200 ? '设置成功' : ret.msg;
+                    _msg(msg);
+                    if(ret && ret.code == 200){
+                        data.enable = data.enable == 0 ? 1 : 0;
+                    }
+                }, {id: data.id, user_id: $api.getStorage('userid')})
+            }
+        }
+    })
+    apiready = function () {
+        getPushList();
+        getVoice();
+    }
+
+    // 获取推送列表
+    function getPushList() {
+        _ajax('api/Personal/pushLists', function (ret, err) {
+            console.log(JSON.stringify(ret))
+            console.log(JSON.stringify(err))
+            if (ret && ret.code == 200) {
+                view.ffList = ret.data;
+            }
+        }, {user_id: $api.getStorage('userid')})
+    }
+
+   
+    // 获取声音和震动的状态
+    function getVoice(){
+        var voice = $api.getStorage('voice');
+        var shake = $api.getStorage('shake');
+        if(voice == 1){
+            $('#voice .yijia').addClass('open');
+        }
+        if(shake == 1){
+            $('#shake .yijia').addClass('open');
+        }
+    }
+
+
+    // 设置声音/ 震动
+    function setVoice(obj, type){
+        var $obj = $(obj);
+        $obj.toggleClass('open');
+        var cls = $obj.hasClass('open');
+        var status = cls ? 1 : 0;
+        var name = type == 0 ? 'voice' : 'shake';
+        $api.setStorage(name, status);
+    }
+</script>
+
+</html>

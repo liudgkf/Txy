@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/api.css">
+    <link rel="stylesheet" href="../css/news.css">
+    <link rel="stylesheet" href="../css/aui_font.css">
+    <link rel="stylesheet" href="../css/base_icon.css">
+    <link rel="stylesheet" href="../css/footer.css">
+    <style>
+        .f-list {
+            width: calc(100vw / 3);
+        }
+    </style>
+</head>
+
+<body>
+    <header id="view">
+        <ul class="h-wrap">
+            <!-- 第一个头部 -->
+            <li class="h-list one">
+               
+            </li>
+        </ul>
+    </header>
+    <!-- 脚部 -->
+    <footer>
+        <ul class="f-wrap flex">
+            <li class="f-list active">
+                <img src="../image/index_images/button2.png" alt="">
+                <span>动态</span>
+            </li>
+            <li class="f-list" tapmode onclick="_index(1)">
+                <img src="../image/index_images/button05.png" alt="">
+                <span>发布</span>
+                <span class="num new-hide"></span>
+            </li>
+            <li class="f-list" tapmode onclick="_index(2)">
+                <img src="../image/index_images/button4.png" alt="">
+                <span>我的</span>
+            </li>
+        </ul>
+    </footer>
+</body>
+<script src="../script/jquery_min.js"></script>
+<script src="../script/api.js"></script>
+<script src="../script/ffkj.js"></script>
+<script src="../script/group.js"></script>
+<script src="../script/map.js"></script>
+<script src="../script/update.js"></script>
+<script>
+    var index_sex = $api.getStorage('sex');
+    apiready = function () {
+
+        $api.fixStatusBar($api.dom('header'));
+        $api.fixTabBar($api.dom('footer'));
+        _heibai(1)
+        keyback();
+        _openFrame('shang/frame1');
+    }
+</script>
+
+</html>

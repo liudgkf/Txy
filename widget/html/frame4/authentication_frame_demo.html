@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/mycss.css" />
+    <style>
+        html {
+            background: #f3f3f3;
+        }
+
+        .hd {
+            background: #6150a0;
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .hd .img {
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+        }
+
+        .bd {
+            padding-top: 15px;
+            font-size: 14px;
+        }
+
+        .list {
+            text-align: center;
+        }
+
+        .list_hd {
+            position: relative;
+            margin: 10px;
+            border-bottom: 1px solid #7d7d7d;
+            text-align: center;
+        }
+
+        .list_hd .h2 {
+            position: absolute;
+            color: #4f30bf;
+            top: -10px;
+            left: calc(50% - 96px);
+            background: #f3f3f3;
+            padding: 0 1em;
+        }
+
+        .list_bd {
+            padding: 20px 0;
+        }
+
+        .list_bd .nmb {
+            padding: 20px 0;
+            color: #2d1586;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .list_bd .btn {
+            background: #6140d8;
+            margin: 30px 0 26px;
+            color: #fff;
+            display: inline-block;
+            line-height: 2.4;
+            padding: 0 3em;
+            border-radius: 7px;
+            box-shadow: 1px 2px 2px 1px #9e9e9e;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hd">
+        <img class="img" src="../../../image/logo2.png" />
+    </div>
+    <section class="bd">
+        <div class="list">
+            <div class="list_hd">
+                <p class="h2">方式一：添加微信号认证</p>
+            </div>
+            <div class="list_bd">
+                <p style="padding: 10px 0;">请添加官方微信 <span class="js-copy" style="color: #b47bc7;"></span> 进行认证</p>
+            </div>
+        </div>
+        <div class="list">
+            <div class="list_hd">
+                <p class="h2" style="left: calc(50% - 70px);">方式二：自助认证</p>
+            </div>
+            <div class="list_bd">
+                <p>1、取一张纸，写上你的昵称和以下号码</p>
+                <p class="nmb"></p>
+                <p>2、拿着这张纸与你的头像所示部位拍一段小视频</p>
+                <p class="js-states3" style="display:none;color:red;">审核未通过,请重新审核!</p>
+                <div class="btn js-states" onclick="sub()">上传我的认证视频</div>
+                <div class="btn js-states1" style="background: #ccc;display:none;">等待审核</div>
+                <p style="    color: #837592;">认证成功后，你的头像旁边 会带有【真实】标识</p>
+            </div>
+        </div>
+    </section>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript">
+    (function (window) {
+        var selectAction = {};
+        var _callback;
+        // 打开拍照
+        function pai_zhao(sourceType) {
+            api.getPicture({
+                sourceType: sourceType,
+                encodingType: "jpg",
+                destinationType: "url",
+                mediaValue: "video",
+                quality: 50,
+                saveToPhotoAlbum: true
+            }, function (ret, err) {
+                //alert(ret.data);
+                if (ret && ret.data) {
+                    _callback && _callback(ret.data);
+                } else {
+                    api.toast({
+                        msg: '已取消操作'
+                    });
+                }
+            });
+        }
+        selectAction.shang_tu = function (callback) {
+            _callback = callback;
+            api.actionSheet({
+                title: '选择视频来源',
+                buttons: ['打开摄像头', '视频库']
+            }, function (ret, err) {
+                var index = ret.buttonIndex;
+                if (index == 1) {
+                    pai_zhao('camera');
+                } else if (index == 2) {
+                    pai_zhao('library');
+                } else {
+                    return
+                }
+            });
+        }
+        window.selectAction = selectAction;
+    })(window)
+</script>
+<script type="text/javascript" src="../../../script/zepto.js"></script>
+<script src="../../../script/clipboard.2.0.js"></script>
+<script type="text/javascript">
+    var myuserid;
+    var works = [];
+    var i = 1;
+    var closeid;
+    apiready = function () {
+        myuserid = $api.getStorage('userid');
+        $.post(phpurl + 'index.php/Home/User/authcode', {
+            user_id: myuserid,
+        }, function (ret) {
+            if (ret.code == '200') {
+                $('.nmb').text(ret.invite);
+            } else {
+                $('.nmb').text(ret.msg);
+            }
+        });
+        $.post(phpurl + 'index.php/Home/User/isrenzheng', {
+            user_id: myuserid,
+        }, function (ret) {
+            if (ret.states == 1) {
+                $('.js-states1').show();
+                $('.js-states').hide();
+            } else if (ret.states == 3) {
+                $('.js-states1').hide();
+                $('.js-states').show();
+                $('.js-states3').show();
+            } else {
+                $('.js-states').show();
+                $('.js-states1').hide();
+            }
+        });
+        $.post(phpurl + 'index.php/Home/user/customService', function (ret) {
+            $('.js-copy').text(ret.result);
+        });
+        /*$.post(phpurl + 'index.php/Home/User/sendrz', {
+            user_id : myuserid,
+        }, function(ret) {
+            if (ret.code == '200') {
+                $('.hd .img').attr('src', 'http://www.youdingb.com/xiangmu/bilin/' + ret.data[0].pic);
+            }
+            else{
+                $('.hd .img').attr('src', '../../../image/bg.png');
+            }
+        });*/
+    };
+
+    function sub() {
+        var values = {
+            user_id: myuserid,
+        };
+        selectAction.shang_tu(function (url) {
+            works.push(url);
+            i++;
+            $api.loadding('authentication_frame', function (id) {
+                closeid = id;
+            });
+            $api.post(phpurl + 'add_authentication.php', {
+                values: values,
+                files: {
+                    video: url,
+                },
+            }, function (ret) {
+                // alert(JSON.stringify(ret));
+                if (ret && ret.code == 200 || ret && ret.code == 1) {
+                    api.toast({
+                        msg: '提交成功，等待审核',
+                    });
+                    _send('shuaXingRenZheng');
+                    setTimeout(function () {
+                        $api.closeloadding(closeid);
+                        api.closeWin({});
+                    }, 1000);
+                }
+                /*else if (ret && ret.code == 1) {
+                    api.toast({
+                        msg : '链接超时',
+                    });
+                    $api.closeloadding(closeid);
+                } */
+                else {
+                    api.toast({
+                        msg: '未知错误，请稍后重试',
+                    });
+                    $api.closeloadding(closeid);
+                }
+            });
+        });
+    }
+    //复制
+    $('.js-copy').on('click', function (e) {
+        var clipboard = new ClipboardJS('.js-copy', {
+            text: function (trigger) {
+                return $('.js-copy').text(); // 返回需要复制的内容
+            }
+        });
+        clipboard.on('success', function (e) {
+            console.log(JSON.stringify(e));
+            api.toast({
+                msg: '复制成功'
+            })
+        });
+        clipboard.on('error', function (e) {
+            console.log(e);
+            api.toast({
+                msg: '复制失败'
+            })
+        });
+    })
+</script>
+
+</html>

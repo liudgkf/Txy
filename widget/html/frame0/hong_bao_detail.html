@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/aui_font.css">
+    <style>
+        .new-tx {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: none;
+        }
+
+        .new-tx.img-h img {
+            height: 50px;
+        }
+
+        .new-tx.img-w img {
+            width: 50px;
+        }
+
+        #fx-header .bg {
+            width: 100vw;
+        }
+
+        #fx-header .bg img {
+            width: 100%;
+        }
+
+        .tx-wrap {
+            margin-top: -30px;
+
+        }
+
+        #fx-header .word {
+            text-align: center;
+            line-height: 25px;
+        }
+
+        #fx-header .tip-word {
+            color: #d13b3d;
+            font-size: 12px;
+        }
+        #fx-header .head {
+            background: #d13b3d;
+            color: #fff;
+            padding: 10px;
+            position: relative;
+        }
+        #fx-header .head .title {
+            text-align: center;
+        }
+        #fx-header .head .aui-icon-left {
+            font-size: 18px;
+            position: absolute;
+            left: 10px;
+            width: 10vw;
+        }
+        .btn {
+            color: orange;
+            font-size: 14px;
+        }
+        h1 {
+            margin: 30px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="view">
+        <header id="fx-header">
+            <div class="head">
+                <i class="aui-iconfont aui-icon-left" onclick="_closeToWin();"></i>
+                <div class="title">红包详情</div>
+            </div>
+            <div class="bg">
+                <img src="../../image/icon/mp_bg_headtongue.png" alt="">
+            </div>
+            <div class="flex-c tx-wrap">
+                <div class="new-tx img-h">
+                    <img :src="imgurl + ffInfo.head" @load="imgCss(imgurl + ffInfo.head, $event)" onerror="this.onerror=null;this.src='../../image/error-img.png'" alt="">
+                </div>
+            </div>
+            <p class="word">{{ffInfo.name}}的红包</p>
+            <p class="tip-word word">"{{ffInfo.content}}"</p>
+        </header>
+        <div class="flex-c flex-col">
+            <h1>￥{{ffInfo.money}}</h1>
+            <button class="btn" v-if="ffInfo.state == 0">等待对方领取</button>
+            <button class="btn" v-if="ffInfo.state == 1 && myuserid == ffInfo.userid">对方已领取</button>
+            <button class="btn" v-if="ffInfo.state == 1 && myuserid != ffInfo.userid">已领取</button>
+            <button class="btn" v-if="ffInfo.state == 2">该红包已过期</button>
+        </div>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script src="../../script/wximg.js"></script>
+<script>
+    var view = new Vue({
+        el: '#view',
+        data: {
+            imgurl: imgurl,
+            ffList: [],
+            ffInfo: {},
+            myuserid: $api.getStorage('userid'),
+        },
+        methods: {
+            _url: function (param, url) {
+                _url(param, url);
+            },
+            // 图片自适应
+            imgCss: function (url, event) {
+                var e = event.currentTarget;
+                imgCss(url, function (w, h) {
+                    if (w < h) {
+                        $(e).parent().addClass('img-w').removeClass('img-h');
+                    }
+                })
+            },
+        }
+    })
+    var id;
+    apiready = function () {
+        $api.fixStatusBar($api.dom('header'));
+        id = api.pageParam['id'];
+        getDetail()
+    }
+    // 格式化输入
+    function limitMoney(obj) {
+        obj.value = obj.value.replace(/[^0-9.]*$/, ""); //清除"数字"和"."以外的字符
+        obj.value = obj.value.replace(/^\./g, ""); //验证第一个字符是数字
+        obj.value = obj.value.replace(/\.{2,}/g, "."); //只保留第一个, 清除多余的
+        obj.value = obj.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+        obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数
+        var money = obj.value || '0.00';
+        $('#js-money').text('￥' + money);
+    }
+
+    // 获取红包详情
+    function getDetail(){
+        console.log(id)
+        _ajax('home/privatechat/details', function(ret, err){
+            console.log(JSON.stringify(ret))
+            console.log(JSON.stringify(err))
+            if(ret && ret.code == 200){
+                view.ffInfo = ret.data;
+                _send('updateHB', {id: id, state: ret.data.state});
+            }
+        }, {
+            chat_id: id,            
+        })
+    }
+</script>
+
+</html>

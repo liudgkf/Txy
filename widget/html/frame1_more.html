@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/api.css">
+    <link rel="stylesheet" href="../css/news.css">
+    <link rel="stylesheet" href="../css/aui_font.css">
+    <link rel="stylesheet" href="../css/base_icon.css">
+    <link rel="stylesheet" href="../css/frame1.css">
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div id="view" v-cloak>
+        <div class="filter">
+            <!-- 筛选条件 -->
+            <ul class="filter-wrap flex-a">
+                <li class="f-list flex-c" id="time" tapmode onclick="selectFilter('time')">
+                    <span class="time">最新发布</span>
+                    <i class="aui-iconfont aui-icon-down"></i>
+                </li>
+                <li class="f-list flex-c" id="sex" tapmode onclick="selectFilter('sex')">
+                    <span class="sex">不限性别</span>
+                    <i class="aui-iconfont aui-icon-down"></i>
+                </li>
+                <li class="f-list flex-c" id="city" tapmode
+                    onclick="_url({url:'frame1/city_list', title: '选择城市', cityLen:1, event: 'dy_city', type: 2}, 'frame1/city_win')">
+                    <span class="city">不限地区</span>
+                    <i class="aui-iconfont aui-icon-down"></i>
+                </li>
+            </ul>
+            <p class="frame1_notice" style="font-size: 12px;">拒绝低俗·举报反馈邮箱</p>
+        </div>
+        <!-- 个人广播 -->
+        <ul class="wrap">
+            <li class="list" v-for="(m, index) in ffList" @click="_url({id:m.dy_id, url:'frame1/dy_detail', title:'详情'})">
+                <div class="flex-bt" style="align-items:flex-start;">
+                    <div class="left flex">
+                        <div class="tx flex-c img-h" @click.stop @click="go_userInfo(m.id, m.name, m.sex)">
+                            <img :src="imgurl+m.head_100" @load="imgCss(imgurl+m.head_100, $event)" onerror="this.onerror=null;this.src='../image/touxiang.png'" alt="">
+                            <i class="base-icon dy-male-icon" v-if="m.sex == '男'"></i>
+                            <i class="base-icon dy-female-icon" v-if="m.sex == '女'"></i>
+                        </div>
+                        <div>
+                            <div class="name-wrap flex">
+                                <span class="name">{{m.name}}</span>
+                                <span v-if="m.is_identity_authentication >0 && m.sex != '女'" class="girl-tag tag"></span>
+                                <span v-if="m.is_identity_authentication >0 && m.sex == '女'" class="real-tag tag"></span>
+                                <span v-if="m.is_vip >0" class="vip-tag tag"></span>
+                                <!-- <i v-if="m.is_vip >0" class="base-icon dy-vip-icon" style="width: 25px;"></i>
+                                <i v-if="m.is_identity_authentication >0 && m.sex != '女'" class="base-icon dy-real-icon" style="width: 32px;"></i>
+                                <i v-if="m.is_identity_authentication >0 && m.sex == '女'" class="base-icon dy-girl-icon" style="width: 32px;"></i> -->
+                            </div>
+                            <span class="time">{{m.addtime}}</span>
+                        </div>
+                    </div>
+                    <!-- <div class="more flex-c" @click.stop="more(m.dy_id);">
+                        <i class="aui-iconfont aui-icon-more"></i>
+                    </div> -->
+                </div>
+                <div class="dy-content-wrap new-padding-10">
+                    <div class="tri"></div>
+                    <ul class="ul" v-if="m.type==0">
+                        <li class="li" v-if="m.content">
+                            <i class="base-icon dy-content-icon"></i>
+                            <div class="dy-content">{{m.content}}</div>
+                        </li>
+                    </ul>
+                    <ul class="ul" v-if="m.type==1">
+                        <!-- <li class="li">
+                            <i class="base-icon dy-theme-icon"></i>
+                            <div class="dy-content">视频聊天</div>
+                        </li> -->
+                        <li class="li" v-if="m.datetime">
+                            <i class="base-icon dy-time-icon"></i>
+                            <div class="dy-content">{{m.datetime}}{{m.between}}</div>
+                        </li>
+                        <li class="li" v-if="m.desire_object">
+                            <i class="base-icon dy-person-icon"></i>
+                            <div class="dy-content">{{m.desire_object}}</div>
+                        </li>
+                        <!-- <li class="li" v-if="m.filter">
+                            <i class="base-icon dy-money-icon"></i>
+                            <div class="dy-content">{{m.filter}}</div>
+                        </li>
+                        
+                        <li class="li" v-if="m.citys">
+                            <i class="base-icon dy-area-icon"></i>
+                            <div class="dy-content">{{m.citys}}</div>
+                        </li> -->
+                    </ul>
+                    <div class="img-wrap flex-w" v-if="m.sumbImage && m.sumbImage.length > 0 && m.sumbImage[0]">
+                        <div class="img img-h" v-for="(s, sindex) in m.sumbImage" @click.stop @click="_url({imgArr:m.masterimg, iIndex:sindex}, 'frame1/dy_img_win')">
+                            <img :src="imgurl+s" @load="imgCss(imgurl+s, $event)" onerror="this.onerror=null;this.src='../image/error-img.png'" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <ul class="ul flex-a">
+                        <li class="li" @click.stop @click="zan(m.dy_id, index)">
+                            <i class="base-icon dy-nozan-icon" :class="{'dy-zan-icon':m.isthumbsup == 1}"></i>
+                            <span>{{ m.num }}</span>
+                        </li>
+                        <li class="li" v-if="m.id != myuserid" @click.stop @click="addComment(m.dy_id, m.id)">
+                            <i class="base-icon dy-comment-icon"></i>
+                            <span>评论</span>
+                        </li>
+                        <li class="li" v-if="m.id == myuserid">
+                            <i class="base-icon dy-comment-icon"></i>
+                            <span>评论</span>
+                        </li>
+                        <li class="li" v-if="myuserid != m.id && m.type == 1" @click.stop @click="joinEnroll(m.dy_id, index)">
+                            <i class="base-icon dy-nobaoming-icon" :class="{'dy-baoming-icon':m.self_enroll == 1}"></i>
+                            <span v-if="m.self_enroll == 0">我要报名({{m.enroll}})</span>
+                            <span v-if="m.self_enroll == 1" style="color: #000000;">取消报名({{m.enroll}})</span>
+                        </li>
+                        <li class="li" v-if="myuserid == m.id && m.type == 1" >
+                            <i class="base-icon dy-nobaoming-icon"></i>
+                            <span >报名人数({{m.enroll}})</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="over" v-if="m.overdue == 1"></div>
+            </li>
+        </ul>
+        <div class="input-bg new-hide">
+            <div class="input-wrap">
+                <input type="text" placeholder="说点什么">
+                <button class="send-btn" @click.stop="send()">发送</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../script/api.js"></script>
+<script src="../script/jquery_min.js"></script>
+<script src="../script/ffkj.js"></script>
+<script src="../script/vue.js"></script>
+<script src="../script/wximg.js"></script>
+<script>
+    var filterCity;
+    var filterSex = 0;  // 0 不限 1男 2女
+    var filterNew = 1;
+    var filterRecently = 0;
+    var category_id = 0;
+    var view = new Vue({
+        el: '#view',
+        data: {
+            myuserid: $api.getStorage('userid'), 
+            imgurl: imgurl,
+            ffList: [],
+            ffInfo: {},
+            inputObj: {id:0, uid:0},  // 评论 广播id
+        },
+        methods: {
+            // 约会报名
+            joinEnroll: function(id, index){
+                var _this = this;
+                var status = _this.ffList[index].self_enroll;
+                var url = status == 0 ? 'home/Dymanic/enroll' : 'home/Dymanic/cancelenroll';
+                _ajax(url, function(ret, err){
+                    console.log(JSON.stringify(ret))
+                    if(ret){
+                        _msg(ret.msg);
+                        if(ret.code == 200){
+                            _this.ffList[index].self_enroll = status == 0 ? 1 : 0;
+                            _this.ffList[index].enroll = status == 0 ? parseInt(_this.ffList[index].enroll)+1 : _this.ffList[index].enroll-1;
+                        }else if(ret.code == 220){
+                            _url({ url: 'frame4', title: '开通会员'})
+                        }
+                    }
+                }, {
+                    user_id: $api.getStorage('userid'),
+                    dy_id: id,
+                })
+            },
+            // 点赞
+            zan: function(id, index, type){
+                var _this = this;
+                var status = _this.ffList[index].isthumbsup;
+                _ajax('home/Dymanic/thumbsup', function(ret, err){
+                    console.log(JSON.stringify(ret))
+                    console.log(JSON.stringify(err))
+                    if(ret){
+                        _msg(ret.msg);
+                        if(ret.code == 200){
+                            _this.ffList[index].isthumbsup = status == 0 ? 1 : 0;
+                            _this.ffList[index].num = status == 0 ? parseInt(_this.ffList[index].num)+1 : _this.ffList[index].num-1;
+
+                        }
+                    }
+                }, {
+                    type: parseInt(status)+1,
+                    dy_id: id,
+                    userid: $api.getStorage('userid'),
+                })
+            },
+            // 评论
+            addComment: function(dy_id, uid){
+                $('.input-bg').removeClass('new-hide');
+                view.inputObj = {id: dy_id, uid:uid};
+                $('.input-bg input').focus();
+            },
+            // 发布评论
+            send: function(){
+                var _this = this;
+                var val = $.trim($('.input-wrap input').val());
+                if(!val){
+                    _msg('评论不能为空');
+                    return;
+                }
+                _ajax('home/Dymanic/comment', function(ret, err){
+                    if(ret){
+                        _msg(ret.msg);
+                        if(ret.code == 200){
+                            $('.input-wrap input').val('');
+                            $('.input-bg').addClass('new-hide');
+                        }
+                    }
+                }, {
+                    dy_id: _this.inputObj.id,
+                    userid: $api.getStorage('userid'),
+                    touserid: _this.inputObj.uid,
+                    type: 0, //0为评论，1为回复
+                    content: val,
+                })
+            },
+            _url: function (param, url) {
+                _url(param, url);
+            },
+            // 图片自适应
+            imgCss: function (url, event) {
+                console.log(url)
+                var e = event.currentTarget;
+                imgCss(url, function (w, h) {
+                    if (w < h) {
+                        $(e).parent().addClass('img-w').removeClass('img-h');
+                    } 
+                })
+            },
+            // 查看用户资料
+            go_userInfo: function (id, name, sex) {
+                go_userInfo(id, name, sex)
+            },
+            // 清除html
+            clearHtml:function(s){
+                return clearHtml(s);
+            }
+
+        }
+    })
+    apiready = function () {
+        category_id = api.pageParam['category_id'];
+
+        // 监听切换城市
+        _listener('dy_city', function (ret) {
+            if (ret && ret.value.city) {
+                var city = ret.value.city[0];
+                $('.city').text(city);
+                filterCity = city;
+                getData(0)
+            }
+        })
+        _shangla(function () {
+            getData(0);
+        })
+
+        _scrollToBottom(function(){
+            if(heigutgao == 1){
+                pagenum++;
+                getData(pagenum)
+            }
+        })
+    }
+
+    // 显示在线
+    function showOnLine(){
+        api.refreshHeaderLoadDone();
+        _shangla(function () {
+            getData(0);
+        })
+    }
+
+
+    // 隐藏输入框
+    $('.input-bg input').on('blur', function(){
+        $('.input-bg').addClass('new-hide');
+    })
+
+    // 获取数据
+    function getData(page){
+        var param = {
+            userid: $api.getStorage('userid'),
+            count: pagesize,
+            longitude: $api.getStorage('lon'),
+            latitude: $api.getStorage('lat'),
+            citys: filterCity,
+            sex: filterSex,
+            new: filterNew,
+            recently: filterRecently,
+            category_id: category_id,
+        };
+        var loading = page == 0 ? 1 : 0;
+        _lists('home/Dymanic/dymaniclst', page, loading, param)
+    }
+
+    function selectFilter(type) {
+        console.log(type)
+        var buttons = type == 'time' ? ['最新发布', '最近约会'] : ['不限性别', '只看女士', '只看男士'];
+        var len = parseInt(buttons.length);
+        _action('', buttons, function (index) {
+            if (index != (len + 1)) {
+                $(' .' + type).text(buttons[index - 1]);
+
+                // 时间筛选
+                if (type == 'time') {
+                    filterNew = index == 1 ? 1 : 0;
+                    filterRecently = index == 1 ? 0 : 1;
+                }
+                // 性别筛选
+                if (type == 'sex') {
+                    filterSex = index - 1;
+                }
+                getData(0);
+            }
+        })
+    }
+</script>
+
+</html>

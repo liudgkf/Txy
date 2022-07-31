@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <style>
+        .wrap.female {
+            background-image: url('../../image/icon/real_bg.png');
+            background-repeat: no-repeat;
+            background-size: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            ;
+        }
+
+        .man {
+            text-align: center;
+        }
+
+        .man .img img {
+            width: 150px;
+            margin: 50px 0;
+        }
+
+        .submit {
+            width: calc(50vw - 20px);
+            line-height: 40px;
+            border-radius: 20px;
+            background: #8962d0;
+            color: #fff;
+            text-align: center;
+            margin: 20px 25vw;
+            box-shadow: 0 2px 7px #000000;
+        }
+
+        /* 女士特权 */
+        .line-wrap {
+            position: relative;
+            padding: 10px 0;
+        }
+        .line-wrap  p {
+            background: #fff;
+            padding: 0 20px;
+            z-index: 1;
+        }
+        .line {
+            width: 100%;
+            height: 1px;
+            background: #aaa;;
+            position: absolute;
+            top: 50%;
+        }
+        .ul .list {
+            width: calc((100% - 10px) / 2);
+            margin-right: 10px;
+            overflow: hidden;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            background: #eee;
+            margin-top: 10px;
+            height: 40px;
+            line-height: 40px;
+        }
+        .ul .list .item-icon {
+            background-image: url('../../image/icon/img_reality_item.png');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .ul .list.girl .item-icon{
+            background-image: url('../../image/icon/img_goddess_item.png');
+        }
+        .ul .list span::before {
+            background-image: url('../../image/icon/ic_locked_item.png');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            width: 12px;
+            height: 14px;
+            display: inline-block;
+            margin-right: 5px;
+            content: '';
+        }
+        .ul .list:nth-child(2n){
+            margin-right: 0;
+        }
+        .warn-tip{
+            text-align: center;
+            margin: 10px 0;
+            color: #000000;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="view">
+        <div class="wrap new-padding-10" :class="{'female': sex=='女'}">
+        <!-- <div class="wrap new-padding-10 female"> -->
+            <div class="man" >
+                <div class="img flex-c">
+                    <!-- <img v-if="ffInfo.is_identity_authentication == 0 || ffInfo.is_identity_authentication == 1" src="../../image/icon/img_face_certification.png" alt=""> -->
+                    <img  src="../../image/icon/img_face_certification_pass.png" alt="">
+                    <!-- <img v-if="ffInfo.is_identity_authentication == 3" src="../../image/icon/img_face_certification_fail.png" alt=""> -->
+                </div>
+                <h3 class="new-padding-tb-10">将通过面容识别进行真人认证</h3>
+                <p class="tip font-s">面容识别由系统自动完成，只需十秒。认证成功后即可免费报名女士节目</p>
+            </div>
+            <div v-if="sex == '女'" style="margin-top: 200px;"></div>
+            <p class="warn-tip">审核未通过</p>
+            <button class="submit" v-if="ffInfo.is_identity_authentication == 1" >审核中</button>
+            <button class="submit" v-if="ffInfo.is_identity_authentication == 0 || ffInfo.is_identity_authentication == 3" tapmode onclick="submit()">真人认证</button>
+            <div v-if="sex == '女'">
+                <div class="line-wrap flex-c">
+                    <p class="font-s">认证特权</p>
+                    <div class="line"></div>
+                </div>
+                <ul class="ul flex-w">
+                    <li class="list">
+                        <i class="item-icon"></i>
+                        <span class="font-s">免费发广播</span>
+                    </li>
+                    <li class="list">
+                        <i class="item-icon"></i>
+                        <span class="font-s">评论男士广播</span>
+                    </li>
+                    <li class="list">
+                        <i class="item-icon"></i>
+                        <span class="font-s">报名男士广播</span>
+                    </li>
+                    <li class="list">
+                        <i class="item-icon"></i>
+                        <span class="font-s">私聊男士</span>
+                    </li>
+                    <li class="list girl">
+                        <i class="item-icon"></i>
+                        <span class="font-s">红包照片</span>
+                    </li>
+                    <li class="list girl">
+                        <i class="item-icon"></i>
+                        <span class="font-s">收费相册</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script>
+    var view = new Vue({
+        el: '#view',
+        data: {
+            imgurl: imgurl,
+            ffList: [],
+            ffInfo: {},
+            sex: $api.getStorage('sex'),
+        },
+        methods: {
+            _url: function (param, url) {
+                _url(param, url);
+            },
+           
+        }
+    })
+
+    apiready = function () {
+        getUserInfo();
+    }
+
+    // 获取用户信息
+    function getUserInfo() {
+        _ajax('user_info.php', function (ret, err) {
+            console.log(JSON.stringify(ret))
+            console.log(JSON.stringify(err))
+            if (ret && ret.code == 200) {
+                view.ffInfo = ret.result;
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+            longitude: $api.getStorage('lon'),
+            latitude: $api.getStorage('lat')
+        })
+    }
+</script>
+
+</html>

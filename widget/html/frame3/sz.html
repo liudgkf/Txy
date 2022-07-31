@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui_font.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/news.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/frame3.css" />
+</head>
+
+<body>
+    <div id="view" >
+        <section class="m-frame">
+            <ul class="item">
+                <li class="item_li" onclick="_url({url:'frame4/bang_ding_shou_ji_frm', title:'修改手机'})">
+                    <div class="lt">手机号码</div>
+                    <div class="rt">
+                        <span class="f-size12 phone"></span>
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+                <li class="item_li" onclick="_url({url:'user/pwd', title:'修改密码'})">
+                    <span class="lt">修改登录密码</span>
+                    <span class="aui-iconfont aui-icon-right"></span>
+                </li>
+                <!-- <li class="item_li" onclick="_url({url:'user/pwd', title:'修改密码'})">
+                    <span class="lt">修改提现密码</span>
+                    <span class="aui-iconfont aui-icon-right"></span>
+                </li> -->
+            </ul>
+            <ul class="item">
+                <li class="item_li" onclick="clear_huncun()">
+                    <div class="lt">清除图片缓存</div>
+                    <div class="rt">
+                        <span class="f-size12 clearCache"></span>
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+            </ul>
+            <!-- <ul class="item">
+                <li class="item_li" onclick="collect()">
+                    <div class="lt">平台使用规范</div>
+                    <div class="rt">
+                        <span class="f-size12"></span>
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+                <li class="item_li" onclick="collect()">
+                    <div class="lt">用户使用协议</div>
+                    <div class="rt">
+                        <span class="f-size12"></span>
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+                <li class="item_li" onclick="collect()">
+                    <div class="lt">用户隐私政策</div>
+                    <div class="rt">
+                        <span class="f-size12"></span>
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+            </ul> -->
+            <ul class="item">
+                <li class="item_li" onclick="_url({url: 'frame4/yi_jian_fan_kui_frame', title: '意见反馈'})">
+                    <div class="lt">意见反馈</div>
+                    <div class="rt">
+                        <span class="f-size12"></span>
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+            </ul>
+            <ul class="item">
+                <li class="item_li" onclick="_login()">
+                    <div class="lt">退出登录</div>
+                    <div class="rt">
+                        <span class="f-size12"></span>
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery_min.js"></script>
+<script type="text/javascript" src="../../script/ffkj.js"></script>
+<script type="text/javascript" src="../../script/push.js"></script>
+<script type="text/javascript">
+    apiready = function(){
+        var phone = api.pageParam['phone'];
+        $('.phone').text(phone+'(仅自己可见)');
+        //获取缓存大小
+        api.getCacheSize(function(ret) {
+            var clearCache = ret.size / 1024 / 1024;
+            $api.html($api.dom('.clearCache'), clearCache.toFixed(2) + "MB")
+		});
+    }
+
+    //清除缓存
+    function clear_huncun() {
+        api.clearCache(function () {
+            _msg('清除完成');
+            //获取缓存大小
+            api.getCacheSize(function(ret) {
+                var clearCache = ret.size / 1024 / 1024;
+                $api.html($api.dom('.clearCache'), clearCache.toFixed(2) + "MB")
+            });
+        });
+    }
+</script>
+</html>

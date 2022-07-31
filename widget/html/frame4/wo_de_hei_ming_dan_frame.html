@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <style>
+        html, body {
+            background: #f7f6fb;
+        }
+        .wrap .tx {
+            width: 50px;
+            height: 50px;
+            border-radius: 7px;
+            overflow: hidden;
+            position: relative;
+            margin-right: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+        }
+
+        .wrap .tx.img-w img {
+            width: 50px;
+        }
+
+        .wrap .tx.img-h img {
+            height: 50px;
+        }
+
+        .wrap .tx.img-h,
+        .wrap .tx.img-w {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 列表 */
+        .wrap li {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            background: #fff;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .wrap li .remove-btn {
+            font-size: 12px;
+            color: #000000;
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="wrap" id="view" v-cloak>
+        <li class="flex-bt" v-for="(m, index) in ffList" @click="goUserInfo(m)">
+            <div class="name-wrap flex">
+                <div class="tx img-h">
+                    <img :src="imgurl + m.user_head" @load="imgCss(imgurl + m.user_head, $event)" onerror="this.onerror=null;this.src='../../image/touxiang.png'" alt="">
+                </div>
+                <span class="name">{{m.user_name}}</span>
+            </div>
+            <button @click.stop @click="remove(m.user_id)" class="remove-btn">移出黑名单</button>
+        </li>
+        <!-- <li class="flex-bt">
+            <div class="name-wrap flex">
+                <div class="tx img-h">
+                    <img src="../../image/test/01.jpg" alt="">
+                </div>
+                <span class="name">张三</span>
+            </div>
+            <button class="remove-btn">移出黑名单</button>
+        </li> -->
+    </ul>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script src="../../script/wximg.js"></script>
+<script>
+    var view = new Vue({
+        el: '#view',
+        data: {
+            imgurl: imgurl,
+            ffList: [],
+            ffInfo: {},
+        },
+        methods: {
+            // 跳转 查看用户详情
+            goUserInfo: function (data) {
+                go_userInfo(data.user_id , data.user_name, data.user_sex)
+            },
+            // 移出黑名单
+            remove: function(id){
+                _ajax('remove_black_list.php', function (ret, err) {
+                    console.log(JSON.stringify(ret));
+                    console.log(JSON.stringify(err));
+                    var msg = ret.code == 200 ? '操作成功' : ret.msg;
+                    _msg(msg);
+                    if (ret && ret.code == 200) {
+                        _lists('my_black_list.php', 0, 1, {user_id: $api.getStorage('userid')});
+                    }
+                }, {
+                    to_user: id,
+                    user_id: $api.getStorage('userid'),
+                })
+            },
+            _url: function (param, url) {
+                _url(param, url);
+            },
+            // 图片自适应
+            imgCss: function (url, event) {
+                var e = event.currentTarget;
+                imgCss(url, function (w, h) {
+                    if (w < h) {
+                        $(e).parent().addClass('img-w').removeClass('img-h');
+                    }
+                })
+            },
+        }
+    })
+
+    apiready = function () {
+        var param = {user_id: $api.getStorage('userid')}
+        _shangla(function () {
+            _lists('my_black_list.php', 0, 1, param);
+        })
+
+        _scrollToBottom(function () {
+            if (heigutgao == 1) {
+                pagenum++;
+                _lists('my_black_list.php', pagenum, '', param);
+            }
+        })
+
+        
+    }
+</script>
+
+</html>

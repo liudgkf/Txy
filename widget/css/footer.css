@@ -1,0 +1,172 @@
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    border-top: 1px solid #eee;
+}
+
+
+.h-list.hide {
+    display: none;
+}
+
+.f-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 25vw;
+    font-size: 12px;
+    /* padding: 15px 0; */
+    height: 50px;
+    color: #757575;
+    position: relative;
+}
+
+.f-list span {
+    display: none;
+    font-weight: bold;
+    color: #8962d0;
+}
+
+.f-list.active {
+    color: #000000;
+}
+
+.f-list.active span {
+    display: inline-block;
+}
+
+.f-list.active img {
+    display: none;
+}
+
+.f-list span.num {
+    position: absolute;
+    top: 5px;
+    left: 65%;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    background: #000000;
+    color: #fff;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.f-list img {
+    width: 20px;
+    height: 20px;
+}
+
+/* 第一个头部 */
+.one {
+    color: #222;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.one .location .aui-iconfont {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.one .location .city {
+    margin: 0 2px;
+}
+
+.one .title {
+    width: 35vw;
+    border: 1px solid #eee;
+    padding: 5px 15px;
+    border-radius: 15px;
+}
+
+.one .title .line {
+    width: 1px;
+    height: 20px;
+    background: #eee;
+}
+
+.one .online-tag {
+    font-size: 12px;
+    border: 1px solid #aaa;
+    color: #aaa;
+    border-radius: 3px;
+    font-weight: normal;
+    padding: 2px;
+    position: absolute;
+    right: 10px;
+}
+
+.one .online-tag.active {
+    border: 1px solid #8962d0;
+    color: #8962d0;
+}
+
+.one .search-wrap {
+    position: absolute;
+    left: 10px;
+    ;
+}
+
+.wrap {
+    background: #fff;
+    color: #000;
+    border-bottom: 1px solid #eee;
+}
+
+.wrap .list {
+    padding: 10px 0;
+    font-size: 14px;
+    /* border-bottom: 1px solid #eee; */
+    color: #757575;
+}
+
+.wrap .list.active {
+    border-bottom: 2px solid #000000;
+    color: #000000;
+}
+
+/* 第二个头部 */
+.two {
+    /* color: #9763fc;
+            font-size: 16px; */
+    color: #222;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 52px;
+}
+
+.two span {
+    width: 20vw;
+    font-size: 14px;
+    color: #555555;
+    font-weight: normal;
+}
+
+/* 第三个头部 */
+.com .title,
+.tri .title,
+.for .title {
+    /* color: #9763fc;
+            font-size: 16px; */
+    color: #222;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 52px;
+}
+
+/* 第四个头部 */
+.for {
+    line-height: 52px;
+    color: #000000;
+}
+
+.for .edit {
+    font-size: 14px;
+    width: 20vw;
+    text-align: center;
+}

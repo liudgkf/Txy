@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <style>
+    	html,body{
+    		background:rgba(0,0,0,0);
+    	}
+    	.content{
+    		position:fixed;
+    		top:0;
+    		left:0;
+    		width:100%;
+    		height:100%;
+    		background:rgba(0,0,0,.3);
+    	}
+    	.share_way{
+    		width:94%;
+    		padding:0 3% 3% 3%;
+    		margin:0 auto;
+    		background:white;
+    		position:absolute;
+    		bottom:0;
+    	}
+    	.share_way p{
+    		text-align:center;
+    		font-size:14px;
+    		color:#484848;
+    		line-height:30px;
+    		margin-bottom:10px;
+    	}
+    	.share{
+    		display: flex;
+    		justify-content: space-around;
+    	}
+    	.share img{
+    		/* width:20%;
+			margin-right:10%; */
+			width: 50px;
+			height: 50px;;
+    	}
+    	.share img:last-child{
+    		margin:0;
+    	}
+    	.close{
+    		text-align:center;
+    		margin-top:10px;
+    	}
+    </style>
+</head>
+<body>
+	<div class="content">
+		<div class="share_way">
+			<p>选择你分享的地方吧</p>
+			<div class="share">
+				<img src="../../image/wx.png" alt="" onclick="_share('session')"/>
+				<img src="../../image/wxq.png" alt="" onclick="_share('timeline')"/>
+				<!--<img src="../../image/share2.png" alt="" onclick="shareQQ('QFriend')"/>
+				<img src="../../image/share2.png" alt="" onclick="shareQQ('QZone')"/>-->
+			</div>
+			<div class="close" onclick="_close()">
+				<img src="../../image/x.png" alt="" style="width:20px;"/>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/Share.js"></script>
+<script type="text/javascript" src="../../script/zepto.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+
+	};
+	var userid = $api.getStorage('userid');
+	function _share(type){
+	    var IS_share;
+		var share = new Share();
+		// alert(api.pageParam.type)
+        // if (api.pageParam.type != 'parm') {
+        //     api.closeFrame({});
+        // }
+        share.shareWinXin(share_url+'a.php?yq='+userid,type);
+	}
+	function shareQQ(type) {
+        var share = new Share();
+        share.shareQQ(share_url+'a.php?yq=' + userid, type);
+        /*$.post(phpurl + 'index.php/home/User/sharenum', {
+            user_id : userid
+        })*/
+        api.closeFrame({});
+    }
+    $('.content').on('click',function(e) {
+        api.closeFrame({});
+    })
+    $('.content div').on('click',function(e) {
+        e.stopPropagation();
+    })
+	function _close(){
+		api.closeFrame({});
+	}
+</script>
+</html>

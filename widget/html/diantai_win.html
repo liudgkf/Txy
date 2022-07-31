@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/api.css">
+    <link rel="stylesheet" href="../css/news.css">
+    <link rel="stylesheet" href="../css/aui_font.css">
+    <link rel="stylesheet" href="../css/base_icon.css">
+    <link rel="stylesheet" href="../css/footer.css">
+
+</head>
+
+<body>
+    <header id="view">
+        <ul class="h-wrap">
+            <!-- 第二个头部 -->
+            <li class="h-list ">
+                <div class="two flex-bt">
+                    <!-- <span class="flex-c new new-invisible" tapmode onclick="showNew(1);">最新发布</span> -->
+                    <span class="flex-c new new-invisible">最新发布</span>
+                    <div class="title">电台</div>
+                    <!-- <span class="flex-c select-sex" tapmode onclick="showNew(2);">不限性别</span> -->
+                    <span class="flex-c select-sex" tapmode onclick="selectPost()">发布</span>
+                </div>
+            </li>
+
+        </ul>
+    </header>
+    <!-- 脚部 -->
+    <footer>
+        <ul class="f-wrap flex">
+            <li class="f-list " tapmode onclick="_index(0)">
+                <img src="../image/index_images/button1.png" alt="">
+                <span>首页</span>
+            </li>
+            <li class="f-list active">
+                <img src="../image/index_images/button02.png" alt="">
+                <span>电台</span>
+            </li>
+            <li class="f-list" tapmode onclick="_index(2)">
+                <img src="../image/index_images/button3.png" alt="">
+                <span>消息</span>
+                <span class="num new-hide"></span>
+            </li>
+            <li class="f-list" tapmode onclick="_index(3)">
+                <img src="../image/index_images/button4.png" alt="">
+                <span>我的</span>
+            </li>
+        </ul>
+    </footer>
+</body>
+<script src="../script/jquery_min.js"></script>
+<script src="../script/api.js"></script>
+<script src="../script/ffkj.js"></script>
+<script>
+    var index_sex = $api.getStorage('sex');
+    apiready = function () {
+        // 首次打开直接获取
+        changeMsgNum($api.getStorage('footNum'));
+        // 监听底部导航消息
+        _listener('footNum', function (ret) {
+            var c = ret.value.count;
+            changeMsgNum(c);
+        })
+
+
+        _heibai(1)
+        keyback();
+        _openFrame('frame1');
+        
+    }
+
+    // 最新发布 frame1
+    function showNew(type) {
+        if (type == 1) {
+            var buttons = ['最新发布', '最近约会'];
+            _action('请选择排序条件', buttons, function (index) {
+                console.log(index);
+                if (index != 3) {
+                    $('.two .new').text(buttons[index - 1]);
+                    _send('new', {
+                        index: index
+                    });
+                }
+            })
+        } else {
+            var buttons = ['不限性别', '只看男性', '只看女性'];
+            _action('请选择用户类型', buttons, function (index) {
+                console.log(index);
+                if (index != 4) {
+                    $('.two .select-sex').text(buttons[index - 1]);
+                    _send('select-sex', {
+                        index: index
+                    });
+                }
+            })
+        }
+    }
+
+    // 选择发布的类型
+    function selectPost() {
+        var buttons = ['发动态', '发活动'];
+        var urlArr = ['frame1/fa_dong_tai', 'frame1/fa_bu_yue_hui']
+        _action('', buttons, function (index) {
+            if (index != (buttons.length + 1)) {
+                _url({
+                    type: index - 1,
+                    url: urlArr[index - 1],
+                    title: '发布'
+                });
+            }
+        })
+    }
+</script>
+
+</html>

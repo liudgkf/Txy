@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/login.css">
+    <link rel="stylesheet" href="../../css/icon/iconfont.css">
+    <style>
+        .login-bg {
+            padding: 10px 0;
+            width: 100vw;
+        }
+
+        .wrap {
+            padding-top: 20vw;
+        }
+
+        .wrap .li {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            color: #aaa;
+            ;
+        }
+
+        .wrap .li.select {
+            color: #fff;
+        }
+
+        .wrap .li .iconfont {
+            border: 1px solid;
+            padding: 14px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        .info {
+            position: relative;
+            margin: 40px 0;
+        }
+
+        .info::before {
+            content: url('../../image/login/quotes0.png');
+            position: absolute;
+            top: -24px;
+            left: -27px;
+        }
+
+        .info::after {
+            content: url('../../image/login/quotes1.png');
+            position: absolute;
+            bottom: -24px;
+            right: -27px;
+        }
+        .info p {
+            text-align: center;
+            color: #fff;
+            font-size: 14px;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-bg">
+        <div class="wrap">
+            <ul class="flex-a">
+                <li class="li select" tapmode onclick="selectSex(0)">
+                    <i class="iconfont icon-nan"></i>
+                    <span>男</span>
+                </li>
+                <li class="li" tapmode onclick="selectSex(1)">
+                    <i class="iconfont icon-nv"></i>
+                    <span>女</span>
+                </li>
+            </ul>
+            <div class="info-wrap flex-c">
+                <div class="info" >
+                    <p>空姐、模特儿、瑜伽教练......<br>这里有很多女神等你来约</p>
+                    <p class="new-hide">这里长得漂亮可以当饭吃</p>
+                </div>
+            </div>
+            <button class="next-btn new-btn" tapmode onclick="submit()">下一步</button>
+        </div>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script>
+    // 选择性别
+    function selectSex(index) {
+        $('.li').eq(index).addClass('select').siblings().removeClass('select');
+        $('.info p').eq(index).removeClass('new-hide').siblings().addClass('new-hide');
+    }
+
+    // 下一步
+    function submit(){
+        var msg = '注册后将不能修改性别，确定吗？ 提示：你并不能与相同性别的用户交流';
+        _confirm({msg:msg}, function(index){
+            if(index == 1){
+                var sex = $('.select span').text();
+                $api.setStorage('sex', sex);  // 存储用户性别于本地
+                _url({url:'user/man_frame', title:'欢迎', phone:api.pageParam['phone'], password:api.pageParam['password']});
+            }
+        })
+    }
+</script>
+
+</html>

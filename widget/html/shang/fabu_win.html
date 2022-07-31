@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/aui_font.css">
+    <link rel="stylesheet" href="../../css/base_icon.css">
+    <link rel="stylesheet" href="../../css/footer.css">
+    <style>
+        .f-list {
+            width: calc(100vw / 3);
+        }
+    </style>
+</head>
+
+<body>
+    <header id="view">
+        <ul class="h-wrap">
+            <!-- 第三个头部 -->
+            <li class="h-list">
+                <div class="tri">
+                    <div class="flex-c new-padding-lr-10">
+                        <div class="title ">发布</div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </header>
+    <!-- 脚部 -->
+    <footer>
+        <ul class="f-wrap flex">
+            <li class="f-list" tapmode onclick="_index(0)">
+                <img src="../../image/index_images/button1.png" alt="">
+                <span>首页</span>
+            </li>
+
+            <li class="f-list active">
+                <img src="../../image/index_images/button05.png" alt="">
+                <span>发布</span>
+            </li>
+            <li class="f-list" tapmode onclick="_index(2)">
+                <img src="../../image/index_images/button4.png" alt="">
+                <span>我的</span>
+            </li>
+        </ul>
+    </footer>
+</body>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/api.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/group.js"></script>
+<script>
+    apiready = function () {
+        $api.fixStatusBar($api.dom('header'));
+        var h = $api.offset($api.dom('header')).h;
+        $api.fixTabBar($api.dom('footer'));
+        var fh = $api.offset($api.dom('footer')).h;
+        _heibai(1)
+        keyback();
+        var pageParam = [];
+        _openFrame('shang/fa_dong_tai');
+    }
+</script>
+
+</html>

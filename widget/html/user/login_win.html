@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/login.css">
+    <style>
+        .wrap {
+            padding-top: 20vw;
+        }
+        .login-bg {
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-bg">
+        <div class="wrap">
+            <button class="new-btn" tapmode onclick="_url({url:'user/login', title:'登录'})">登录</button>
+            <button class="new-btn" tapmode onclick="_url({url:'user/reg', title:'注册'})">注册</button>
+            <!-- <button class="new-btn" tapmode onclick="_url({url:'frame0/she_zhi_ji_ben_zi_liao_frame', title:'注册'})">注册</button> -->
+            <div class="other-login  new-hide" id="js-other">
+                <div class="line-wrap flex-bt">
+                    <div class="line"></div>
+                    <p class="tip">其他注册方式</p>
+                    <div class="line"></div>
+                </div>
+                <div class="flex-c" >
+                    <div class="login-img" tapmode onclick="login(0)">
+                        <img src="../../image/login/ic_login_wechat.jpg" alt="">
+                    </div>
+                    <div class="login-img" tapmode onclick="login(1)">
+                        <img src="../../image/login/ic_login_qq.jpg" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/login.js"></script>
+<script>
+    apiready = function(){
+        keyback() 
+        $api.fixStatusBar($api.dom('.bg'));
+        if($api.getStorage('shang') != 1){
+            $('#js-other').removeClass('new-hide');
+        }
+        _heibai(1);
+    }
+</script>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    function isRegisterUserName(s) {
+        var patrn = /[^\w\.\/]/ig;
+        if (patrn.exec(s)) return false
+        return true;
+    }
+
+    function test(s){
+        console.log(isRegisterUserName(s))
+    }
+    
+    test('哈哈哈');
+    test('123');
+    test('123sdfs');
+    test('sdfsdf');
+    test('哈哈哈123sdfs');
+    test('123哈哈');
+    test('123sdfs哈哈');
+    test('sdfs123哈哈');
+    test('sdfsdf哈哈');
+</script>
+
+</html>

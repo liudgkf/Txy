@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no ">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <style>
+        .f {
+            width: 50vw;
+            height: 50vw;
+            background: #000000;
+        }
+
+        .c {
+            width: 20vw;
+            height: 20vw;
+            background: orange;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="f" onclick="test()">
+        <div class="c" onclick="test2(11)"></div>
+    </div>
+</body>
+<script>
+    function test() {
+        console.log(1);
+    }
+
+    function test2(type) {
+        var e = window.event || arguments.callee.caller.arguments[0];
+        stopBubble(e);
+        console.log(2);
+    }
+
+    function stopBubble(e) {
+        //如果提供了事件对象，则这是一个非IE浏览器 
+        if (e && e.stopPropagation)
+            //因此它支持W3C的stopPropagation()方法 
+            e.stopPropagation();
+        else
+            //否则，我们需要使用IE的方式来取消事件冒泡 
+            window.event.cancelBubble = true;
+    }
+</script>
+
+</html>

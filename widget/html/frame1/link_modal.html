@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <style>
+        html,
+        body {
+            background: none;
+        }
+
+        .js-prp {
+            /* display: none; */
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .getlink {
+            background: #fff;
+            font-size: 12px;
+            position: absolute;
+            margin: 0 3rem;
+            width: calc(100% - 6rem);
+            border-radius: 8px;
+            padding: 0.4rem;
+            /* top: 6rem; */
+            top: 30%;
+        }
+
+        .getlink .hd {
+            position: relative;
+        }
+
+        .getlink_userimg {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            border: 1px solid #f1f1f1;
+            position: absolute;
+            top: -1.9rem;
+            left: calc(50% - 1.5rem);
+        }
+
+        .getlink_username {
+            text-align: center;
+            padding: 1.5rem 0 20px;
+        }
+
+        .getlink .content {
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #a7a7a7;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .getlink .content .border-top {
+            position: absolute;
+            top: -9px;
+            left: calc(50% - 4em);
+            width: 8em;
+            text-align: center;
+            background: #fff;
+            color: #ccc;
+        }
+
+        .js-postLink {
+            background: #000000;
+            color: #fff;
+            text-align: center;
+            margin: 20px 10px 10px;
+            line-height: 3;
+            border-radius: 6px;
+            -moz-box-shadow: -1px 2px 5px #a9a6a6;
+            -webkit-box-shadow: -1px 2px 5px #a9a6a6;
+            box-shadow: -1px 2px 5px #a9a6a6;
+        }
+
+        .getlink .js-close {
+            width: 18px;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .getlink_title {
+            color: #888787;
+            width: 2.5em;
+            flex-shrink: 0;
+        }
+
+        .js-copyQQ,
+        .js-copyWX {
+            color: #000000;
+        }
+
+        .getlink_style {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 12px;
+        }
+
+        .tx {
+            width: 50px;
+            height: 50px;
+            border-radius: 7px;
+            overflow: hidden;
+            position: absolute;
+            /* margin-right: 10px; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            top: -1.9rem;
+            left: calc(50% - 25px);
+        }
+
+        .tx.img-w img {
+            width: 50px;
+        }
+
+        .tx.img-h img {
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="view" v-cloak>
+
+        <section class="js-prp">
+            <div class="getlink">
+                <div class="hd">
+                    <!-- <img class="getlink_userimg" src="{{ imgUrl + ffInfo.head_portrait }}" alt=""> -->
+                    <!-- <img class="getlink_userimg" src="../../image/test/01.jpg" alt=""> -->
+                    <div class="tx img-h">
+                        <img :src="imgurl+ffInfo.head_portrait" @load="imgCss(imgurl+ffInfo.head_portrait, $event)"
+                            onerror="this.onerror=null;this.src='../../image/touxiang.png'" alt="">
+                    </div>
+                    <p class="getlink_username">{{ffInfo.name}}</p>
+                    <img tapmode onclick="api.closeFrame();" class="js-close" src="../../image/x.png" alt="">
+                </div>
+                <div class="content">
+                    <div class="border-top">TA的联系方式</div>
+                   <p class="getlink_style" v-if="ffInfo.wxcount && ffInfo.wxcount != null">
+                        <em>
+                            <span class="getlink_title">微信</span>
+                            <span class="js-WX">{{ffInfo.wxcount}}</span>
+                        </em>
+                        <span class="js-copyWX" @click="copy(ffInfo.wxcount)">复制</span>
+                    </p>
+                     <p class="getlink_style" v-if="ffInfo.qq && ffInfo.qq != null">
+                        <em>
+                            <span class="getlink_title">QQ</span>
+                            <span class="js-QQ">{{ffInfo.qq}}</span>
+                        </em>
+                        <span class="js-copyQQ" @click="copy(ffInfo.qq)">复制</span>
+                    </p>
+                    <p style="display: flex;">
+                        <span class="getlink_title">介绍</span>
+                        <span>{{ ffInfo.self_slogan || '这个人很懒，没有填写个人介绍~'}}</span>
+                    </p>
+                </div>
+                <div class="js-postLink" onclick="sendMyLink()">发送我的联系方式给TA</div>
+            </div>
+        </section>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script src="../../script/wximg.js"></script>
+<script>
+    var view = new Vue({
+        el: '#view',
+        data: {
+            imgurl: imgurl,
+            ffList: [],
+            ffInfo: {},
+        },
+        methods: {
+            _url: function (param, url) {
+                _url(param, url);
+            },
+            // 图片自适应
+            imgCss: function (url, event) {
+                var e = event.currentTarget;
+                imgCss(url, function (w, h) {
+                    if (w < h) {
+                        $(e).parent().addClass('img-w').removeClass('img-h');
+                    }
+                })
+            },
+            // 复制
+            copy: function (text) {
+                var clipBoard = api.require('clipBoard');
+                clipBoard.set({
+                    value: text
+                }, function (ret, err) {
+                    if (ret.status) {
+                        _msg('复制成功');
+                    } else {
+                        _msg('复制失败');
+                    }
+                });
+            }
+        }
+    })
+
+    apiready = function () {
+        getLink();
+    }
+
+    // 获取联系方式
+    function getLink() {
+        var uid = api.pageParam['uid'];
+        _ajax('home/user/getlink', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret && ret.code == 200) {
+                view.ffInfo = ret.data;
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+            to_user: uid,
+        })
+    }
+
+    // 发送我的联系方式给对方
+    function sendMyLink() {
+        var uid = api.pageParam['uid'];
+        _ajax('home/user/sendlink', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            _msg(ret.msg);
+			if(ret.code == 200){
+                api.closeFrame();
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+            to_user: uid,
+        })
+    }
+</script>
+
+</html>

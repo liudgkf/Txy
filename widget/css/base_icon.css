@@ -1,0 +1,104 @@
+.base-icon {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+/* 首页 性别 男*/
+.base-icon.nav-male-icon {
+    background-image: url('../image/icon/ic_male_list.png');
+}
+/* 首页 性别 女*/
+.base-icon.nav-female-icon {
+    background-image: url('../image/icon/ic_female_list.png');
+}
+/* 首页 搜索 */
+.base-icon.index-search-icon {
+    background-image: url('../image/icon/ic_navi_search.png');
+}
+/* 首页 距离 */
+.base-icon.index-juli-icon {
+    background-image: url('../image/icon/juli.png');
+}
+/* 首页 锁 */
+.base-icon.index-lock-icon {
+    background-image: url('../image/icon/ic_apply_to_view.png');
+}
+/* 首页 解锁 */
+.base-icon.index-nolock-icon {
+    background-image: url('../image/icon/ic_apply_to_view_unlock.png');
+}
+/* 首页 红包 */
+.base-icon.index-hb-icon {
+    background-image: url('../image/icon/ic_pay_to_view.png');
+}
+/* 广播 性别 男 */
+.base-icon.dy-male-icon {
+    background-image: url('../image/icon/ic_male_date.png');
+}
+/* 广播 性别 女 */
+.base-icon.dy-female-icon {
+    background-image: url('../image/icon/ic_female_date.png');
+}
+/* 广播 真人 */
+.base-icon.dy-real-icon {
+    background-image: url('../image/icon/real.png');
+}
+/* 广播 女神 */
+.base-icon.dy-girl-icon {
+    background-image: url('../image/icon/girl.png');
+}
+/* 广播 官方 */
+.base-icon.dy-sys-icon {
+    background-image: url('../image/icon/ic_announcement.png');
+}
+/* 广播 vip */
+.base-icon.dy-vip-icon {
+    background-image: url('../image/icon/vip.png');
+}
+/* 广播 内容 */
+.base-icon.dy-content-icon {
+    background-image: url('../image/icon/ic_datedescription.png');
+}
+/* 广播 节目 */
+.base-icon.dy-theme-icon {
+    background-image: url('../image/icon/ic_datetheme.png');
+}
+/* 广播 时间 */
+.base-icon.dy-time-icon {
+    background-image: url('../image/icon/ic_datetime.png');
+}
+/* 广播 地点 */
+.base-icon.dy-area-icon {
+    background-image: url('../image/icon/ic_datearea.png');
+}
+/* 广播 期望对象 */
+.base-icon.dy-person-icon {
+    background-image: url('../image/icon/ic_datecondition.png');
+}
+/* 广播 未赞 */
+.base-icon.dy-nozan-icon {
+    background-image: url('../image/icon/ic_thumpup.png');
+}
+/* 广播 赞 */
+.base-icon.dy-zan-icon {
+    background-image: url('../image/icon/ic_thumpup_a.png');
+}
+/* 广播 未报名 */
+.base-icon.dy-nobaoming-icon {
+    background-image: url('../image/icon/ic_handsup.png');
+}
+/* 广播 报名 */
+.base-icon.dy-baoming-icon {
+    background-image: url('../image/icon/ic_handsup_a.png');
+}
+/* 广播 评论 */
+.base-icon.dy-comment-icon {
+    background-image: url('../image/icon/ic_chattab.png');
+}
+/* 广播 价格 */
+.base-icon.dy-money-icon {
+    background-image: url('../image/icon/money.png');
+}

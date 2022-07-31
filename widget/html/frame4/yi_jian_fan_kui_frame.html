@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mycss.css"/>
+    <style>
+    	.content{
+    		width:94%;
+    		padding:3%;
+    		color:#484848;
+    		background:white;
+    	}
+    	.content p{
+    		line-height:30px;
+    		border-bottom:1px solid #DDD;
+    	}
+    	.txt{
+    		margin-top:10px;
+    		width:100%;
+    		outline:none;
+    		color:#0c4eff;
+			font-size: 14px;
+			line-height: 1.5;
+    	}
+    	.content button{
+			font-size: 14px;
+    		width:60%;
+			background: #0c4eff;
+			margin: 30px 20% 26px;
+			color: #fff;
+			display: inline-block;
+			line-height: 2.4;
+			padding: 0 3em;
+			border-radius: 7px;
+			box-shadow: 1px 2px 2px 1px #9e9e9e;
+    	}
+		.list{
+			text-align: center;
+			font-size: 14px;
+			padding-top: 30px;
+		}
+		.list_hd{
+			position: relative;
+			margin: 10px;
+			border-bottom: 1px solid #7d7d7d;
+			text-align: center;
+		}
+		.list_hd .h2{
+			position: absolute;
+			color: #4f30bf;
+			top: -10px;
+			left: calc(50% - 7.5em);
+			background: #f3f3f3;
+			padding: 0 1em;
+		}
+		.list_bd{
+			padding: 20px 0;
+		}
+		.list_bd .nmb{
+			padding: 20px 0;
+			color: #2d1586;
+			font-weight: bold;
+			font-size: 16px;
+		}
+		.list_bd .btn{
+			background: #6140d8;
+			margin: 30px 0 26px;
+			color: #fff;
+			display: inline-block;
+			line-height: 2.4;
+			padding: 0 3em;
+			border-radius: 7px;
+			box-shadow: 1px 2px 2px 1px #9e9e9e;
+		}
+    </style>
+</head>
+<body>
+	<div class="content">
+		<!--<p>意见反馈</p>-->
+		<textarea class="txt" id="message" cols="30" rows="10" placeholder="请填写你要反馈的问题"></textarea>
+		<button onclick="tijiao()">
+			提交
+		</button>
+	</div>
+	<!--<div class="list">
+		<div class="list_hd">
+			<p class="h2">你也可以直接向客服反馈</p>
+		</div>
+		<div class="list_bd">
+			<p style="padding: 10px 0;">请添加官方客服微信 <span class="js-copy" style="color: #b47bc7;"></span> 即可在线反馈</p>
+		</div>
+	</div>-->
+
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.js"></script>
+<script src="../../script/clipboard.2.0.js"></script>
+<script type="text/javascript">
+	var closeid;
+	apiready = function(){
+        $.post(phpurl + 'index.php/Home/user/customService', function(ret) {
+            $('.js-copy').text(ret.result);
+        });
+	};
+	function tijiao(){
+		var UILoading = api.require('UILoading');
+		UILoading.flower({
+		    center: {
+		        x: api.winWidth/2,
+		        y: api.winHeight/2
+		    },
+		    size: 30,
+		    fixed: true,
+		    fixedOn: 'yi_jian_fan_kui_frame',
+		    mask: 'rgba(0,0,0,.3)'
+		}, function(ret) {
+ 			closeid = ret.id;
+		});
+		var myuserid = $api.getStorage('userid');
+		var msg = $api.byId('message').value;
+		if(!msg){
+			api.toast({
+				msg:'你还没有填写意见哦'
+			});
+			UILoading.closeFlower({
+			    id: closeid
+			});
+			return false;
+		}
+		$api.post(phpurl+'feedback.php',{
+			values:{
+				user_id:myuserid,
+				content:msg
+			}
+		},function(ret){
+			if(ret && ret.code == 200){
+				api.toast({
+					msg:'提交成功'
+				});
+				UILoading.closeFlower({
+				    id: closeid
+				});
+				api.closeWin({});
+			}
+		})
+	}
+    //复制
+    $('.js-copy').on('click', function(e) {
+        var clipboard = new ClipboardJS('.js-copy', {
+            text : function(trigger) {
+                return $('.js-copy').text(); // 返回需要复制的内容
+            }
+        });
+        clipboard.on('success', function(e) {
+            console.log(JSON.stringify(e));
+            api.toast({
+                msg : '复制成功'
+            })
+        });
+        clipboard.on('error', function(e) {
+            console.log(e);
+            api.toast({
+                msg : '复制失败'
+            })
+        });
+    })
+</script>
+</html>

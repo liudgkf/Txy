@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/login.css">
+    <style>
+        .login-bg {
+            padding: 10px 0;
+            width: 100vw;
+        }
+
+        /* .wrap {
+            padding-top: 20vw;
+        } */
+    </style>
+</head>
+
+<body>
+    <div class="login-bg">
+        <div class="wrap">
+            <ul class="input-wrap w-bg">
+                <li class="li phone">
+                    <span class="name">+86</span>
+                    <input type="text" placeholder="请输入手机号">
+                </li>
+                <li class="li code">
+                    <span class="name">验证码</span>
+                    <input type="text" placeholder="请输入收到的验证码">
+                    <span class="get-code new-theme-color forget" data-status=0 tapmode
+                        onclick="getCode(1)">发送验证码</span>
+                </li>
+                <li class="li pwd">
+                    <span class="name">设置密码</span>
+                    <input type="password" placeholder="请设置登录密码">
+                </li>
+            </ul>
+            <!-- <div class="xieyi flex-c" tapmode onclick="select()">
+                <span class="box"></span>
+                <p tapmode onclick="_url({url:'frame1/tongyi', title:'用户发布兴趣爱好协议'});event.cancelBubble=true;">同意协议</p>
+            </div> -->
+            <button class="new-btn" tapmode onclick="submit()">下一步</button>
+            <div class="xieyi flex-c">
+                <p>
+                    点击进入表示你已阅读并同意<a href="javascript:;"
+                        onclick="_url({url:'frame1/tongyi', title:'用户发布兴趣爱好协议'});">《用户协议》</a>
+                </p>
+            </div>
+            <!--<div class="other-login new-padding-lr-10" id="keyboard">
+                <div class="line-wrap flex-bt">
+                    <div class="line"></div>
+                    <p class="tip">其他注册方式</p>
+                    <div class="line"></div>
+                </div>
+                <div class="flex-c">
+                    <div class="login-img" tapmode onclick="login(0)">
+                        <img src="../../image/login/ic_login_wechat.jpg" alt="">
+                    </div>
+                    <div class="login-img" tapmode onclick="login(1)">
+                        <img src="../../image/login/ic_login_qq.jpg" alt="">
+                    </div>
+                </div>
+            </div>-->
+        </div>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/login.js"></script>
+<script src="../../script/code.js"></script>
+<script src="../../script/keyboard.js"></script>
+<script>
+    // 下一步
+    function submit() {
+        // var cls = $('.xieyi').hasClass('check');
+        // if (!cls) {
+        //     _msg('请同意协议');
+        //     return;
+        // }
+
+        var phone = $.trim($('.phone input').val());
+        var pwd = $.trim($('.pwd input').val());
+        var code = $.trim($('.code input').val());
+        if (!checkMobile(phone)) {
+            _msg('请输入正确的手机号');
+            return;
+        }
+        if (!(pwd && pwd.length >= 6)) {
+            _msg('密码不能为空并且不少于6位')
+            return;
+        }
+        if (!phone) {
+            _msg('手机号未填写');
+            return;
+        }
+        if (!code || code != yzCode || phone != yzPhone) {
+            _msg('验证码不正确');
+            return;
+        }
+
+        // var shang = $api.getStorage('shang');
+        // if (shang) {
+        //     _url({ slidBackEnabled: false }, 'shejiao');
+        // } else {
+        _url({ url: 'user/male_frame', title: '你是。。。', phone: phone, password: pwd })
+        // }
+    }
+
+    // 协议选择
+    function select() {
+        $('.xieyi').toggleClass('check');
+    }
+</script>
+
+</html>

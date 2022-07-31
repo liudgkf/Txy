@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <style>
+        .top {
+            background: white;
+            text-align: center;
+            padding: 30px 0 50px 0;
+            margin-top: 1px;
+        }
+
+        .top p:first-child {
+            color: #878787;
+        }
+
+        .top p:last-child {
+            font-size: 35px;
+            font-weight: 600;
+            color: #464646;
+        }
+
+        .shuru {
+            margin-top: 15px;
+            font-size: 14px;
+            background: white;
+            line-height: 50px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .shuru input {
+            padding-left: 5%;
+            color: #a7a7a7;
+            outline: none;
+            width: 85%
+        }
+
+        .pay_way {
+            background: white;
+            margin-top: 15px;
+        }
+
+        .pay_way>ul>li {
+            font-size: 14px;
+            line-height: 30px;
+            color: #5e5e5e;
+            width: 89%;
+            margin: 0 auto;
+            padding: 10px 3%;
+            background: white;
+        }
+
+        .pay_way>ul>li:first-child {
+            border-bottom: 1px solid #e7e7e7;
+        }
+
+        .pay_way>ul>li .bangding {
+            color: #999;
+        }
+
+        .pay_way>ul>li span {
+            margin-left: 6px;
+        }
+
+        .pay_way>ul>li .left {
+            margin-left: 21px;
+        }
+
+        .pay_way>ul>li>img {
+            width: 23px;
+            vertical-align: text-bottom;
+            margin-bottom: -4px;
+        }
+
+        .pay_way .active {
+            background-image: url('../../image/select2.png');
+            background-repeat: no-repeat;
+            background-position: 96%;
+            background-color: white;
+            background-size: 23px;
+        }
+
+        .chong_zhi_btn {
+            width: 100%;
+            height: 40px;
+            margin: 30px auto 0;
+            border-radius: 5px;
+            background: #000000;
+            color: white;
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top">
+        <p>-我的余额(元)-</p>
+        <p id="myMoney"></p>
+    </div>
+    <div class="shuru">
+        <input type="text" placeholder="请输入充值金额" class="money" onkeyup="num(this)" /> <span
+            style="color:#6e6e6e;">元</span>
+    </div>
+    <div class="pay_way">
+        <ul>
+            <!-- <li class="active" data-val=1>
+                <img src="../../image/zfbZF.png" alt="" />
+                <span>支付宝支付 </span>
+            </li> -->
+            <li data-val=0 class="active">
+                <img src="../../image/wxZF.png" alt="" />
+                <span>微信支付 </span>
+            </li>
+        </ul>
+    </div>
+    <div style="width:90%;margin:0 auto;">
+        <button class="chong_zhi_btn" onclick="submit()">
+            充值
+        </button>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery_min.js"></script>
+<script type="text/javascript" src="../../script/zhifu.js"></script>
+<script type="text/javascript" src="../../script/jsencrypt.js"></script>
+<script type="text/javascript" src="../../script/ffkj.js"></script>
+<script type="text/javascript">
+    var myMoney;
+    apiready = function () {
+       getMyMoney()
+    };
+	
+	// 获取余额
+    function getMyMoney() {
+        _ajax('user_volley.php', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret && ret.code == 200) {
+                myMoney = ret.volley;
+                $('#myMoney').text('￥' + myMoney);
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+        })
+    }
+
+    // 格式化输入
+    function num(obj) {
+        obj.value = obj.value.replace(/[^0-9.]*$/, ""); //清除"数字"和"."以外的字符
+        obj.value = obj.value.replace(/^\./g, ""); //验证第一个字符是数字
+        obj.value = obj.value.replace(/\.{2,}/g, "."); //只保留第一个, 清除多余的
+        obj.value = obj.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+        obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数
+    }
+
+    // 确定
+    function submit() {
+        var userid = $api.getStorage('userid');
+        var payWay = 0; // 充值方式 0 微信 1 支付宝
+        var money = $.trim($('.money').val());
+        if (isNaN(Number(money)) || Number(money) <= 0) {
+            _msg('请输入充值金额');
+            return;
+        }
+        var param = setRSA('[userid={{' + userid + '}}][money={{' + money + '}}][paymethod={{' + payWay + '}}]');
+        _ajax('c=Pay&a=recharge', function (ret, err) {
+            console.log(JSON.stringify(ret))
+            console.log(JSON.stringify(err))
+            if (ret.code == 200) {
+                var number = ret['dingdan'];
+                // if (payWay == 1) {
+                //     Mypay.zhifubao(ZhiFuConfig); //支付宝支付
+                // } else {
+
+                // }
+                var notifyurl = base_url + "apis/weixin/example/";
+                _ajaxOrign('http://www.fondfell.com/pays/addo.php', function (rets, errs) {
+                    if (rets.code == 200) {
+                        var Mypay = new pay(money, number, base_url + 'apis/', 1);
+                       Mypay.weixinzhifu(function(win){
+                            if(win){
+                                getMyMoney()
+                                _msg('支付成功');
+                                _send('money_get');
+                            }else{
+                                _msg('支付失败');
+                            }
+                        });
+                    } else {
+                        _msg('支付失败');
+                    }
+                }, {
+                    money: money,
+                    user_id: 8,
+                    shopnum: number,
+                    notifyurl: notifyurl
+                })
+            } else {
+                _msg(ret.msg);
+            }
+        }, {
+            z: param,
+        })
+    }
+
+
+    // 设置密钥
+    function setRSA(msg) {
+        var rsa = new JSEncrypt();
+        rsa.setPublicKey(
+            '-----BEGIN PUBLIC KEY-----MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpvdExvx5zybwFboU1NSjuIghiuXNQSNiJ27G8iETbJdhtibKvTlbyzBVhq0brhnG16MG29pf8055zwODYKpWC+hPVJTflzhcYEVEqRpstq9q2BHe75ErRgjYIQiNGZJ11czQUj82TgDP3xMKntpchel5J3XbYfGjMzG3nARoOpwIDAQAB-----END PUBLIC KEY-----',
+            '10001');
+        return rsa.encrypt(msg);
+    }
+</script>
+
+</html>

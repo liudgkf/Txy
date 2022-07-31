@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/api.css">
+    <link rel="stylesheet" href="../css/news.css">
+    <link rel="stylesheet" href="../css/aui_font.css">
+    <link rel="stylesheet" href="../css/base_icon.css">
+    <link rel="stylesheet" href="../css/footer.css">
+    
+</head>
+
+<body>
+    <header id="view">
+        <ul class="h-wrap">
+            <!-- 第四个头部 -->
+            <li class="h-list ">
+                <div class="for flex-bt">
+                    <div class="edit" style="visibility: hidden;">占位占位</div>
+                    <div class="title flex-c"></div>
+                    <span class="edit" tapmode onclick="_url({url:'frame4/user', title:'个人资料', moreTitle: '保存'})">编辑资料</span>
+                </div>
+            </li>
+        </ul>
+    </header>
+    <!-- 脚部 -->
+    <footer>
+        <ul class="f-wrap flex">
+            <li class="f-list" tapmode onclick="_index(0)">
+                <img src="../image/index_images/button1.png" alt="">
+                <span>首页</span>
+            </li>
+            <li class="f-list" tapmode onclick="_index(1)">
+                <img src="../image/index_images/button2.png" alt="">
+                <span>电台</span>
+            </li>
+            <li class="f-list" tapmode onclick="_index(2)">
+                <img src="../image/index_images/button3.png" alt="">
+                <span>消息</span>
+                <span class="num new-hide"></span>
+            </li>
+            <li class="f-list active" tapmode onclick="_index(3)">
+                <img src="../image/index_images/button04.png" alt="">
+                <span>我的</span>
+            </li>
+        </ul>
+    </footer>
+</body>
+<script src="../script/jquery_min.js"></script>
+<script src="../script/api.js"></script>
+<script src="../script/ffkj.js"></script>
+<script>
+    apiready = function () {
+        // 首次打开直接获取
+        changeMsgNum($api.getStorage('footNum'));
+        // 监听底部导航消息
+        _listener('footNum', function (ret) {
+            var c = ret.value.count;
+            changeMsgNum(c);
+        })
+
+        _heibai(1)
+        keyback();
+        _openFrame('frame3');
+    }
+
+
+    // 获取昵称
+    function getNickName(name){
+        console.log(name)
+        $('.for .title').text(name)
+    }
+</script>
+
+</html>

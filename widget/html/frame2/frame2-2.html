@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/frame2.css">
+</head>
+
+<body>
+    <div class="wrap" id="view" v-cloak>
+        <ul class="u-wrap">
+            <li class="list" v-for="(m, index) in ffList" @click="msg(m.id, m.name)">
+                <div class="tx img-h">
+                    <img v-if="m.id == 1" src="../../image/icon/ic_diantai.png" alt="">
+                    <img v-if="m.id == 2" src="../../image/icon/ic_dianzan.png" alt="">
+                    <img v-if="m.id == 3" src="../../image/icon/ic_baoming.png" alt="">
+                    <img v-if="m.id == 4" src="../../image/icon/ic_shenqing.png" alt="">
+                    <img v-if="m.id == 5" src="../../image/icon/ic_pingjia.png" alt="">
+                    <img v-if="m.id == 6" src="../../image/icon/ic_mianju.png" alt="">
+                </div>
+                <div class="content">
+                    <div class="flex-bt">
+                        <div class="name-wrap" style="position: relative;">
+                            <span class="name">{{m.name}}</span>
+                            <!-- <span class="yuan" v-if="m.num != 0"></span> -->
+                        </div>
+                        <span class="time">{{ m.time }}</span>
+                    </div>
+                    <div class="flex-bt new-margin-t-10">
+                        <p class="msg aui-ellipsis-1">{{m.content}}</p>
+                        <span class="yuan" v-if="m.num != 0">{{m.num>99?'99+':m.num}}</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div id="no_more" :class="{'null': ffList.length == 0}"></div>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script>
+    var view = new Vue({
+        el: '#view',
+        data: {
+            imgurl: imgurl,
+            ffList: [],
+            ffInfo: {},
+        },
+        methods: {
+            // 打开窗口
+            msg: function (id, title) {
+                var _this = this;
+                // 1电台 2点赞 3报名 4申请 5评价 6系统消息
+                // var urlArr = ['frame2/dy_list', 'frame2/requestlist', 'frame2/imgsylist', 'frame2/evalist', 'frame2/sys_info' ];
+                var urlArr = ['frame2/dy_list', 'frame2/dy_list', 'frame2/dy_list', 'frame2/requestlist', 'frame2/evalist', 'frame2/sys_info' ];
+                _ajax('Home/User/isread', function (ret, err) {
+                    _url({
+                        url: urlArr[id - 1],
+                        title: title
+                    });
+                }, {
+                    user_id: $api.getStorage('userid'),
+                    id: id
+                })
+            },
+            _url: function (param, url) {
+                _url(param, url);
+            },
+            // 图片自适应
+            imgCss: function (url, event) {
+                var e = event.currentTarget;
+                imgCss(url, function (w, h) {
+                    if (w < h) {
+                        $(e).parent().addClass('img-w').removeClass('img-h');
+                    }
+                })
+            },
+        }
+    })
+    var sysTime = 1000;
+    var sysNowType = 0;
+    apiready = function () {
+        _shangla(function () {
+            sysNowType = 1;
+            getNowMsgList();
+        })
+        
+        _listener('viewdisappear', function(){
+            // 离开页面
+            sysNowType = 1;
+        })
+        _listener('sysMsgAppear', function(){
+            // 进入页面
+            sysNowType = 0;
+        })
+        _listener('sysMsgDisappear', function(){
+            // 离开页面
+            sysNowType = 1;
+        })
+        getMsgList();
+    }
+
+    // 即时刷新的消息
+    function getNowMsgList() {
+        
+        if (!$api.getStorage('userid')) {
+            api.refreshHeaderLoadDone();
+            return;
+        }
+        _ajax('Home/User/syslist', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            api.refreshHeaderLoadDone();
+            if (ret && ret.code == 200) {
+                view.ffList = ret.data;
+            }
+            sysNowType = 0;
+        }, {
+            user_id: $api.getStorage('userid')
+        })
+    }
+
+    // 获取消息列表
+    function getMsgList() {
+        if (!$api.getStorage('userid') || sysNowType == 1) {
+            var dt = setTimeout(function () {
+                clearTimeout(dt);
+                dt = null;
+                getMsgList();
+            }, sysTime);
+            return;
+        }
+        _ajax('Home/User/syslist', function (ret, err) {
+            // console.log(JSON.stringify(ret));
+            // console.log(JSON.stringify(err));
+            console.log('系统消息列表')
+            if (ret && ret.code == 200) {
+                view.ffList = ret.data;
+            }
+            var dt = setTimeout(function () {
+                clearTimeout(dt);
+                dt = null;
+                getMsgList();
+            }, sysTime);
+        }, {
+            user_id: $api.getStorage('userid')
+        })
+    }
+</script>
+
+</html>

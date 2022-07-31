@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <style>
+        .tx {
+            width: 50px;
+            height: 50px;
+            position: relative;
+            border-radius: 7px;
+            overflow: hidden;
+            margin-right: 10px;
+        }
+
+        .tx.img-w img {
+            width: 50px;
+        }
+
+        .tx.img-h,
+        .tx.img-w {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tx.img-h img {
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <ul>
+        <li v-for="(m, index) in ffList">
+            <div class="tx img-h" @click.stop @click="go_userInfo(m.id, m.name, m.sex)">
+                <img :src="imgurl+m.head_100" @load="imgCss(imgurl+m.head_100, $event)"
+                    onerror="this.onerror=null;this.src='../../image/touxiang.png'" alt="">
+                <img :src="imgurl+m.head_100" @load="imgCss(imgurl+m.head_100, $event)"
+                    onerror="this.onerror=null;this.src='../../image/error-img.png.png'" alt="">
+            </div>
+        </li>
+    </ul>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script src="../../script/wximg.js"></script>
+<script>
+    var view = new Vue({
+        el: '#view',
+        data: {
+            imgurl: imgurl,
+            ffList: [],
+            ffInfo: {},
+        },
+        methods: {
+            _url: function (param, url) {
+                _url(param, url);
+            },
+            // 图片自适应
+            imgCss: function (url, event) {
+                var e = event.currentTarget;
+                imgCss(url, function (w, h) {
+                    if (w < h) {
+                        $(e).parent().addClass('img-w').removeClass('img-h');
+                    }
+                })
+            },
+        }
+    })
+
+    apiready = function () {
+        _shangla(function () {
+            _lists('', 0, 1, param);
+        })
+
+        _scrollToBottom(function () {
+            if (heigutgao == 1) {
+                page++;
+                _lists('', page, '', param);
+            }
+        })
+        
+        var msg = ret.code == 200 ? '' : ret.msg;
+        _msg(msg);
+
+        _ajax('', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+          
+            if (ret && ret.code == 200) {
+
+            }
+        }, {})
+      
+    }
+</script>
+
+</html>

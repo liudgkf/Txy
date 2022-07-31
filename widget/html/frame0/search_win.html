@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/aui_font.css">
+    <style>
+        html, body {
+            background: #eee;;
+        }
+        header {
+            background: #fff;
+        }
+        header .aui-iconfont {
+            font-size: 20px;
+            /* font-weight: bold; */
+        }
+        .head {
+            padding: 5px;
+        }
+        .title {
+            font-size: 14px;
+            background: #eee;
+            width: calc(76vw - 5px);
+            margin-right: 5px;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .title input {
+            width: 100%;
+        }
+        .more{
+            font-size: 14px;
+            background: #000000;
+            color: #fff;
+            padding:3px 5px;
+            border-radius: 3px;
+        }
+        .more, .back {
+            width: 10vw;
+            text-align: center;
+        }
+        .back img {
+            width: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="head flex-bt">
+            <!-- <div class="back" tapmode onclick="_closeToWin()"><i class="aui-iconfont aui-icon-left"></i></div> -->
+            <div class="back" tapmode onclick="_closeToWin()"><img src="../../image/icon/back.png" alt=""></div>
+            <div class="title flex">
+                <i style="font-size: 14px;margin-right: 5px;" class="aui-iconfont aui-icon-search"></i>
+                <input type="search" placeholder="请输入关键词搜索">
+            </div>
+            <div class="more" tapmode onclick="_key()">搜索</div>
+        </div>
+    </header>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script>
+    var moreType = 0;
+    apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+    }
+
+    // 回车搜索
+    window.onkeydown = function (e) {
+        if (e.keyCode == 13) {
+            _key();
+        }
+    }
+
+    // 搜索
+    function _key(){
+        var keyword = $.trim($('.title input').val());
+        if(!keyword){
+            _msg('请输入关键字搜索');
+            return;
+        }
+        _openFrame('frame0/search', '', '1', {key: keyword});
+    }
+</script>
+</html>

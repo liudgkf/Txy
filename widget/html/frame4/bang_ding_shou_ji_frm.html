@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/login.css">
+    <style>
+        .login-bg {
+            padding: 10px 0;
+            width: 100vw;
+            background: #eee;
+        }
+
+        .top img {
+            width: 100px;
+        }
+
+        .input-wrap .li span {
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-bg">
+        <div class="wrap">
+            <div class="top">
+                <div class="img flex-c new-padding-tb-10">
+                    <img src="../../image/icon/ic_phonenumimg.png" alt="">
+                </div>
+                <p class="new-margin-10">绑定手机，让你的账号更安全</p>
+            </div>
+            <ul class="input-wrap w-bg">
+                <li class="li phone">
+                    <span>+86</span>
+                    <input type="text" placeholder="输入手机号">
+                </li>
+                <li class="li code">
+                    <span>验证码</span>
+                    <input style="width: 150px;" type="text" placeholder="请输入收到的验证码">
+                    <span class="get-code" data-status=0 tapmode onclick="getCode()">获取验证码</span>
+                </li>
+            </ul>
+            <button class="new-btn" tapmode onclick="submit()">确认</button>
+        </div>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+
+<script src="../../script/code.js"></script>
+<script src="../../script/keyboard.js"></script>
+<script src="../../script/push.js"></script>
+<script>
+    // 下一步
+    function submit() {
+        var phone = $.trim($('.phone input').val());
+        var code = $.trim($('.code input').val());
+        if (!checkMobile(phone)) {
+            _msg('请输入正确的手机号');
+            return;
+        }
+
+        if (!phone) {
+            _msg('手机号未填写');
+            return;
+        }
+        if (!code || code != yzCode || phone != yzPhone) {
+            _msg('验证码不正确');
+            return;
+        }
+
+        _ajax('user_info_edit.php', function (ret, err) {
+            if (ret && ret.code == 200) {
+                _msg('修改手机成功');
+                _login();
+            } else {
+                _msg(ret.msg);
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+            ziduan: 'phone',
+            value: phone,
+        })
+
+    }
+</script>
+
+</html>

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui_font.css" />
+    <link rel="stylesheet" type="text/css" href="../css/news.css" />
+    <link rel="stylesheet" type="text/css" href="../css/frame3.css" />
+    <style>
+        .name-wrap .tag {
+            font-size: 10px;
+            color: #fff;
+            border-radius: 2px;
+            height: 16px;
+            width: 25px;
+            background: #000000;
+            margin-right: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+
+        .name-wrap .tag.girl-tag {
+            /* background: linear-gradient(24deg, #000000, #ffeb3b, #000000); */
+            background-image: url('../image/icon/girl.png');
+            background-color: none;
+            width: 32px;
+            height: 14px;
+        }
+
+        .name-wrap .tag.real-tag {
+            /* background: linear-gradient(24deg, #4caf50, #ffeb3b, #4caf50); */
+            background-image: url('../image/icon/real.png');
+            background-color: none;
+            width: 32px;
+            height: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="view" v-cloak>
+        <section class="m-frame">
+            <div class="tx-wrap flex-c flex-col w-bg new-padding-10">
+                <div class="tx img-h" onclick="changeHeader()">
+                    <img :src="imgUrl+listData.head_portrait" @load="imgCss(imgUrl+listData.head_portrait, $event)"
+                        onerror="this.onerror=null;this.src='../image/touxiang.png'" alt="">
+                </div>
+                <div class="tag-wrap new-margin-tb-10 flex-w">
+                    <span class="tag" v-if="listData.city">{{listData.city}}</span>
+                    <span class="tag">{{listData.age}}岁 · {{listData.constellation}}</span>
+                    <span class="tag">{{listData.occupation}}</span>
+                </div>
+                <p class="area" v-if="listData.offten_city">常驻城市：{{listData.offten_city}}</p>
+                <div class="real name-wrap new-margin-t-10" v-if="listData.is_identity_authentication == 2">
+                    <div class="flex">
+                        <span class="real-tag tag"></span>
+                        <span class="font-s">TA通过面容识别认证真实性</span>
+                    </div>
+                    <div class="flex new-margin-t-10" v-if="listData.sex =='女'">
+                        <span class="girl-tag tag"></span>
+                        <span class="font-s">TA已获得陌觅女神认证</span>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="item">
+                <li class="item_li" v-if="listData.is_identity_authentication != 2"
+                    onclick="_url({url:'frame4/authentication_frame', title:'认证身份'})">
+                    <div class="lt">真人认证</div>
+                    <div class="rt">
+                        <span class="f-size12" v-if="listData.is_identity_authentication == 0">马上认证</span>
+                        <span class="f-size12" v-if="listData.is_identity_authentication == 1">审核中</span>
+                        <span class="f-size12" v-if="listData.is_identity_authentication == 3">认证失败</span>
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+                <li class="item_li" v-if="listData.sex =='男'" onclick="_url({ url: 'frame4', title: '开通会员'})">
+                    <div class="lt">会员</div>
+                    <div class="rt">
+                        <span class="f-size12" v-if="listData.is_vip > 0" style="color: #B6A580;">{{listData.vip_end_datetime}}到期</span>
+                        <span class="f-size12" v-if="listData.is_vip == 0">升级会员尊享特权</span>
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+
+                <li class="item_li" onclick="_url({url: 'frame4/wo_de_yu_e_frame', title: '钱包'})" id="qianbao">
+                    <div class="lt">钱包</div>
+                    <div class="rt">
+                        <span class="f-size12">{{ listData.volley }}元</span>
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+
+            </ul>
+            <ul class="item">
+                <li class="item_li" onclick="_url({url:'frame4/Broadcast_frame', title:'我的动态'})">
+                    <div class="lt">我的动态</div>
+                    <div class="rt">
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+                <li class="item_li" onclick="_url({url:'frame4/Broadcast_frame', title:'我的活动', type:1})">
+                    <div class="lt">我的活动</div>
+                    <div class="rt">
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+                <li class="item_li quanxian" onclick="quanxian();">
+                    <div class="lt">查看权限</div>
+                    <div class="rt">
+                        <span class="f-size12" v-if="listData.img_auth == '0' || !listData.img_auth">公开（推荐）</span>
+                        <span class="f-size12" v-if="listData.img_auth == '1'">查看相册付费</span>
+                        <span class="f-size12" v-if="listData.img_auth == '2'">查看前需要通过我的验证</span>
+                        <span class="f-size12" v-if="listData.img_auth == '3'">隐身</span>
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+            </ul>
+            <div class="pushImg">
+                <div class="pushImg1" v-if="imgList.length == 0">
+                    <img src="../image/add.png" style="padding: 20px;border: 1px dashed #ccc;border-radius: 5px;"
+                        onclick="permission();">
+                    <p style="font-size: 15px;padding: 10px 0;">上传我的第一张照片</p>
+                    <p style="font-size: 12px;color: #ccc;padding-bottom: 20px;" v-if="listData.sex == '女'">
+                        照片可以让男士对约会更有安全感 </p>
+                    <p style="font-size: 12px;color: #ccc;padding-bottom: 20px;" v-if="listData.sex == '男'">
+                        照片可以让女士对约会更有安全感 </p>
+                </div>
+                <div class="pushImg2" v-if="imgList.length > 0">
+                    <div class="li" v-for="(i, sindex) in imgList"
+                        @click="_url({imgArr:bigImgList, iIndex:sindex}, 'frame1/dy_img_win')">
+                        <div class="img img-h">
+                            <img :src="imgUrl+i.pic" @load="imgCss(imgUrl+i.pic, $event)">
+                        </div>
+                        <p class="showImg_permission" v-if="i.burn == '1' && i.packet > 0">阅后即焚的<br>红包照片</p>
+                        <p class="showImg_permission" v-if="i.burn == '1' && i.packet == 0">阅后即焚</p>
+                        <p class="showImg_permission" v-if="i.burn == '0' && i.packet > 0">红包照片</p>
+                        <i class="aui-iconfont aui-icon-close" @click.stop @click="delImg(i.id)"></i>
+                    </div>
+                    <img class="add" src="../image/add.png" onclick="permission()">
+                </div>
+                <div
+                    style="background: #f1f1f1;color: #989898;font-size: 12px;display: flex;align-items: center;    padding: 5px 10px;">
+                    <img src="../image/ps.png" style="width: 20px;height: 20px;">
+                    <p>请勿上传裸露低俗的照片，严重者将作封号处理</p>
+                </div>
+            </div>
+            <ul class="item">
+                <li class="item_li" onclick="showDetail('frame0/pj_modal')">
+                    <div class="lt">我的评价</div>
+                    <div class="rt">
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+                <li class="item_li" onclick="_url({url:'frame4/collect_frame', title:'我喜欢的'})">
+                    <div class="lt">我喜欢的</div>
+                    <div class="rt">
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+                <li class="item_li" onclick="_url({url:'frame4/wo_de_hei_ming_dan_frame', title: '黑名单'})">
+                    <span class="lt">黑名单</span>
+                    <span class="aui-iconfont aui-icon-right"></span>
+                </li>
+            </ul>
+            <ul class="item">
+                <li class="item_li">
+                    <div>
+                        <span class="lt new-margin-r-10">历史访客</span>
+                        <span>有{{listData.see || 0}}个人看过你</span>
+                    </div>
+                    <!-- <span class="aui-iconfont aui-icon-right"></span> -->
+                </li>
+
+                <li class="item_li" onclick="clear_hurn()">
+                    <div>
+                        <span class="lt new-margin-r-10">阅后即焚</span>
+                        <span>已有{{ listData.burn || '0' }}个人焚毁了你的照片</span>
+                    </div>
+                    <span style="color:#000000;">一键恢复</span>
+                </li>
+            </ul>
+            <ul class="item">
+                <li class="item_li" style="margin: 10px 0;"
+                    @click="_url({url:'frame3/sz', title:'设置', phone: listData.phone})">
+                    <div class="lt">设置</div>
+                    <div class="rt ">
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+            </ul>
+            <ul class="item">
+                <li class="item_li" style="margin-top: 18px;">
+                    <div>我的邀请码</div>
+                    <div class="rt">
+                        <span>{{listData.send_code}}</span>
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+                <!-- <li class="item_li" style="margin-top: 18px;" onclick="shenqing()">
+                    <div>帮朋友申请邀请码</div>
+                    <div class="rt">
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li> -->
+                <li class="item_li" onclick="showDetail('frame0/share')" id="yao">
+                    <span>分享陌觅给朋友</span>
+                    <span class="aui-iconfont aui-icon-right"></span>
+                </li>
+            </ul>
+
+            <ul class="item">
+                <li class="item_li" onclick="openService()">
+                    <div>
+                        <span class="lt new-margin-r-10">有问题需要帮助</span>
+                    </div>
+                    <span style="color:#000000;">联系客服</span>
+                </li>
+                <li class="item_li" style="margin-top: 18px;" onclick="_url({url:'frame3/tousu', title:'投诉客服'})">
+                    <div>投诉客服</div>
+                    <div class="rt">
+                        <span class="aui-iconfont aui-icon-right"></span>
+                    </div>
+                </li>
+                <li class="item_li" style="    margin: 10px 0;" onclick="updateVision(1)">
+                    <div class="lt">当前版本</div>
+                    <div class="rt js-appVersion"></div>
+                </li>
+
+            </ul>
+        </section>
+        <section class="js-prp">
+            <!-- <div class="js-Authority">
+                <h5 class="h5">查看权限</h5>
+                <p class="p" onclick="lookJurisdiction(0)">公开（推荐）</p>
+                <p class="p" onclick="lookJurisdiction(1)">查看相册付费</p>
+                <p class="p" onclick="lookJurisdiction(2)">查看前需通过我的验证</p>
+                <p class="p" onclick="lookJurisdiction(3)">隐身</p>
+            </div> -->
+            <div class="js-permission">
+                <h5 class="h5">该图片阅览权限</h5>
+                <p class="p" onclick="pushImg(0,0)">公开（推荐）</p>
+                <p class="p" onclick="pushImg(1,0)">阅后即焚（查看2秒后焚毁）</p>
+                <p v-if="listData.sex =='女'" class="p" onclick="hongbao(0,'设置查看该照片所需的红包')">红包照片</p>
+                <p v-if="listData.sex =='女'" class="p" onclick="hongbao(1,'设置查看该阅后即焚照片所需的红包')">阅后即焚的红包照片</p>
+            </div>
+        </section>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery_min.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/ffkj.js"></script>
+<script type="text/javascript" src="../script/wximg.js"></script>
+<script type="text/javascript" src="../script/update.js"></script>
+<script type="text/javascript">
+    var userid;
+    var closeid;
+    var imgurls = [];
+    var showList = new Vue({
+        el: '#view',
+        data: {
+            listData: {},
+            imgUrl: imgurl,
+            imgList: [],
+            bigImgList: [],
+        },
+        methods: {
+            _url: function (param, url) {
+                _url(param, url);
+            },
+            // 图片自适应
+            imgCss: function (url, event) {
+                var e = event.currentTarget;
+                imgCss(url, function (w, h) {
+                    if (w < h) {
+                        $(e).parent().addClass('img-w').removeClass('img-h');
+                    }
+                })
+            },
+            // 删除图片
+            delImg: function (id) {
+                _confirm({
+                    msg: '是否确定删除该图？'
+                }, function (bIndex) {
+                    if (bIndex == 1) {
+                        _loading();
+                        _ajax('user_img_delete.php', function (ret, err) {
+                            _loadingClose();
+                            var msg = ret.code == 200 ? '删除成功' : ret.msg;
+                            _msg(msg);
+                            if (ret && ret.code == 200) {
+                                getUserInfo();
+                            }
+                        }, {
+                            img_id: id,
+                        })
+                    }
+                })
+
+            }
+
+        }
+    });
+    apiready = function () {
+        userid = $api.getStorage('userid');
+        getUserInfo();
+        //监听登录
+        _listener('fresh', function () {
+            userid = $api.getStorage('userid');
+            getUserInfo();
+        })
+        _listener('viewappear', function () {
+            userid = $api.getStorage('userid');
+            getUserInfo();
+        })
+
+        //APP版本
+        $('.js-appVersion').text(api.appVersion);
+    };
+
+
+    // 获取用户信息
+    function getUserInfo() {
+        _ajax('user_info.php', function (ret, err) {
+            console.log(JSON.stringify(ret))
+            if (ret && ret.code == 200) {
+                showList.listData = ret.result;
+               // 更新名字
+                api.execScript({
+                    script: 'getNickName("'+ret.result.name+'")'
+                })
+                $api.setStorage('myyue', ret.result.volley);
+                getXiangce();
+                showList.$forceUpdate();
+
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+            longitude: $api.getStorage('lon'),
+            latitude: $api.getStorage('lat')
+        })
+    }
+
+    // 获取用户相册 
+    function getXiangce() {
+        _ajax('user_img_list.php', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret && ret.code == 200) {
+                if (ret.result.length > 0) {
+                    showList.imgList = ret.result;
+                    showList.bigImgList = [];
+                    for (var i = 0; i < ret.result.length; i++) {
+                        showList.bigImgList.push(ret.result[i].pic[0]);
+                    }
+                } else if (ret.result.length == 0) {
+                    showList.imgList = [];
+                    showList.bigImgList = [];
+                }
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+            to_user: $api.getStorage('userid'),
+        })
+    }
+
+
+    //查看权限
+    function quanxian() {
+        // $('.js-prp').show();
+        // $('.js-prp .js-Authority').show();
+        // $('.js-prp .js-permission').hide();
+        var buttons = ['公开(推荐)', '查看付费相册', '查看前需通过我的验证', '隐身'];
+        _action('', buttons, function (bIndex) {
+            if (bIndex != (buttons.length + 1)) {
+                lookJurisdiction(bIndex - 1);
+            }
+        })
+    }
+    // 设置上传照片权限
+    function permission() {
+        $('.js-prp').show();
+        $('.js-prp .js-permission').show();
+    }
+    $('.js-prp').on('click', function (e) {
+        $('.js-prp').hide();
+    });
+    $('.js-prp div').on('click', function (e) {
+        e.stopPropagation();
+    });
+    /*更改相册查看权限*/
+    function lookJurisdiction(auth) {
+        if (auth == 1) {
+            if (showList.listData.sex == '女' && showList.listData.is_identity_authentication != 2) {
+                var obj = {
+                    title: '查看相册付费',
+                    msg: '您还未认证，需要你认证后才可以去设置该权限。该权限可以设置非会员进入你的相册的金额',
+                    btn: ['我要认证', '取消']
+                }
+
+                _confirm(obj, function (bIndex) {
+                    if (bIndex == 1) {
+                        new_authentication();
+                    }
+                })
+
+            } else if (showList.listData.sex == '男' && showList.listData.is_vip == 0) {
+                var obj = {
+                    title: '查看相册付费',
+                    msg: '您还不是会员，成为会员后才可以去设置该权限。该权限可以设置非会员进入你的相册的金额',
+                    btn: ['成为会员', '取消']
+                }
+
+                _confirm(obj, function (bIndex) {
+                    if (bIndex == 1) {
+                        _url({
+                            url: 'frame4',
+                            title: '开通会员'
+                        })
+                    }
+                })
+
+            } else {
+                api.prompt({
+                    title: '请输入金额',
+                    type: 'number',
+                    buttons: ['取消', '确定'],
+                    msg: '请设置非会员进入你的相册的金额',
+                }, function (ret, err) {
+                    var index = ret.buttonIndex;
+                    var text = ret.text;
+                    if (!(text > 0)) {
+                        _msg('金额不能小于0');
+                        return;
+                    }
+                    if (index == 2) {
+                        _ajax('home/User/imgauth', function (ret, err) {
+                            _msg(ret.msg);
+                            showList.listData.img_auth = auth;
+                        }, {
+                            user_id: userid,
+                            auth: auth,
+                            price: text,
+                        })
+                    }
+                });
+            }
+        } else {
+            _ajax('home/User/imgauth', function (ret, err) {
+                _msg(ret.msg);
+                showList.listData.img_auth = auth;
+            }, {
+                user_id: userid,
+                auth: auth,
+            })
+        }
+    }
+    //申请验证码
+    function shenqing() {
+        var obj = {
+            title: '免费申请邀请码',
+            msg: '我们会根据你的历史消费来评估是否发放邀请码。为维持陌觅的氛围，请一定把邀请码赠与靠谱的朋友！',
+            btn: ['确定申请', '取消'],
+        };
+        _confirm(obj, function (bIndex) {
+            if (bIndex == 1) {
+                _ajax('Home/User/code', function (ret, err) {
+                    console.log(JSON.stringify(ret))
+                    console.log(JSON.stringify(err))
+                    if(ret.code == 200){
+                        _msg('申请成功');
+                    }else{
+                        _msg(ret.msg);
+                    }
+
+                    // if (ret.code == '200') {
+                    //     _alert(ret.invite, function(){
+
+                    //     }, '申请成功')
+                    // } else {
+                    //     _alert('我们将尽快处理您的申请。如果通过审核，您会在消息中心收到我们发放的邀请码', function(){
+
+                    //     }, '成功提交申请')
+                    // }
+                }, {
+                    type: '0',
+                    user_id: $api.getStorage('userid'),
+                })
+            }
+        })
+    }
+
+    //上传图片
+    function pushImg(burn, packet) {
+        openPic(function (ret) {
+            _loading();
+            console.log(ret.data)
+            _ajaxFile('add_user_img.php', function (rets, errs) {
+                _loadingClose();
+                if (rets && rets.code == 200) {
+                    _msg('上传成功');
+                    getUserInfo();
+                }
+                $('.js-prp').hide();
+            }, {
+                user_id: $api.getStorage('userid'),
+                burn: burn,
+                packet: packet,
+            }, {
+                photo_album: ret.data,
+            })
+        })
+    }
+
+    /*图片红包金额设置*/
+    function hongbao(type, msg) {
+        $('.js-prp').hide();
+        api.prompt({
+            title: '请输入金额',
+            type: 'number',
+            buttons: ['取消', '确定'],
+            msg: msg,
+        }, function (ret, err) {
+            var index = ret.buttonIndex;
+            var text = ret.text;
+            if (index == 2) {
+                pushImg(type, text);
+            }
+        });
+    }
+    //一键恢复
+    function clear_hurn() {
+        _ajax('Home/User/resetburn', function (ret, err) {
+            var msg = ret.code == 200 ? '恢复成功' : ret.msg;
+            _msg(msg);
+        }, {
+            user_id: $api.getStorage('userid'),
+        })
+    }
+
+    // 修改头像
+    function changeHeader() {
+        openPic(function (ret) {
+            _loading();
+            console.log(ret.data)
+            _ajaxFile('change_head.php', function (rets, errs) {
+                _loadingClose();
+                if (rets && rets.code == 200) {
+                    _msg('修改成功');
+                    getUserInfo();
+                }
+            }, {
+                user_id: $api.getStorage('userid'),
+            }, {
+                head: ret.data,
+            })
+        })
+    }
+
+    // 联系客服
+    function openService() {
+        _ajax('api/Member/kefu', function (ret, err) {
+            if (ret && ret.data && ret.data.id) {
+                _url({ txt: '客服', touserid: ret.data.id, url: 'frame0/liaotian', title: '与客服的聊天' })
+            }else{
+                _msg('暂无法联系客服');
+            }
+        })
+    }
+
+    // 发送邀请码
+    function sendCode(){
+        var phpurl = base_url + 'api/code/sms';
+        if(!showList.listData.phone){
+            _msg('请先绑定手机');
+            return;
+        }
+        _ajaxOrign(phpurl, function (rets, errs) {
+        }, {
+            phone: showList.listData.phone,
+            code: showList.listData.send_code,
+        })
+    }
+</script>
+
+</html>

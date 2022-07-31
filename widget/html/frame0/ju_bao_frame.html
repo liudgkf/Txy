@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui_font.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/news.css" />
+    <style>
+        html,
+        body {
+            background: #f7f6fb;
+        }
+
+        input {
+            outline: none;
+        }
+
+        .top,
+        .complain_explain {
+            background: white;
+            padding: 15px 10px;
+            margin-top: 10px;
+        }
+
+        /* .top .head{
+            display: inline-block;
+            width: 25%;
+        }
+        .top .head > img{
+            width: 100%;
+        } */
+        .top .head {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            border-radius: 7px;
+            overflow: hidden;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .top .head.img-h img {
+            height: 80px;
+        }
+
+        .top .head.img-w img {
+            width: 80px;
+        }
+
+        .top .base_info {
+            float: right;
+            width: 72%;
+            padding: 13px 0;
+        }
+
+        .top .base_info p {
+            font-size: 15px;
+            line-height: 25px;
+        }
+
+        .top .base_info .info {
+            color: #888;
+        }
+
+        .prompt {
+            padding: 15px 10px;
+        }
+
+        .prompt p:last-child {
+            color: #787878;
+            font-size: 14px;
+        }
+
+        .prompt .prompt_title {
+            color: #585858;
+            font-weight: 600;
+            line-height: 30px;
+        }
+
+        .information {
+            background: white;
+            padding: 0 10px;
+        }
+
+        .information>ul>li {
+            line-height: 40px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .information>ul>li>.lable {
+            display: inline-block;
+            width: 20%;
+            font-size: 14px;
+            color: #989898;
+        }
+
+        .information>ul>li>input {
+            width: 78%;
+            text-align: right;
+            line-height: 30px;
+            color: #585858;
+            outline: none;
+        }
+
+        .complain {
+            padding: 6px 10px;
+            line-height: 30px;
+            color: #585858;
+            font-weight: 600;
+        }
+
+        .complain_explain {
+            color: #585858;
+            margin: 0;
+            padding: 0 10px;
+        }
+
+        .complain_explain i {
+            float: right;
+        }
+
+        .complain_explain>p {
+            border-bottom: 1px solid #f1f1f1;
+            line-height: 50px;
+        }
+
+        .complain_explain textarea {
+            width: 100%;
+            margin: 10px 0;
+            outline: none;
+            color: #989898;
+            resize: none;
+        }
+
+        .complain_explain>p:last-child {
+            border-bottom: 0;
+            border-top: 1px solid #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="view" v-cloak>
+        <div class="top flex">
+            <div class="head img-h">
+                <img :src="imgurl +　ffInfo.head_portrait" @load="imgCss(imgurl +　ffInfo.head_portrait, $event)"
+                    onerror="this.onerror=null;this.src='../../image/touxiang.png'" alt="" id="headImg" />
+            </div>
+
+            <div class="base_info">
+                <p class="userName">{{ ffInfo.name }}</p>
+                <p class="info">
+                    <span id="sex">{{ ffInfo.sex }}</span>,{{ ffInfo.age }}岁,{{ ffInfo.education_background }}
+                </p>
+            </div>
+        </div>
+        <div class="prompt">
+            <p class="prompt_title">填写掌握对方多少信息</p>
+            <p>如果您与对方联系时得知如下信息请务必提供，以便取证，您的权益将受到保护。</p>
+        </div>
+        <div class="information">
+            <ul>
+                <li>
+                    <span class="label">真实姓名</span>
+                    <input type="text" value="" id="name" />
+                </li>
+                <li>
+                    <span class="label">工作单位</span>
+                    <input type="text" id="job" />
+                </li>
+                <li>
+                    <span class="label">MSN</span>
+                    <input type="text" id="msm" />
+                </li>
+                <li>
+                    <span class="label">QQ</span>
+                    <input type="text" id="qq" />
+                </li>
+                <li>
+                    <span class="label">EMAIL</span>
+                    <input type="email" id="email" />
+                </li>
+                <li>
+                    <span class="label">电话</span>
+                    <input type="tel" id="phone" />
+                </li>
+            </ul>
+        </div>
+        <div class="complain">
+            投诉说明
+        </div>
+        <div class="complain_explain">
+            <p onclick="selectReason()">
+                <span id="show">选择举报原因 </span>
+                <i class="aui-iconfont aui-icon-right"></i>
+            </p>
+            <textarea name="report_content" cols="20" rows="5" id="msg" placeholder="详细说明举报内容吧"></textarea>
+            <p><input type="text" placeholder="请输入你电话" id="myPhone" /></p>
+        </div>
+        <button class="new-submit" onclick="submit()">提交</button>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script src="../../script/wximg.js"></script>
+<script>
+    var resoneid; // 举报原因id
+    var view = new Vue({
+        el: '#view',
+        data: {
+            imgurl: imgurl,
+            ffList: [],
+            ffInfo: {},
+        },
+        methods: {
+            _url: function (param, url) {
+                _url(param, url);
+            },
+            // 图片自适应
+            imgCss: function (url, event) {
+                var e = event.currentTarget;
+                imgCss(url, function (w, h) {
+                    if (w < h) {
+                        $(e).parent().addClass('img-w').removeClass('img-h');
+                    }
+                })
+            },
+        }
+    })
+
+    apiready = function () {
+        getOtherInfo();
+        getReason();
+    }
+    // 获取用户信息
+    function getOtherInfo() {
+        var userid = api.pageParam['uid'];
+        _ajax('user_info.php', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret && ret.code == 200) {
+                view.ffInfo = ret.result;
+            }
+        }, {
+            user_id: userid,
+            longitude: $api.getStorage('lon'),
+            latitude: $api.getStorage('lat'),
+        })
+    }
+    var btnArr = [];
+    // 举报原因
+    function getReason() {
+        _ajax('report_selected.php', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret && ret.code == 200) {
+                view.ffList = ret.result;
+                if (ret.result.length > 0) {
+                    resoneid = ret.result[0].id;
+                    $('#show').text(ret.result[0].value);
+                    for (var i = 0, len = ret.result.length; i < len; i++) {
+                        btnArr.push(ret.result[i].value);
+                    }
+                }
+            }
+        })
+    }
+
+    // 选择举报原因
+    function selectReason() {
+        _action('', btnArr, function (bIndex) {
+            if (bIndex != (btnArr.length + 1)) {
+                resoneid = view.ffList[bIndex-1].id;
+                $('#show').text(view.ffList[bIndex-1].value);
+            }
+        })
+    }
+
+    // 举报
+    function submit() {
+        var name = $api.byId('name').value;
+        var job = $api.byId('job').value;
+        var msm = $api.byId('msm').value;
+        var qq = $api.byId('qq').value;
+        var email = $api.byId('email').value;
+        var phone = $api.byId('phone').value;
+        var msg = $api.byId('msg').value;
+        var myPhone = $api.byId('myPhone').value;
+
+        if (!msg) {
+            api.toast({
+                msg: '举报原因未填写',
+            });
+            return false;
+        }
+        if (!checkMobile(phone)) {
+            $api.byId('phone').value = '';
+            api.toast({
+                msg: '电话号码输入有误，请重新输入',
+            });
+            return false;
+        }
+        if (!checkMobile(myPhone)) {
+            $api.byId('myPhone').value = '';
+            api.toast({
+                msg: '你的电话号码输入有误，请重新输入',
+            });
+            return false;
+        }
+        var param = {
+            desc: msg,
+            phone: myPhone,
+            report_email: email,
+            report_msn: msm,
+            report_phone: phone,
+            report_qq: qq,
+            report_real_name: name,
+            report_work_unit: job,
+            type: 1,
+            report_user: api.pageParam['uid'], //被举报人id
+            user_id: $api.getStorage('userid'),
+            report_selected_id: resoneid,
+        }
+
+        _ajax('report_user.php', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            var msg = ret.code == 200 ? '举报信息已提交，等待平台处理' : ret.msg;
+            _msg(msg);
+            if (ret && ret.code == 200) {
+                timerWin()
+            }
+        }, param)
+    }
+</script>
+
+</html>

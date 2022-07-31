@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<!-- <script src="../../script/ffkj.js"></script> -->
+<script>
+    // test()
+    // function test(){
+    //     var obj = {};
+    //     var id = 1;
+    //     var arr = [null, 0, 1];
+    //     var index = 0;
+    //     for(var i=1;i<4;i++){
+    //         obj[i] = [];
+    //         var jlen = getRandom(2, 10);
+    //         for(var j=0;j<jlen;j++){
+    //             id++;
+    //             obj[i].push({id:id, status:arr[index], num:id-1});
+    //             index = index == 2 ? 0 : index+1;
+    //         }
+    //     }
+    //     console.log(JSON.stringify(obj));
+    // }
+
+    test(1, 2, 3)
+
+    function test() {
+        console.log(arguments)
+    }
+   
+    function test5(money){
+        if(isNaN(Number(money)) || Number(money) <= 0){
+            console.log(money+' :请输入存入金额');
+            return;
+        }else{
+            console.log(money+' :存入成功');
+        }
+    }
+    var a = '';
+    var a1;
+    var a2 = 0.00;
+    var a3 = '0.00';
+    var a4 = {};
+    var a5 = 12;
+    test5(a)
+    test5(a1)
+    test5(a2)
+    test5(a3)
+    test5(a4)
+    test5(a5)
+</script>
+
+</html>

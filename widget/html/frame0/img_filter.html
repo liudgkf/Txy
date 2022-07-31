@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>图片高斯模糊</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            outline: none;
+        }
+
+        html,
+        body {
+            height: 100%;
+            background: #000;
+        }
+
+        header {
+            background: #000;
+            display: flex;
+            align-items: center;
+            border: 0;
+            height: 70px;
+        }
+
+        header .h1 {
+            font-weight: normal;
+            font-size: 22px;
+            color: #fff;
+        }
+
+        .img-filter {
+            position: relative;
+            height: 70%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .img-filter .gaosi {
+            width: 100%;
+            -webkit-filter: blur(20px);
+            filter: blur(20px);
+            position: relative;
+            height: 100%;
+            /* background: red; */
+            transform: scale(1.2);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .img-filter .gaosi.remove-filter {
+            -webkit-filter: blur(0);
+            filter: blur(0);
+        }
+
+        .img-filter img {
+            max-width: 100%;
+            height: auto;
+            max-height: 100%;
+        }
+
+        .img-filter .word {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 45%;
+            text-align: center;
+            line-height: 20px;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .img-filter .word span {
+            font-size: 12px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fen {
+            width: 100%;
+            text-align: center;
+            padding-top: 40%;
+            height: 30%;
+        }
+
+        .fen .wrap {
+            width: 100%;
+        }
+
+        .fen img {
+            margin-bottom: 10px;
+            width: 40px;
+            height: 40px;
+        }
+
+        .fen p {
+            color: #fff;
+            font-size: 14px;
+            line-height: 20px;
+        }
+
+        .fen button {
+            margin-top: 20px;
+            background: none;
+            color: #000000;
+            ;
+            border: 1px solid #000000;
+            ;
+            width: 150px;
+            line-height: 40px;
+            border-radius: 5px;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 30px;
+            width: 100%;
+        }
+
+        footer p {
+            text-align: center;
+            font-size: 12px;
+            color: #fff;
+            line-height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="img-filter hidden">
+        <div class="gaosi" style="position: relative;">
+            <img src="" alt="">
+        </div>
+        <div class="word js-unPay">
+            <p>阅后即焚的照片</p>
+            <span>按住屏幕查看</span>
+        </div>
+        <div class="word js-pay" style="display: none;">
+            <p class="js-word_text">阅后即焚的红包照片</p>
+            <span>点击付费</span>
+        </div>
+    </div>
+    <div class="img hidden"><img src="../../image/loader.gif" alt=""></div>
+    <div class="fen">
+        <div class="wrap">
+            <img src="../../image/forbid.png" alt="">
+            <p>照片已焚毁</p>
+            <p>(会员可延长查看时间达6秒)</p>
+            <button onclick="openFrame4()">马上升级会员</button>
+        </div>
+    </div>
+    <footer>
+        <p></p>
+    </footer>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script>
+    var numArr = [];
+    var index;
+    var imgArr;
+    var touserid,
+        isRenZ;
+    var myuserid = $api.getStorage('userid');
+    var isVIP = $api.getStorage('isVip');
+    var sex = $api.getStorage('sex');
+    apiready = function () {
+        $api.fixStatusBar($api.dom('header'));
+        touserid = api.pageParam.touserid;
+        var name = api.pageParam.name;
+        index = api.pageParam.index;
+        imgArr = api.pageParam.imgArr;
+        showGaoSiImg(index);
+        $('.h1').text(name + '的相册');
+        // 验证  0为未认真，1为待审核，2为认证通过，3为认证不通过
+        $api.post(phpurl + 'index.php/Home/User/isrenzheng', {
+            values: {
+                user_id: myuserid,
+            },
+        }, function (ret) {
+            if (ret.code === 200) {
+                isRenZ = ret.result.states;
+            }
+        }, 'json');
+        //长按显示图片
+        api.addEventListener({
+            name: 'longpress',
+        }, function (ret, err) {
+            if (!(imgArr[index].burn == 0 && imgArr[index].packet == '0.00') && !(imgArr[index].packet >
+                    0 && imgArr[index].see == 0)) {
+                show();
+            }
+        });
+        //左滑
+        api.addEventListener({
+            name: 'swipeleft',
+        }, function (ret, err) {
+            var i = parseInt(index);
+            i = i + 1;
+            if (i >= imgArr.length) {
+                i = 0;
+            }
+            index = i;
+            showGaoSiImg(index);
+        });
+        //右滑
+        api.addEventListener({
+            name: 'swiperight',
+        }, function (ret, err) {
+            var i = parseInt(index);
+            i = i - 1;
+            if (i == -1) {
+                i = imgArr.length - 1;
+            }
+            index = i;
+            showGaoSiImg(index);
+        });
+        api.addEventListener({
+            name: 'keyback',
+        }, function (ret, err) {
+            _send('img_filter');
+            api.closeWin({});
+        });
+    };
+    //展示有高斯模糊的图片
+    function showGaoSiImg(index) {
+        $('footer p').text(index + 1 + '/' + imgArr.length);
+        //如果这个图片已经看过
+        for (var i = 0; i < numArr.length; i++) {
+            if (index == numArr[i] && !(imgArr[index].burn == 0 && imgArr[index].see == 1)) {
+                $('.img-filter').addClass('hidden');
+                $('.fen').removeClass('hidden');
+                return;
+            }
+        }
+        $('.img-filter').removeClass('hidden');
+        $('.word').removeClass('hidden');
+        $('.gaosi').removeClass('remove-filter');
+        $('.fen').addClass('hidden');
+        $('.gaosi img').attr('src', imgurl + imgArr[index].pic[0]);
+        //看焚烧照片
+        if (imgArr[index].type == 0) {
+            $('.img-filter').addClass('hidden');
+            $('.fen').removeClass('hidden');
+        }
+        //公开
+        else if ((imgArr[index].burn == 0 && imgArr[index].packet == '0.00') || (imgArr[index].burn == 0 &&
+                imgArr[index].see == 1)) {
+            $('.gaosi').addClass('remove-filter');
+            $('.word').hide();
+        }
+        //需求付费的
+        else if (imgArr[index].burn == 1 && imgArr[index].packet > 0 && imgArr[index].see == 0) {
+            $('.js-unPay').hide();
+            $('.js-pay').show();
+            $('.js-word_text').text('阅后即焚的红包照片');
+        } else if (imgArr[index].burn == 0 && imgArr[index].packet > 0 && imgArr[index].see == 0) {
+            $('.js-unPay').hide();
+            $('.js-pay').show();
+            $('.js-word_text').text('红包照片');
+        } else {
+            $('.js-unPay').show();
+            $('.js-pay').hide();
+        }
+    }
+
+    function openFrame4() {
+        api.openWin({
+            name: 'filter_openframe4',
+            url: '../user/frame4_win.html',
+        });
+    }
+    $('.js-pay').on('click', function (e) {
+        var imgID = imgArr[index].id;
+        var imgPacket = imgArr[index].packet;
+        var data = {
+            user_id: touserid,
+            to_user: myuserid,
+            img_id: imgID,
+            price: imgPacket,
+        };
+        //这里的sex是指操作用户
+        if (sex == '女' && isRenZ != 2) {
+            api.toast({
+                msg: '您还没认证呢~',
+            });
+            setTimeout(function () {
+                api.openWin({
+                    name: 'frame4_win',
+                    url: '../frame4/userinfo/authentication1_win.html',
+                });
+            }, 800);
+        } else if (sex == '男' && isVIP == 0) {
+            api.toast({
+                msg: '您还不是会员哦，请先购买会员',
+            });
+            setTimeout(function () {
+                api.openWin({
+                    name: 'frame4_win',
+                    url: '../frame4_win.html',
+                });
+            }, 800);
+        } else {
+            api.confirm({
+                title: '提示',
+                msg: '该图片的价格为' + imgPacket + '，请确认您的操作。',
+                buttons: ['取消', '确定'],
+            }, function (ret, err) {
+                var index = ret.buttonIndex;
+                if (index == 2) {
+                    $.post(phpurl + 'index.php/Home/User/packetimg', data, function (ret) {
+                        if (ret.code == 200) {
+                            api.toast({
+                                msg: '支付成功，眼睛不要离开屏幕，图片马上出来~',
+                            });
+                            show();
+                        } else {
+                            api.toast({
+                                msg: ret.msg,
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    });
+    /*显示图片*/
+    function show() {
+        var imgID = imgArr[index].id;
+        var imgBurn = imgArr[index].burn;
+        numArr.push(index);
+        $('.word').addClass('hidden');
+        $('.gaosi').addClass('remove-filter');
+        // $('.img').removeClass('hidden');
+        var time;
+        if (isVIP > 0) {
+            time = 6000;
+        } else {
+            time = 2000;
+        }
+        if (imgBurn == 1) {
+            setTimeout(function () {
+                $('.img-filter').addClass('hidden');
+                $('.fen').removeClass('hidden');
+            }, time);
+            $.post(phpurl + 'index.php/Home/User/burn', {
+                user_id: touserid,
+                to_user: myuserid,
+                id: imgID,
+            }, function (ret) {
+                // alert(JSON.stringify(ret));
+            });
+        } else {
+            imgArr[index].see = 1;
+        }
+    }
+    //返回并刷新
+    function back() {
+        _send('img_filter');
+        api.closeWin({});
+    }
+</script>
+
+</html>

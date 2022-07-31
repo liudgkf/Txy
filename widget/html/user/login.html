@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/login.css">
+    <style>
+        .login-bg {
+            padding: 10px 0;
+            width: 100vw;
+        }
+        /* .wrap {
+            padding-top: 20vw;
+        } */
+    </style>
+</head>
+<body>
+    <div class="login-bg">
+        <div class="wrap">
+            <ul class="input-wrap w-bg">
+                <li class="li phone">
+                    <span class="name">登录账号</span>
+                    <input type="text" placeholder="请输入手机号/账号">
+                </li>
+                <li class="li pwd">
+                    <span class="name">登录密码</span>
+                    <input type="password" placeholder="请输入密码">
+                    <span class="new-theme-color forget" tapmode onclick="_url({url:'user/pwd', title:'重置密码'})">忘记密码?</span>
+                </li>
+                <!-- <li class="li flex-bt footer">
+                    <span tapmode onclick="_url({url:'user/pwd', title:'忘记密码'})">忘记密码?</span>
+                    <span tapmode onclick="_url({url:'user/reg', title:'注册'})">免费注册</span>
+                </li> -->
+            </ul>
+            <button class="new-btn" tapmode onclick="submit()">登录</button>
+            <div class="other-login new-padding-lr-10 new-hide" id="keyboard">
+                <div class="line-wrap flex-bt">
+                    <div class="line"></div>
+                    <p class="tip">其他注册方式</p>
+                    <div class="line"></div>
+                </div>
+                <div class="flex-c">
+                    <div class="login-img" tapmode onclick="login(0)">
+                        <img src="../../image/login/ic_login_wechat.jpg" alt="">
+                    </div>
+                    <div class="login-img" tapmode onclick="login(1)">
+                        <img src="../../image/login/ic_login_qq.jpg" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/login.js"></script>
+<script src="../../script/keyboard.js"></script>
+<script src="../../script/push.js"></script>
+
+<script>
+    apiready = function(){
+        if($api.getStorage('shang') != 1){
+            $('#keyboard').removeClass('new-hide');
+        }
+    }
+        
+    // 登录
+    function submit(){
+        var phone = $.trim($('.phone input').val());
+        var pwd = $.trim($('.pwd input').val());
+        if (!checkMobile(phone)) {
+            _msg('请输入正确的手机号');
+            return;
+        }
+        if (!(pwd && pwd.length >= 6)) {
+            _msg('密码不能为空并且不少于6位')
+            return;
+        }
+        if (!phone) {
+            _msg('手机号未填写');
+            return;
+        }
+        _ajax('login.php', function(ret, err){
+            console.log(JSON.stringify(ret))
+            console.log(JSON.stringify(err))
+            if (ret && ret.code == 200) {
+                var push = new Push();
+                push.setAlias(ret.result.id);  // 绑定别名
+                _msg('登录成功');
+                
+                $api.setStorage('userid', ret.result.id);
+                $api.setStorage('sex', ret.result.sex);
+                // _send('fresh'); //登录之后重新加载数据
+                //设置上线
+                _ajax('set_online_state.php', function (ret) {}, {
+                    state: 1,
+                    user_id: ret.result,
+                })
+               
+                _ajax('a.php', function (ret, err) {
+                    console.log(JSON.stringify(ret))
+                    if (ret && ret[0]) {
+                        $api.setStorage('shang', ret[0].pshang);
+                        if (ret[0].pshang == 1) { // 上架
+                            _url({ slidBackEnabled: 0 }, 'shang_win');
+                        } else { // 非上架
+                            _url({ slidBackEnabled: 0 }, 'index_win');
+                        }
+                    } else {
+                       _url({ slidBackEnabled: 0 }, 'index_win');
+                    }
+                })
+            } else if (ret && ret.code == 201) {
+                _msg('该账号还没为注册');
+            } else if (ret && ret.code == 202) {
+                _msg('密码不正确');
+            } else if (ret && ret.code == 203) {
+                _msg('账号已被封禁，请联系客服');
+            } else {
+                _msg('网络不稳定');
+            }
+        }, {
+            phone: phone,
+			password: pwd
+        })
+    }
+</script>
+</html>

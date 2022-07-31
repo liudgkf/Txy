@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/icon/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/news.css"/>
+    <style>
+		html, body,header {
+			background: #000000;
+			border: none;
+		}
+		
+		.back, .more, header span{
+			color: #fff;;
+		}
+    </style>
+</head>
+<body>
+	<header style="font-size: 16px;" class="flex-bt new-padding-10">
+		<div class="back" onclick="api.closeWin();"><i class="iconfont icon-fanhui"></i></div>
+		<span>选择城市 </span>
+		<span class="confirm" onclick="confirm();">确定</span>
+	</header>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/ffkj.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		_openFrame('frame1/city_list', '', 1, api.pageParam)
+	};
+
+	function confirm(){
+		api.execScript({
+			name: 'frame1/city_win',
+            frameName: 'frame1/city_list',
+            script: 'selectCity();'
+		})
+	}
+</script>
+</html>

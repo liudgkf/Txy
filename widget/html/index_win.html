@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/api.css">
+    <link rel="stylesheet" href="../css/news.css">
+    <link rel="stylesheet" href="../css/aui_font.css">
+    <link rel="stylesheet" href="../css/base_icon.css">
+    <link rel="stylesheet" href="../css/footer.css">
+</head>
+
+<body>
+    <header id="view">
+        <ul class="h-wrap">
+            <!-- 第一个头部 -->
+            <li class="h-list one">
+                <div class="flex-c new-padding-10" style="overflow: hidden;" id="index-nav">
+                    <div class="flex search-wrap">
+                        <div id="search" class="flex" onclick="_url({}, 'frame0/search_win')">
+                            <i class="base-icon index-search-icon"></i>
+                        </div>
+                        <!-- <div id="sex" class="flex" style="margin-left: 10px;" onclick="changeSex();">
+                            <i class="base-icon nav-male-icon"></i>
+                        </div> -->
+                    </div>
+                    <div id="city">
+                        <span class="city-name"
+                            onclick="_url({cityLen:1, event: 'index_city', type:1}, 'frame1/city_win')">附近</span>
+                        <i class="aui-iconfont aui-icon-down"></i>
+                    </div>
+                    <div class="online-tag" tapmode onclick="onlineFirst()">在线优先</div>
+                </div>
+                <ul class="wrap flex-a one1 new-hide">
+                    <li class="list active" tapmode onclick="randomSwitchBtn(0, 'one1')">附近</li>
+                    <li class="list" tapmode onclick="randomSwitchBtn(1, 'one1')">会员</li>
+                </ul>
+                <ul class="wrap flex-a one2">
+                    <li class="list active" tapmode onclick="randomSwitchBtn(0, 'one2')">附近</li>
+                    <li class="list" tapmode onclick="randomSwitchBtn(1, 'one2')">新注册</li>
+                    <li class="list" tapmode onclick="randomSwitchBtn(2, 'one2')">女神</li>
+                </ul>
+            </li>
+        </ul>
+    </header>
+    <!-- 脚部 -->
+    <footer>
+        <ul class="f-wrap flex">
+            <li class="f-list active" tapmode onclick="_index(0)">
+                <img src="../image/index_images/button01.png" alt="">
+                <span>首页</span>
+            </li>
+            <li class="f-list" tapmode onclick="_index(1)">
+                <img src="../image/index_images/button2.png" alt="">
+                <span>电台</span>
+            </li>
+            <li class="f-list" tapmode onclick="_index(2)">
+                <img src="../image/index_images/button3.png" alt="">
+                <span>消息</span>
+                <span class="num new-hide"></span>
+            </li>
+            <li class="f-list" tapmode onclick="_index(3)">
+                <img src="../image/index_images/button4.png" alt="">
+                <span>我的</span>
+            </li>
+        </ul>
+    </footer>
+</body>
+<script src="../script/jquery_min.js"></script>
+<script src="../script/api.js"></script>
+<script src="../script/ffkj.js"></script>
+<script src="../script/group.js"></script>
+<script src="../script/map.js"></script>
+<script src="../script/update.js"></script>
+<script>
+    var index_sex = $api.getStorage('sex');
+    apiready = function () {
+        // 首次打开直接获取
+        changeMsgNum($api.getStorage('footNum'));
+        // 监听底部导航消息
+        _listener('footNum', function (ret) {
+            var c = ret.value.count;
+            changeMsgNum(c);
+        })
+
+
+        $api.fixStatusBar($api.dom('header'));
+        $api.fixTabBar($api.dom('footer'));
+        _heibai(1)
+        keyback();
+
+        changeSex()
+        // 设置城市
+        $('.city-name').text($api.getStorage('index_city') || '附近');
+
+        // 获取在线优先状态
+        if ($api.getStorage('online') == 1) {
+            $('.online-tag').addClass('active');
+        } else {
+            $('.online-tag').removeClass('active');
+        }
+
+        // 监听切换城市
+        _listener('index_city', function (ret) {
+            if (ret && ret.value.city) {
+                var city = ret.value.city[0];
+                $('.city-name').text(city);
+                $api.setStorage('index_city', city);
+            }
+        })
+        
+        
+
+        getNewMsg(); // 获取公告消息
+
+
+        // 获取经纬度
+        var map = new Map();
+        map.getLocation(function (ret) {
+            var lon = 113.320234;
+            var lat = 23.022241;
+            if (ret && ret.status) {
+                lon = ret.lon;
+                lat = ret.lat;
+            }
+            $api.setStorage('lon', lon);
+            $api.setStorage('lat', lat);
+            _ajax('Home/User/setJW', function (rets, errs) {
+                console.log(JSON.stringify(rets))
+                console.log(JSON.stringify(errs))
+            }, {
+                userid: $api.getStorage('userid'),
+                longitude: lon,
+                latitude: lat
+            })
+        })
+
+        updateVision(); 
+    }
+
+
+
+    // 切换
+    function changeFrame(index) {
+        var oneName = index_sex == '女' ? 'one2' : 'one1';
+        var fArr = index_sex == '女' ? ['frame0', 'frame0', 'frame0'] : ['frame0', 'frame0']
+        var pageParam = index_sex == '女' ? [{
+            hot: 1,
+            sex: '女'
+        }, {
+            new: 1,
+            sex: '女'
+        }, {
+            real: 1,
+            sex: '女'
+        }] : [{
+            hot: 1,
+            sex: '男'
+        }, {
+            vip: 1,
+            sex: '男'
+        }];
+        var h = $api.offset($api.dom('header')).h;
+        var fh = $api.offset($api.dom('footer')).h;
+        groupInit(oneName, fArr, h, fh, 0, '.' + oneName + ' .list', pageParam, {
+            pre: 3
+        });
+        randomSwitchBtn(0, oneName); // 打开组后 设置打开第一个tag 避免选择女性第三个tag后切换回男性出错
+    }
+
+    // 切换性别列表 frame0
+    function changeSex() {
+        index_sex = index_sex == '女' ? '男' : '女';
+        if (index_sex == '女') {
+            // $('#sex .base-icon').addClass('nav-female-icon').removeClass('nav-male-icon');
+            $('.one .wrap').eq(0).addClass('new-hide');
+            $('.one .wrap').eq(1).removeClass('new-hide');
+        } else {
+            // $('#sex .base-icon').addClass('nav-male-icon').removeClass('nav-female-icon');
+            $('.one .wrap').eq(0).removeClass('new-hide');
+            $('.one .wrap').eq(1).addClass('new-hide');
+        }
+        changeFrame(0)
+    }
+    // 点击分类栏目时，设置 frame 组当前可见 frame
+    function randomSwitchBtn(index, gName) {
+        active(index, '.' + gName + ' .list'); // cls 使用与组名一致，便于复用
+        api.setFrameGroupIndex({
+            name: gName,
+            index: index,
+            scroll: true, //是否平滑滚动至目标窗口，即是否带有动画
+            reload: false, // 刷新
+        });
+    }
+
+    // 获取公告消息
+    function getNewMsg() {
+        _ajax('Home/User/getNewMsg', function (ret, err) {
+            // console.log(JSON.stringify(ret))
+            if (ret && ret.code == 200 && ret.result.length > 0) {
+                _send('index_notice', {
+                    notice: ret.result
+                });
+            }
+            var dt = setTimeout(function () {
+                clearTimeout(dt);
+                dt = null;
+                getNewMsg();
+            }, 3000)
+        }, {
+            time: 60
+        })
+    }
+
+
+
+    // 设置上线优先
+    function onlineFirst() {
+        var status = $api.getStorage('online');
+        var online = status == 1 ? 0 : 1;
+        $api.setStorage('online', online)
+        if (online == 1) {
+            $('.online-tag').addClass('active');
+        } else {
+            $('.online-tag').removeClass('active');
+        }
+        _send('onlineFirst');
+    }
+</script>
+
+</html>

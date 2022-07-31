@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/mobiscroll.css">
+    <link rel="stylesheet" href="../../css/mobiscroll_date.css">
+    <link rel="stylesheet" href="../../css/iosSelect.css">
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/aui_font.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/area.css" />
+    <style>
+        * {
+            touch-action: pan-y;
+        }
+
+        html,
+        body {
+            background-color: #eee;
+        }
+
+        .dy-wrap .list {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .dy-wrap .list .title {
+            font-weight: bold;
+            margin-right: 10px;
+            color: #222;
+            word-break: keep-all;
+        }
+
+        .dy-wrap .list .content {
+            width: 100%;
+        }
+
+        .dy-wrap .list .content input {
+            width: 100%;
+        }
+
+        .new-submit {
+            font-size: 14px;
+        }
+
+        /* 配图 */
+        .dy-wrap .list.tu {
+            align-items: flex-start;
+        }
+
+        .dy-wrap .list.tu .i-list {
+            position: relative;
+            margin-top: 15px;
+            margin-right: 15px;
+        }
+
+        .dy-wrap .list.tu .img {
+            height: 80px;
+            width: 80px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dy-wrap .list.tu .img.img-w img {
+            width: 80px;
+        }
+
+        .dy-wrap .list.tu .img.img-h img {
+            height: 80px;
+        }
+
+        .dy-wrap .list.tu .aui-icon-close {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #fff;
+            border: 1px dashed #aaa;
+            border-radius: 50%;
+            padding: 2px;
+        }
+
+        .tip {
+            font-size: 10px;
+            color: #000000;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="view">
+        <ul class="wrap dy-wrap">
+            <li class="list dy-content">
+                <div class="title">动态内容</div>
+                <div class="content">
+                    <input type="text" placeholder="请填写">
+                </div>
+            </li>
+
+            <li class="list tu flex-col new-margin-t-10">
+                <div class="title">动态配图</div>
+                <div class="content">
+                    <ul class="img-wrap flex-w">
+                        <!-- <li class="i-list">
+                            <div class="img img-h">
+                                <img src="../../image/test/01.jpg" alt="">
+                            </div>
+                            <i class="aui-iconfont aui-icon-close"></i>
+                        </li> -->
+                        <li id="pic" class="i-list" onclick="selectFile();">
+                            <div class="img img-h">
+                                <img src="../../image/add.jpg" alt="">
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+
+        <p class="tip">女性未认证不能发布广播，否则收费10元</p>
+        <button class="new-submit" onclick="submit()">确定发布</button>
+        <!--选择地区弹层-->
+        <section id="areaLayer" class="express-area-box" style="z-index: 150;">
+            <header>
+                <h3>选择城市</h3>
+                <a id="backUp" class="back" href="javascript:void(0)" title="返回"></a>
+                <a id="closeArea" class="close" href="javascript:void(0)" title="关闭"></a>
+            </header>
+            <article id="areaBox">
+                <ul id="areaList" class="area-list"></ul>
+            </article>
+        </section>
+        <!--遮罩层-->
+        <div id="areaMask" class="mask" style="z-index:100;"></div>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script src="../../script/wximg.js"></script>
+<script src="../../script/mobiscroll_time.js" charset="UTF-8"></script>
+<script src="../../script/mobiscroll.js"></script>
+<script src="../../script/jquery.area.js"></script>
+<script>
+    var themeObj = {
+        arr: [],
+        obj: [],
+        cid: 0,
+    };
+    var imgArr = []; // 选中的图片
+    var rzStatus = 0; // 认证状态
+    var myMoney = 0;  // 我的余额
+    apiready = function () {
+        getTheme();
+        getRenZheng();
+
+        _listener('viewappear', function () {
+            getMyMoney();
+        })
+    }
+
+    $(function () {
+        var opt = {};
+        opt.datetime = {
+            preset: 'date'
+        };
+        var currYear = (new Date()).getFullYear();
+        opt.default = {
+            theme: 'android-ics light', //皮肤样式
+            display: 'modal', //显示方式 
+            mode: 'scroller', //日期选择模式
+            dateFormat: 'yyyy-mm-dd',
+            lang: 'zh',
+            showNow: true,
+            nowText: "今天",
+            startYear: currYear, //开始年份
+            endYear: currYear + 1, //结束年份
+        };
+        $("#activeTime").mobiscroll($.extend(opt['datetime'], opt['default'])); //显示日期
+    })
+
+    // 获取主题列表
+    function getTheme() {
+        _ajax('home/dymanic/category', function (ret, err) {
+            if (ret && ret.code == 200 && ret.result && ret.result.length > 0) {
+                themeObj.obj = ret.result;
+                for (var i = 0, len = ret.result.length; i < len; i++) {
+                    themeObj.arr.push(ret.result[i].name);
+                }
+            }
+        })
+    }
+
+    // 弹框选择
+    function selectAction(type) {
+        var buttons = type == 'theme' ? themeObj.arr : ['应约者买单', 'AA制', '发起者买单'];
+        _action('', buttons, function (index) {
+            if (index != (buttons.length + 1)) {
+                $('.' + type + ' input').val(buttons[index - 1]);
+                if (type == 'theme') {
+                    themeObj.cid = themeObj.obj[index - 1].id;
+                }
+            }
+        })
+    }
+
+    // 格式化输入
+    function num(obj) {
+        obj.value = obj.value.replace(/[^0-9.]*$/, ""); //清除"数字"和"."以外的字符
+        obj.value = obj.value.replace(/^\./g, ""); //验证第一个字符是数字
+        obj.value = obj.value.replace(/\.{2,}/g, "."); //只保留第一个, 清除多余的
+        obj.value = obj.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+        obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数
+    }
+
+    // 选中城市
+    function _areaSubmit(expressArea) {
+        console.log(expressArea)
+        $('.city input').val(expressArea)
+    }
+
+    // 选择图片
+    function selectFile() {
+        openPic(function (ret) {
+            if (ret && ret.data) {
+                imgArr.push(ret.data);
+                imgCss(ret.data, function (w, h) {
+                    var wh = w < h ? 'img-w' : 'img-h';
+                    var html = `
+                        <li class="i-list">
+                            <div class="img ${wh}">
+                                <img src="${ret.data}" alt="">
+                            </div>
+                            <i class="aui-iconfont aui-icon-close" onclick="delImg(this)"></i>
+                        </li>`;
+                    $('#pic').before(html);
+                })
+            }
+        })
+    }
+
+    // 删除图片
+    function delImg(obj) {
+        var index = $(obj).parent().index();
+        $('.img-wrap .i-list').eq(index).remove();
+        imgArr.splice(index, 1);
+    }
+
+
+    // 获取认证状态
+    function getRenZheng() {
+        _ajax('Home/User/isrenzheng', function (ret, err) {
+            if (ret && ret.code == 200) {
+                rzStatus = ret.is_identity_authentication;
+            } else {
+                _alert('系统错误，稍后重试', function () {
+                    api.closeWin();
+                })
+            }
+        }, {
+            user_id: $api.getStorage('userid')
+        })
+    }
+
+    // 获取余额
+    function getMyMoney(){
+        _ajax('user_volley.php', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret && ret.code == 200) {
+                myMoney = ret.volley || 0;
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+        })
+    }
+
+    // 确定
+    function submit() {
+        var content = $.trim($('.dy-content input').val());
+        var type = api.pageParam['type'];
+
+        var dyType = [2, 6]; // 2普通，6约会
+        var dyName = ['动态', '活动'];
+
+        if (!content) {
+            _msg('请填写约会内容');
+            return;
+        }
+       
+
+        // if($api.getStorage('sex') != '男' && rzStatus != 2 && Number(myMoney) < 10){
+        //     _alert('余额不足，前去充值', function(){
+        //         _url({balance: myMoney, url: 'frame4/chong_zhi_fu_wu_frame', title:'充值'})
+        //     })
+        //     return;
+        // }
+
+        _ajax('home/user/vipdymanic', function (ret, err) {
+            if (ret) {
+                if (ret.code == 200) {
+                    var obj = {
+                        msg: '您将使用1次特权发布' + dyName[type] + '(今日剩余' + ret.num + '次会员特权)',
+                    }
+                    _confirm(obj, function (bIndex) {
+                        if (bIndex == 1) {
+                            publishDY();
+                        }
+                    })
+                }else if(ret.code == 201){
+                    var obj = {
+                        title: '发布失败',
+                        msg: '您还未认证，需要你认证后才有发布权限。',
+                        btn: ['我要认证', '取消']
+                    }
+                    _confirm(obj, function (bIndex) {
+                        if (bIndex == 1) {
+                            _url({ url: 'frame4/authentication_frame', title: '认证身份' });
+                        }
+                    })
+                }else if (ret.code == 202){
+                    var obj = {
+                        title: '发布失败',
+                        msg: '您还不是会员，成为会员后才有发布权限。',
+                        btn: ['成为会员', '取消']
+                    }
+                    _confirm(obj, function (bIndex) {
+                        if (bIndex == 1) {
+                            _url({ url: 'frame4', title: '开通会员' });
+                        }
+                    })
+                }else if(ret.code == 205){
+                    publishDY();
+                }else {
+                    _msg(ret.msg);
+                }
+            }else {
+                _msg('系统错误');
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+            type: dyType[type],
+        })
+    }
+
+
+    // 发布
+    function publishDY() {
+        _loading();
+        var theme = themeObj.cid;
+        var content = $.trim($('.dy-content input').val());
+        var type = api.pageParam['type'];
+        var fileObj = {};
+        if (imgArr.length > 0) {
+            for (var i = 0, len = imgArr.length; i < len; i++) {
+                fileObj['masterimg[' + i + ']'] = imgArr[i];
+            }
+        }
+        _ajaxFile('home/Dymanic/adddymanic', function (ret, err) {
+            console.log(JSON.stringify(ret))
+            console.log(JSON.stringify(err))
+            _loadingClose();
+            _msg(ret.msg);
+            if (ret && ret.code == 200) {
+                timerWin();
+            }
+        }, {
+            content: content,
+            userid: $api.getStorage('userid'),
+            type: type,
+        }, fileObj)
+    }
+</script>
+
+</html>

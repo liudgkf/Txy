@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <style>
+        .list {
+            border-radius: 15px;
+            padding: 3px 20px;
+            border: 1px solid #eee;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .list.select {
+            color: #fff;
+            background: #000000;
+        }
+        .submit {
+            width: 80vw;
+            line-height: 40px;
+            color: #fff;
+            background: #000000;
+            border-radius: 10px;
+            margin: 10vw;
+        }
+    </style>
+</head>
+<body>
+    <ul class="wrap flex-c flex-w" id="view" v-cloak>
+        <li class="list" v-for="item in ffList" @click="select($event)">{{item.name}}</li>
+    </ul>
+    <button class="submit"  onclick="submit()">确定</button>
+</body>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/api.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script>
+    var showDate = new Vue({
+        el: '#view',
+        data: {
+            ffList: []
+        },
+        methods: {
+            select: function(e){
+                var el = e.currentTarget;
+                $(el).toggleClass('select');
+            }
+        }
+    })
+    apiready = function(){
+        showDate.ffList = api.pageParam['arr'];
+
+    }
+
+    // 确定
+    function submit(){
+        var ziduan = api.pageParam['ziduan'];
+        var len = $('.select').length;
+        if(len == 0){
+            _msg('请选择至少一个选项');
+            return;
+        }
+        var arr = [];
+        for(var i=0;i<len;i++){
+            var txt = $('.select').eq(i).text();
+            arr.push(txt);
+        }
+        var str = arr.join(',');
+        // api.execScript({
+        //     name: 'frame0/she_zhi_ji_ben_zi_liao_frame',
+        //     frameName:'frame0/she_zhi_ji_ben_zi_liao_frame',
+        //     script:'xiugai("'+ziduan+'", "'+str+'")'
+        // })
+        putVal(ziduan, str);
+        timerWin();
+    }
+
+    // 确定
+    function putVal(ziduan, str){
+        var callback = 'getUserFilter("'+ziduan+'", "'+str+'")'
+        var winName = api.pageParam['winName'];
+        var frameName = api.pageParam['frmName'];
+        if(winName && frameName){
+            api.execScript({
+                name: winName,
+                frameName: frameName,
+                script: callback
+            })
+        }else if(winName && !frameName){
+            api.execScript({
+                name: winName,
+                frameName: winName,
+                script: callback
+            })
+        }
+        // if(winName && frameName){
+        //     // 非当前win 及 非当前frame
+        //     api.execScript({
+        //         name: winName,
+        //         frameName: frameName,
+        //         script: callback
+        //     })
+        // }else {
+        //     if(frameName){
+        //         // 当前win 指定frame 调用函数
+        //         api.execScript({
+        //             frameName: frameName,
+        //             script: callback
+        //         })
+        //     }else{
+        //         // 当前win 调用函数
+        //         api.execScript({
+        //             script: callback
+        //         })
+        //     }
+        // }
+    }
+</script>
+</html>

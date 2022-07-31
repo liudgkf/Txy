@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/aui_font.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/frame2.css">
+    <style>
+        .wrap .u-wrap .list {
+            font-size: 14px;
+            color: #333333;
+        }
+
+        .wrap .u-wrap .list .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .wrap .u-wrap .list .content img {
+            max-width: 100%;
+        }
+
+        .wrap .u-wrap .list .footer {
+            font-size: 12px;
+            color: #757575;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap" id="view" v-cloak>
+        <ul class="u-wrap">
+            <li class="list" v-for="(m, index) in ffList">
+                <div class="tx img-h">
+                    <img src="../../image/icon/ic_repair.png" alt="">
+                </div>
+                <div class="content">
+                    <div class="name-wrap" style="position: relative;" v-html="m.content">
+                    </div>
+                    <div class="flex-bt footer">
+                        <span class="time">{{ m.addtime }}</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div id="no_more" :class="{'null': ffList.length == 0}"></div>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script>
+    var view = new Vue({
+        el: '#view',
+        data: {
+            imgurl: imgurl,
+            ffList: [],
+            ffInfo: {},
+        },
+        methods: {
+            _url: function (param, url) {
+                _url(param, url);
+            },
+           
+        }
+    })
+
+    apiready = function () {
+        var param = {};
+        _shangla(function () {
+            _lists('Home/User/sysmsg', 0, 1, param);
+        })
+
+        _scrollToBottom(function () {
+            if (heigutgao == 1) {
+                pagenum++;
+                _lists('Home/User/sysmsg', pagenum, '', param);
+            }
+        })
+    }
+</script>
+</html>

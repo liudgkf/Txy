@@ -1,0 +1,152 @@
+.zhifu {
+    background: #fff;
+}
+
+.zhifu li {
+    line-height: 50px;
+    height: 50px;
+    display: flex;
+    display: -webkit-flex;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.zhifu .left img {
+    width: 30px;
+    height: 30px;
+}
+
+.zhifu li label {
+    padding-left: 30px;
+    font-size: 16px;
+    background-repeat: no-repeat;
+    background-size: 25px;
+    background-position: left;
+    background-origin: border-box;
+    width: 100%;
+}
+
+.zhifu li label[for='zfb'] {
+    background-image: url('../image/zf/zfb.png');
+}
+
+.zhifu li label[for='wx'] {
+    background-image: url('../image/zf/wx.png');
+}
+
+.zhifu li label[for='yl'] {
+    background-image: url('../image/zf/yl.png');
+}
+
+.zhifu li label[for='yue'] {
+    background-image: url('../image/zf/yue.png');
+}
+
+.zhifu input[type="radio"]+label::after {
+    content: "\a0";
+    /*不换行空格*/
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 18px;
+    width: 20px;
+    height: 20px;
+    /* margin-right: .4em; */
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    /* text-indent: .15em; */
+    /* line-height: 1;  */
+    float: right;
+    margin-top: 13px;
+}
+
+.zhifu input[type="radio"]:checked+label::after {
+    /* background-color: #01cd78; */
+    background: url('../image/zf/select.png') no-repeat;
+    background-size: 20px 20px;
+    background-clip: content-box;
+    border: 1px solid #000000;
+    float: right;
+    margin-top: 14px;
+}
+
+.zhifu input[type="radio"] {
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+}
+
+
+html,
+body {
+    background: #eee;
+}
+
+#new-pay .list {
+    border-bottom: 1px solid #ddd;
+    line-height: 40px;
+    background: #fff;
+    font-size: 14px;
+    margin: 0 10px;
+    align-items: center;
+}
+
+#new-pay .tip {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #888;
+    padding: 0 10px;
+    line-height: 20px;
+}
+
+#new-pay .flex-b {
+    display: flex;
+    /* align-items: center; */
+    justify-content: space-between;
+}
+
+#new-pay .info {
+    margin: 10px 0;
+    line-height: 50px;
+
+}
+
+#new-pay .info .money {
+    color: #000000;
+}
+
+#new-pay .info .title {
+    max-width: 80%;
+}
+
+#new-pay .aui-ellipsis-1 {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: normal !important;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+#new-pay .submit {
+    width: calc(100vw - 20px);
+    margin-left: 10px;
+    background: #000000;
+    color: #fff;
+    line-height: 40px;
+    margin-top: 30px;
+    outline: none;
+}
+
+#new-pay .zhifu.book li label {
+    padding-left: 0;
+}
+
+#new-pay .book .list.hide {
+    display: none;
+}
+
+#new-pay .w-bg {
+    background: #fff;
+    padding: 0 10px;
+}

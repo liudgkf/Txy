@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/news.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/frame2_dy.css" />
+</head>
+
+<body>
+    <ul class="m-dymanic" id="view" v-cloak>
+        <li class="li" v-for="(item, index) in ffList">
+            <div class="left tx img-h">
+                <img src="../../image/touxiang.png" alt="">
+            </div>
+            <div class="rt">
+                <p style="color: #545454;">
+                    <span style="color:#1fb4f6">匿名用户</span>给你的评论是<span ng-repeat="content in item.content" style="color:#000000;">{{ item.content }} </span>
+                </p>
+                <p style="display: flex;justify-content: space-between;color:#ccc;margin-top: 15px;">
+                    <span> </span>
+                    <span>{{ item.addtime }}</span>
+                </p>
+            </div>
+        </li>
+    </ul>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script src="../../script/wximg.js"></script>
+<script type="text/javascript">
+    var view = new Vue({
+        el: '#view',
+        data: {
+            imgurl: imgurl,
+            ffList: [],
+            ffInfo: {},
+        },
+        methods: {
+            _url: function (param, url) {
+                _url(param, url);
+            },
+            // 图片自适应
+            imgCss: function (url, event) {
+                var e = event.currentTarget;
+                imgCss(url, function (w, h) {
+                    if (w < h) {
+                        $(e).parent().addClass('img-w').removeClass('img-h');
+                    }
+                })
+            },
+        }
+    })
+
+    apiready = function () {
+        var param = {
+            user_id: $api.getStorage('userid'),
+        };
+        _shangla(function () {
+            _lists('home/User/evalist', 0, 1, param);
+        })
+
+        _scrollToBottom(function () {
+            if (heigutgao == 1) {
+                pagenum++;
+                _lists('home/User/evalist', pagenum, '', param);
+            }
+        })
+    }
+</script>
+</html>

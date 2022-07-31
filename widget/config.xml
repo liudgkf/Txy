@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<widget id="A6104715432617" version="0.0.1"> 
+  <name>同心缘</name>  
+  <description/>  
+  <author email="2946799956@qq.com" href="http://www.apicloud.com">fondfree</author>  
+  <content src="index.html"/>  
+  <preference name="pageBounce" value="false"/>  
+  <preference name="appBackground" value="rgba(0,0,0,0.0)"/>  
+  <preference name="windowBackground" value="rgba(0,0,0,0.0)"/>  
+  <preference name="frameBackgroundColor" value="rgba(0,0,0,0.0)"/>  
+  <preference name="hScrollBarEnabled" value="true"/>  
+  <preference name="vScrollBarEnabled" value="false"/>  
+  <preference name="autoLaunch" value="false"/>  
+  <preference name="fullScreen" value="true"/>  
+  <preference name="autoUpdate" value="true"/>  
+  <preference name="smartUpdate" value="false"/>  
+  <preference name="debug" value="true"/>  
+  <preference name="statusBarAppearance" value="true"/>  
+  <preference name="appCertificateVerify" value="false"/>  
+  <permission name="readPhoneState"/>  
+  <permission name="camera"/>  
+  <permission name="record"/>  
+  <permission name="location"/>  
+  <permission name="fileSystem"/>  
+  <permission name="internet"/>  
+  <permission name="bootCompleted"/>  
+  <permission name="hardware"/>  
+  <access origin="*"/>  
+  <feature name="clipBoard"/>  
+  <feature name="FNImageClip"/>  
+  <feature name="imageFilter"/>  
+  <feature name="netAudio"/>  
+  <feature name="modulebaidumtj"/>  
+  <feature name="trans"/>  
+  <feature name="UIActionSelector"/>  
+  <feature name="UIActionProgress"/>  
+  <feature name="UIChatBox"/>  
+  <feature name="UIFaceID"/>  
+  <feature name="UILoading"/>  
+  <feature name="webBrowser"/>  
+  <feature name="bMap"> 
+    <param name="android_api_key" value="KCLT1aPWWsIxwDZ4OCTZGShzmVhEoeoi"/>  
+    <param name="ios_api_key" value="oWBQSYCPsWzVEf2bcMyRMpRuC6sBxY5y"/> 
+  </feature>  
+  <feature name="ajpush"> 
+    <param name="app_key" value="29a1f086a75366c41fb47c95"/>  
+    <param name="channel" value="29a1f086a75366c41fb47c95"/> 
+  </feature>  
+  <feature name="wx"> 
+    <param name="urlScheme" value="wx3c5ae0054682dc88"/>  
+    <param name="apiKey" value="wx3c5ae0054682dc88"/>  
+    <param name="apiSecret" value="c721a8db671c9f89e3d926bf68bdc364"/> 
+  </feature>  
+  <feature name="wxPay"> 
+    <param name="urlScheme" value="wx3c5ae0054682dc88"/>  
+    <param name="apiKey" value="wx3c5ae0054682dc88"/>  
+    <param name="apiSecret" value="c721a8db671c9f89e3d926bf68bdc364"/> 
+  </feature>  
+  <feature name="QQPlus"> 
+    <param name="urlScheme" value="tencent1104898615"/>  
+    <param name="apiKey" value="1104898615"/> 
+  </feature> 
+</widget>

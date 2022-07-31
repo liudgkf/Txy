@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/frame2_dy.css">
+    <style>
+        .m-dymanic .starts {
+            display: flex;
+            justify-content: space-between;
+            color: #ccc;
+            margin-bottom: 5px;
+        }
+
+        .m-dymanic .allow {
+            display: inline-block;
+            background: #f1f1f1;
+            color: #b3c1cc;
+            border-radius: 3px;
+            line-height: 1.2;
+            padding: 0 4px;
+        }
+
+        .m-dymanic .unAllow {
+            font-size: 14px;
+            line-height: 2;
+        }
+
+        .unAllow .btn-ok {
+            background: #5d2d99;
+            color: #fff;
+            padding: 0 1em;
+            border-radius: 5px;
+        }
+
+        .unAllow .btn-no {
+            margin-left: 1em;
+            color: #5d2d99;
+            width: 6em;
+            text-align: center;
+            border: 1px solid;
+            border-radius: 5px;
+        }
+
+        .imgList {
+            width: 4.5em;
+            height: 4.5em;
+            overflow: hidden;
+            margin: 10px 10px 10px 0;
+        }
+
+        .imgList.img-h img {
+            height: 4.5em;
+        }
+
+        .imgList.img-w img {
+            width: 4.5em;
+        }
+
+        .js-prp {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .js-prp .img {
+            position: absolute;
+            top: 25%;
+            height: 50%;
+            width: 80%;
+            margin: 0 10%;
+        }
+
+        .tx {
+            border-radius: 50%;
+            ;
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="m-dymanic" id="view" v-cloak>
+        <!-- <li class="li" >
+            <div class="left tx img-h" >
+                <img src="../../image/test/01.jpg" alt="">
+            </div>
+            <div class="rt">
+                <p style="color: #545454;font-size: 14px">
+                    <span style="color:#1fb4f6">张三</span> {{ item.desc }}
+                </p>
+                <div class="imgList img-h flex-c">
+                    <img src="../../image/test/01.jpg" alt="" ng-click="seeImg( imgurl + item.pic )">
+                </div>
+                <p class="starts" ng-click="userData(item.user_id)">
+                    <span>{{item.addtime}}</span>
+                    <span>前往查看 ></span>
+                </p>
+                <span class="allow" v-if="item.state==1">已通过请求</span>
+                <span class="allow" v-if="item.state==2">该用户拒绝了你的请求</span>
+                <div class="unAllow" v-if="item.state==0" style="padding-top: 6px;">
+                    <span class="btn-ok" ng-click="agreeimg(item.id)">允许(有效期15天)</span>
+                    <span class="btn-no" ng-click="refuseimg(item.id)">拒绝</span>
+                    <p style="margin-top: 5px;color:#ccc;">允许有效期15天</p>
+                </div>
+            </div>
+        </li> -->
+        <li class="li" v-for="(item, index) in ffList">
+            <div class="left tx img-h">
+                <img :src="imgurl+item.head" @load="imgCss(imgurl+item.head, $event)" onerror="this.onerror=null;this.src='../../image/touxiang.png'" alt="">
+            </div>
+            <div class="rt">
+                <!-- <p style="color: #545454;font-size: 14px" v-if="item.self == 0">
+                    申请查看<span style="color:#1fb4f6" >{{ item.name }}</span>的相册
+                </p>
+                <p style="color: #545454;font-size: 14px" v-if="item.self == 1">
+                    <span style="color:#1fb4f6">{{ item.name }}</span> 申请查看你的的相册
+                </p> -->
+                <p style="color: #545454;font-size: 14px">
+                    <span style="color:#1fb4f6">{{ item.name }}</span> {{item.desc}}
+                </p>
+                <div class="imgList img-h flex-c" v-if="item.pic" @click.stop @click="_url({imgArr:[item.pic], iIndex:0}, 'frame1/dy_img_win')">
+                    <img :src="imgurl + item.pic" @load="imgCss(imgurl + item.pic, $event)" onerror="this.onerror=null;this.src='../../image/error-img.png.png'" alt="">
+                </div>
+                <p class="starts" @click.stop @click="go_userInfo(item.user_id, item.name)">
+                    <span>{{item.addtime}}</span>
+                    <span>前往查看 ></span>
+                </p>
+                <span class="allow" v-if="item.state==1">已通过请求</span>
+                <span class="allow" v-if="item.state==2">
+                    <!-- <span v-if="item.self == 0">该用户拒绝了你的请求</span>
+                    <span v-if="item.self == 1">你拒绝了该用户的请求</span> -->
+                    <span >你拒绝了该用户的请求</span>
+                </span>
+                <div class="unAllow" v-if="item.state==0" style="padding-top: 6px;">
+                    <span class="btn-ok" @click="agreeimg(item.id, 1, index)">允许(有效期15天)</span>
+                    <span class="btn-no" @click="agreeimg(item.id, 2, index)">拒绝</span>
+                    <p style="margin-top: 5px;color:#ccc;">允许有效期15天</p>
+                </div>
+            </div>
+        </li>
+    </ul>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script src="../../script/wximg.js"></script>
+<script>
+    var view = new Vue({
+        el: '#view',
+        data: {
+            imgurl: imgurl,
+            ffList: [],
+            ffInfo: {},
+        },
+        methods: {
+            _url: function (param, url) {
+                _url(param, url);
+            },
+            // 图片自适应
+            imgCss: function (url, event) {
+                var e = event.currentTarget;
+                imgCss(url, function (w, h) {
+                    if (w < h) {
+                        $(e).parent().addClass('img-w').removeClass('img-h');
+                    }
+                })
+            },
+            // 查看用户资料
+            go_userInfo: function (id, name, sex) {
+                go_userInfo(id, name, sex)
+            },
+            // 允许查看图片
+            agreeimg: function (id, type, index) {
+                var _this = this;
+                var url = type == 1 ? 'home/User/agreeimg' : 'home/User/refuseimg';
+                _ajax(url, function (ret, err) {
+                    console.log(JSON.stringify(ret));
+                    console.log(JSON.stringify(err));
+                    var msg = ret.code == 200 ? (type == 1 ? '该用户从现在开始可以查看你的详情页了' : '已回绝') : ret
+                    .msg;
+                    _msg(msg);
+                    if (ret && ret.code == 200) {
+                        _this.ffList[index].state = type;
+                    }
+                }, {
+                    id: id,
+                })
+            }
+        }
+    })
+
+    apiready = function () {
+        var param = { user_id: $api.getStorage('userid'), };
+        _shangla(function () {
+            console.log(JSON.stringify(param))
+            _lists('home/User/requestlist', 0, 1, param);
+        })
+
+        _scrollToBottom(function () {
+            if (heigutgao == 1) {
+                pagenum++;
+                _lists('home/User/requestlist', pagenum, '', param);
+            }
+        })
+    }
+</script>
+
+</html>

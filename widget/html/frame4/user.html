@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <style>
+        html,
+        body {
+            background: #eee;
+        }
+
+        .w-bg {
+            background: #fff;
+        }
+
+        .wrap .tab {
+            padding: 15px 10px 5px 10px;
+            font-size: 14px;
+        }
+
+        .wrap .li {
+            display: flex;
+            font-size: 14px;
+            margin: 0 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .wrap .li .title {
+            font-weight: bold;
+            width: 20vw;
+        }
+        .wrap .li .content {
+            width: calc(80vw - 20px);
+        }
+        .wrap .li .content input {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap" id="view" v-cloak>
+        <p class="tab">基本资料(必填)</p>
+        <ul class="ul w-bg">
+            <li class="li">
+                <div class="title">昵称</div>
+                <div class="content">
+                    <input type="text" placeholder="请填写" v-model="listData.name">
+                </div>
+            </li>
+            <li class="li" onclick="_url({event:'selectCity', cityLen: 1}, 'frame1/city_win')">
+                <div class="title">当前城市</div>
+                <div class="content">
+                    <input type="text" placeholder="请选择" v-model="listData.city" readonly>
+                </div>
+            </li>
+            <li class="li" onclick="_url({event:'selectOfftenCity', cityLen: 4}, 'frame1/city_win')">
+                <div class="title">常驻城市</div>
+                <div class="content">
+                    <input type="text" placeholder="请选择" v-model="listData.offten_city" readonly>
+                </div>
+            </li>
+            <li class="li" onclick="myScroll('age', 1, '年龄', [18, 101])">
+                <div class="title">年龄</div>
+                <div class="content">
+                    <input type="text" placeholder="请选择" readonly v-model="listData.age">
+                </div>
+            </li>
+            <li class="li" onclick="myScroll('constellation',0, '星座')">
+                <div class="title">星座</div>
+                <div class="content">
+                    <input type="text" placeholder="请选择" readonly v-model="listData.constellation">
+                </div>
+            </li>
+            <li class="li" onclick="myScroll('occupation', 0, '职业')">
+                <div class="title">职业</div>
+                <div class="content">
+                    <input type="text" placeholder="请选择" readonly  v-model="listData.occupation">
+                </div>
+            </li>
+            <li class="li" onclick="myScroll('dy_program', 2, '约会节目')">
+                <div class="title">交友节目</div>
+                <div class="content">
+                    <input type="text" placeholder="请选择" readonly  v-model="listData.dy_program">
+                </div>
+            </li>
+            <li class="li" onclick="myScroll('dy_conditions', 0, '期望对象')">
+                <div class="title">期望对象</div>
+                <div class="content">
+                    <input type="text" placeholder="请选择" readonly  v-model="listData.dy_conditions">
+                </div>
+            </li>
+        </ul>
+        <p class="tab">社交账号(选填)</p>
+        <ul class="ul w-bg">
+            <li class="li">
+                <div class="title">微信</div>
+                <div class="content">
+                    <input type="text" placeholder="请填写" v-model="listData.wxcount">
+                </div>
+            </li>
+            <li class="li">
+                <div class="title">QQ</div>
+                <div class="content">
+                    <input type="text" placeholder="请填写" v-model="listData.qq">
+                </div>
+            </li>
+        </ul>
+        <p class="tab">更多信息(选填)</p>
+        <ul class="ul w-bg">
+            <li class="li" onclick="myScroll('stature', 1, '身高', [140, 220])">
+                <div class="title">身高</div>
+                <div class="content">
+                    <input type="text" placeholder="请选择" readonly  v-model="listData.stature">
+                </div>
+            </li>
+            <li class="li" onclick="myScroll('weight', 1, '体重', [40, 100])">
+                <div class="title">体重</div>
+                <div class="content">
+                    <input type="text" placeholder="请选择" readonly  v-model="listData.weight">
+                </div>
+            </li>
+            <li class="li">
+                <div class="title">个人介绍</div>
+                <div class="content">
+                    <input type="text" placeholder="请填写" v-model="listData.self_slogan">
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script src="../../script/selectJson.js"></script>
+<script>
+    var view = new Vue({
+        el: '#view',
+        data: {
+            imgurl: imgurl,
+            ffList: [],
+            ffInfo: {},
+            listData: {
+                name: '',
+                city: '',
+                offten_city: '',
+                age: '',
+                constellation: '',
+                occupation: '',
+                dy_program: '',
+                dy_conditions: '',
+                wxcount: '',
+                qq: '',
+                stature: '',
+                weight: '',
+                self_slogan: ''
+            },
+        },
+        methods: {
+            _url: function(param, url){
+                _url(param, url);
+            },
+            // 图片自适应
+            imgCss: function(url, event){
+                var e = event.currentTarget;
+                imgCss(url, function (w, h) {
+                    if (w < h) {
+                        $(e).parent().addClass('img-w').removeClass('img-h');
+                    } 
+                })
+            },
+        }
+    })
+    apiready = function () {
+        _shangla(function(){
+            getUserInfo();
+        })
+
+        // 常驻城市
+        _listener('selectOfftenCity', function(ret){
+            if(ret && ret.value.city){
+                view.listData.offten_city = ret.value.city.join('/');
+            }
+        })
+        // 当前城市
+        _listener('selectCity', function(ret){
+            if(ret && ret.value.city){
+                view.listData.city = ret.value.city[0];
+            }
+        })
+    }
+
+    // 获取个人资料
+    function getUserInfo(){
+        _ajax('user_info.php', function (ret, err) {
+            console.log(JSON.stringify(ret))
+            api.refreshHeaderLoadDone();
+            if (ret && ret.code == 200) {
+                for(var key in view.listData){
+                    view.listData[key] = ret.result[key] == 'null' ? '' : ret.result[key] || '';
+                }
+                console.log(JSON.stringify(view.listData))
+                $api.setStorage('myyue', ret.result.volley);
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+            longitude: $api.getStorage('lon'),
+            latitude: $api.getStorage('lat')
+        })
+    }
+
+    // 提交个人资料
+    function _more() {
+        if (!view.listData.name) {
+            _msg('昵称还没未填写');
+            return;
+        }
+        // if (!view.listData.wxcount) {
+        //     _msg('请填写微信');
+        //     return;
+        // }
+        // if (!view.listData.qq) {
+        //     _msg('请填写qq');
+        //     return;
+        // }
+        if(view.listData.wxcount && !isRegisterUserName(view.listData.wxcount)){
+            _msg('请填写正确的微信号');
+            return;
+        }
+        var keyLen = 0;
+        for(var key in view.listData){
+            keyLen++;
+            _ajax('user_info_edit.php', function(ret, err){
+                console.log(JSON.stringify(ret))
+                console.log(JSON.stringify(err))
+            }, {
+                user_id: $api.getStorage('userid'),
+                ziduan: key,
+                value: view.listData[key]
+            })
+            console.log(keyLen)
+            if(keyLen == Object.keys(view.listData).length){
+                _msg('修改成功');
+                timerWin();
+            }
+        }
+    }
+
+    // 滚动选择
+    function myScroll(ziduan, type, title, arr) {
+        var btnArr = [];
+        if (type == 1) { // 单选 规则
+            for (var i = arr[0]; i < arr[1]; i++) {
+                var obj = {
+                    "name": i
+                };
+                btnArr.push(obj);
+            }
+        } else if (type == 2) { // 多选
+            _url({ url: 'user/user_filter', title: '选择', arr: _paramObj[ziduan], ziduan: ziduan, winName: 'frame4/user'})
+            return;
+        } else { // 单选 不规则
+            btnArr = _paramObj[ziduan];
+        }
+        openUIActionSelector(btnArr, {
+            col: 1,
+            title: title
+        }, function (ret, err) {
+            if (ret.eventType == 'ok') {
+                getUserFilter(ziduan, ret.level1)
+            }
+        })
+    }
+
+    // 修改
+    function getUserFilter(ziduan, value) {
+        view.listData[ziduan] = value;
+    }
+
+    function isRegisterUserName(s) {
+        var patrn = /[^\w\.\/]/ig;
+        if (patrn.exec(s)) return false
+        return true;
+    }
+</script>
+</html>

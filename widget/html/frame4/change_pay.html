@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <style>
+        html, body {
+            background: none;
+        }
+        ul, li {
+            list-style: none;
+        }
+        .bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .wrap {
+            font-size: 14px;
+            background: #fff;
+            width: 80vw;
+            border-radius: 5px;
+            overflow: hidden;
+            padding-top: 10px;
+            box-shadow: 0 3px 10px 2px rgba(0, 0, 0, 0.5);
+        }
+        .wrap .list {
+           
+            margin: 0 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .wrap .list input {
+            outline: none;
+            width: 100%;
+            line-height: 45px;
+        }
+        .btn-wrap {
+            display: flex;
+        }
+        .btn {
+            width: 50%;
+            text-align: center;
+            color: #fff;
+            line-height: 45px;
+            outline: none;
+        }
+        .cancel {
+            background: #ddd;
+        }
+        .submit{
+            background: #000000;;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg">
+        <div class="wrap">
+            <ul>
+                <li class="list name">
+                    <input type="text" placeholder="请输入您的支付宝名字">
+                </li>
+                <li class="list count">
+                    <input type="text" placeholder="请输入您的支付宝账号">
+                </li>
+            </ul>
+            <div class="btn-wrap">
+                <button class="btn cancel" onclick="api.closeFrame();">取消</button>
+                <button class="btn submit" onclick="submit()">确认</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/zepto.js"></script>
+<script>
+    var userid = $api.getStorage('userid');
+    apiready = function(){
+        var name = api.pageParam['zhifuname'];
+        var count = api.pageParam['zhifucount'];
+        name = name == 'null' ? '' : name;
+        count = count == 'null' ? '' : count;
+        $('.name input').val(name || '');
+        $('.count input').val(count || '');
+    }
+
+    // 提交
+    function submit(){
+        var name = $.trim($('.name input').val());
+        var count = $.trim($('.count input').val());
+        if(!name){
+            api.toast({msg: '支付宝名称不能为空'});
+            return;
+        }
+        if(!count){
+            api.toast({msg: '支付宝账号不能为空'});
+            return;
+        }
+        api.ajax({
+            url:phpurl+'index.php?c=Withdraw&a=bangZ&userid='+userid+'&zhifuname='+name+'&zhifucount='+count,
+            method:'get'
+        },function(ret,err){
+            console.log(JSON.stringify(ret))
+            if(ret && ret.code == 200){
+                api.sendEvent({
+                    name: 'pay_refresh',
+                });
+                api.toast({msg: '设置成功'});
+                setTimeout(function(){
+                    api.closeFrame();
+                }, 800)
+            }else{
+                api.toast({msg: '设置失败'});
+            }
+        })
+               	  
+    }
+        
+</script>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/api.css">
+    <link rel="stylesheet" href="../css/news.css">
+    <style>
+        html, body {
+            background: none;
+        }
+        .wrap {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .confirm {
+            box-shadow: 0px 2px 15px #000000;
+            background: #ffffff;
+            width: 70vw;
+            border-radius: 5px;
+        }
+        .footer {
+            border-top: 1px solid #dddddd;
+        }
+        .footer .btn {
+            width: 50%;
+            text-align: center;
+            padding: 15px 0 5px;
+        }
+        .cancel {
+            color: #757575;
+            border-right: 1px solid #dddddd;
+        }
+        .submit {
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap flex-c">
+        <div class="confirm new-padding-10">
+            <h3 class="title"></h3>
+            <div class="content new-margin-tb-10"></div>
+            <div class="footer flex">
+                <button class="cancel btn" tapmode onclick="submit(0)">取消</button>
+                <button class="submit btn" tapmode onclick="submit(1)">确定</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../script/api.js"></script>
+<script src="../script/zepto.js"></script>
+<script src="../script/ffkj.js"></script>
+<script>
+    apiready = function(){
+        var title = api.pageParam['title'] || '';
+        var content = api.pageParam['content'];
+        var canBtn = api.pageParam['cancel'] || '取消';
+        var subBtn = api.pageParam['submit'] || '确定';
+        $api.text($api.dom('.title'), title);
+        $api.text($api.dom('.content'), content);
+        $api.text($api.dom('.cancel'), canBtn);
+        $api.text($api.dom('.submit'), subBtn);
+    }
+
+    // 确定
+    function submit(type){
+        var fn = api.pageParam['fn'];  // 需调用的函数
+        var callback = 'newConfirm("'+fn+'", '+type+')'
+        var winName = api.pageParam['winName'];
+        var frameName = api.pageParam['frameName'];
+        if(winName && frameName){
+            // 非当前win 及 非当前frame
+            api.execScript({
+                name: winName,
+                frameName: frameName,
+                script: callback
+            })
+        }else {
+            if(frameName){
+                // 当前win 指定frame 调用函数
+                api.execScript({
+                    frameName: frameName,
+                    script: callback
+                })
+            }else{
+                // 当前win 调用函数
+                api.execScript({
+                    script: callback
+                })
+            }
+        }
+    }
+        
+</script>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+</head>
+
+<body>
+    <ul id="view" v-cloak>
+        <li v-for="(m, index) in ffList" v-if="index<2">{{m}}</li>
+    </ul>
+</body>
+<script src="../../script/vue.js"></script>
+<script>
+    var view = new Vue({
+        el: '#view',
+        data: {
+            ffList: [1,2,3,4]
+        }
+    })
+</script>
+
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/news.css">
+    <style>
+        html, body {
+            background: none;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .bg {
+            background: rgba(0, 0, 0, 0.5);
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+        }
+
+        ul,
+        li {
+            list-style: none;
+        }
+
+        .wrap {
+            position: fixed;
+            bottom: 0;
+            width: 100vw;
+            text-align: center;
+            background: #fff;
+            z-index: 999;
+        }
+
+        h3 {
+            border-bottom: 1px solid rgba(71, 22, 183, 1);
+            margin: 0 10vw;
+            padding: 7px 0;
+            font-size: 22px;
+        }
+
+        .money {
+            font-size: 22px;
+            margin: 3vh 0;
+        }
+
+        .pwd {
+            display: flex;
+            border: 1px solid #ddd;
+            width: 80vw;
+            margin: 0 10vw;
+            margin-bottom: 10vh;
+            background: #fff;
+        }
+
+        .pwd .w-list {
+            border-right: 1px solid #eee;
+            width: calc((80vw - 5px) / 6);
+            height: calc((80vw - 5px) / 6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pwd .w-list .yuan {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #fff;
+            display: inline-block;
+        }
+
+        .pwd .w-list.num .yuan {
+            background: #000;
+        }
+
+        .pwd .w-list:last-child {
+            border-right: none;
+        }
+
+        .keyboard {
+            display: flex;
+            flex-wrap: wrap;
+            background: #fff;
+        }
+
+        .keyboard .k-list {
+            border-right: 1px solid #eee;
+            border-top: 1px solid #eee;
+            width: calc((100vw - 2px) / 3);
+            text-align: center;
+            line-height: 50px;
+            font-size: 22px;
+        }
+
+        .keyboard .k-list:nth-child(3n) {
+            border-right: none;
+        }
+
+        .keyboard .del img {
+            width: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg" tapmode onclick="api.closeFrame()"></div>
+    <div class="wrap">
+        <h3>请输入提现密码</h3>
+        <div class="money">￥ <span>0</span></div>
+        <ul class="pwd">
+            <li class="w-list"><span class="yuan"></span></li>
+            <li class="w-list"><span class="yuan"></span></li>
+            <li class="w-list"><span class="yuan"></span></li>
+            <li class="w-list"><span class="yuan"></span></li>
+            <li class="w-list"><span class="yuan"></span></li>
+            <li class="w-list"><span class="yuan"></span></li>
+        </ul>
+        <ul class="keyboard">
+            <li class="k-list" onclick="getnum(1)" data-key=1>1</li>
+            <li class="k-list" onclick="getnum(2)" data-key=2>2</li>
+            <li class="k-list" onclick="getnum(3)" data-key=3>3</li>
+            <li class="k-list" onclick="getnum(4)" data-key=4>4</li>
+            <li class="k-list" onclick="getnum(5)" data-key=5>5</li>
+            <li class="k-list" onclick="getnum(6)" data-key=6>6</li>
+            <li class="k-list" onclick="getnum(7)" data-key=7>7</li>
+            <li class="k-list" onclick="getnum(8)" data-key=8>8</li>
+            <li class="k-list" onclick="getnum(9)" data-key=9>9</li>
+            <li class="k-list" onclick="getnum(10)" data-key='10'></li>
+            <li class="k-list" onclick="getnum(0)" data-key=0>0</li>
+            <li class="k-list del flex-c" onclick="del()"><img src="../../image/del.png" alt=""></li>
+        </ul>
+    </div>
+</body>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/api.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script>
+    var money;
+    var pwd;
+    apiready = function () {
+        money = api.pageParam['money'];
+        $('.money span').text(money);
+        getUserInfo();
+    }
+
+    // 获取提现账号信息
+    function getUserInfo() {
+        _ajax('user_info.php', function (ret, err) {
+            if (ret && ret.code == 200) {
+                pwd = ret.result.paypwd;
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+            longitude: $api.getStorage('lon'),
+            latitude: $api.getStorage('lat')
+        })
+        
+    } 
+
+    var payPwd = [];
+    // 删除
+    function del() {
+        if (payPwd.length == 0) {
+            return;
+        }
+        $('.w-list').eq(payPwd.length - 1).removeClass('num');
+        payPwd.pop();
+    }
+    // 点击数字
+    function getnum(num) {
+        if (num == 10) {
+            return;
+        }
+        payPwd.push(num);
+        console.log(payPwd);
+        $('.w-list').eq(payPwd.length - 1).addClass('num');
+        if (payPwd.length == 6) {
+            var w = payPwd.join('');
+            if(w != pwd){
+                setTimeout(function(){
+                    _msg('密码不正确');
+                    payPwd = [];
+                    $('.w-list').removeClass('num');
+                }, 500)
+            }else{
+                var userid = $api.getStorage('userid');
+                _ajax('c=Withdraw&a=tiXian&money=' + money + '&method=1&userid=' + userid, function(ret, err){
+                    if(ret && ret.code == 200){
+                        _msg('提现成功');
+                        _send('money_get');
+                        setTimeout(function(){
+                            api.closeFrame();
+                        }, 800)
+                    }
+                })
+            }
+        }
+    }
+</script>
+
+</html>

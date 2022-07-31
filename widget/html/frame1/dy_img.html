@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/news.css">
+    <style>
+        .img {
+            width: 100vw;
+            height: 100vh;
+            overflow-y: auto;
+            background: #000;
+        }
+        .img img {
+            width: 100vw;
+        }
+    </style>
+</head>
+<body>
+    <div class="img flex-c" onclick="_closeToWin();">
+        <!-- <img src="http://www.youdingb.com/xiangmu/koala/public/uploads/20191030/2399fd6aaaf29dbfc361b4b66c0b3a7c.jpg" alt=""> -->
+        <img src="../../image/error-img.png" onerror="this.onerror=null;this.src='../../image/error-img.png'" alt="">
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script>
+    apiready = function(){
+        var img = api.pageParam['img'];
+        if(img.indexOf('_100') != -1){
+            img = img.replace('_100', '');
+        }
+        if(img.indexOf('_300') != -1){
+            img = img.replace('_300', '');
+        }
+        api.imageCache({
+            url: imgurl+img,
+            thumbnail: false
+        }, function (ret, err) {
+            _loadingClose();
+            if (ret) {
+                $('.img img').attr('src', ret.url);
+            }
+        });
+        // $('.img img').attr('src', imgurl+img);
+    }
+</script>
+</html>

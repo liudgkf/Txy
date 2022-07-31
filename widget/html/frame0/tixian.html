@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <style>
+        .list {
+            margin: 0 20px;
+            border-bottom: 1px solid #eeeeee;
+            padding: 5px 0;
+            line-height: 35px;
+        }
+        .list input {
+            width: 100%;
+        }
+        .new-submit {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <ul class="wrap">
+        <li class="list name">
+            <input type="text" placeholder="请输入收款人姓名">
+        </li>
+        <li class="list phone">
+            <input type="text" placeholder="请输入收款人电话">
+        </li>
+        <!-- <li class="list bank">
+            <input type="text" placeholder="请输入银行名称">
+        </li> -->
+        <li class="list card">
+            <input type="text" placeholder="请输入银行卡卡号" onkeyup="visaFormat(this)">
+        </li>
+        <li class="list money">
+            <input type="text" placeholder="请输入提现金额" onkeyup="num(this)">
+        </li>
+        <li class="list pwd">
+            <input type="password" placeholder="请输入提现密码">
+        </li>
+    </ul>
+    <button class="new-submit" tapmode onclick="submit()">提交</button>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script>
+    apiready = function(){
+        
+    }
+
+    // 格式化输入
+    function num(obj) {
+        obj.value = obj.value.replace(/[^0-9.]*$/, ""); //清除"数字"和"."以外的字符
+        obj.value = obj.value.replace(/^\./g, ""); //验证第一个字符是数字
+        obj.value = obj.value.replace(/\.{2,}/g, "."); //只保留第一个, 清除多余的
+        obj.value = obj.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+        obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数
+    }
+
+    // 格式化银行卡号
+    function visaFormat(obj){
+        obj.value = obj.value.replace(/\D/g, "");   // 去除所有非数字
+        var str = obj.value.replace(/\s+/g, ""); //去除所有空格
+        // str = str.length > 15 ? str.slice(0, 16) : str;
+        var s = '';
+        for(var i=0,len=str.length;i<len;i++){
+            s = i%4==0 ? s+' '+str.charAt(i) : s+str.charAt(i);
+        }
+        obj.value = s;
+    }
+
+    function submit(){
+        var name = $.trim($('.name input').val());
+        var phone = $.trim($('.phone input').val());
+        // var bank = $.trim($('.bank input').val());
+        var card = $.trim($('.card input').val());
+        var money = $.trim($('.money input').val());
+        var pwd = $.trim($('.pwd input').val());
+
+        card = card.replace(/\s+/g, "");  //去除所有空格
+        console.log(card);
+
+        if(!name){
+            _msg('请输入收款人姓名');
+            return;
+        }
+        if(!phone){
+            _msg('请输入收款人电话');
+            return;
+        }
+        // if(!bank){
+        //     _msg('请输入银行名称');
+        //     return;
+        // }
+        if(!card){
+            _msg('请输入银行卡卡号');
+            return;
+        }
+        if(isNaN(Number(money)) || Number(money) <= 0){
+            _msg('请输入金额');
+            return;
+        }
+        if(!money){
+            _msg('请输入收款人姓名');
+            return;
+        }
+        if(!pwd){
+            _msg('请输入提现密码');
+            return;
+        }
+        _ajax('api/member/tixian', function(ret, err){
+            if(ret && ret.Code == 0){
+                _msg('申请成功');
+                timerWin();
+            }else{
+                _msg('操作失败')
+            }
+        }, {
+            nextpass:pwd,
+            price: money,
+            zhanghao: card,
+            name: name,
+            type: 3
+        })
+    }
+        
+</script>
+</html>

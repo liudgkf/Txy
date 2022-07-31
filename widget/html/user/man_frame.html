@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/news.css">
+    <link rel="stylesheet" href="../../css/login.css">
+    <style>
+        .login-bg {
+            background: #fff;
+        }
+        .content {
+            padding-top: 30px;
+            font-size: 12px;
+            text-align: center;
+            color: #000000;
+        }
+
+        .btn {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .btn button {
+            font-weight: normal;
+            font-size: 18px;
+            border: 1px solid;
+            line-height: 44px;
+            border-radius: 22px;
+            background: 0c4eff;
+            width: 100%;
+            color: #000000;
+        }
+
+        input::-webkit-input-placeholder {
+            /* WebKit, Blink, Edge */
+            color: #000000;
+        }
+
+        input:-moz-placeholder {
+            /* Mozilla Firefox 4 to 18 */
+            color: #000000;
+        }
+
+        input::-moz-placeholder {
+            /* Mozilla Firefox 19+ */
+            color: #000000;
+        }
+
+        input:-ms-input-placeholder {
+            /* Internet Explorer 10-11 */
+            color: #000000;
+        }
+
+        .h2 {
+            font-size: 16px;
+        }
+
+        .man_input {
+            outline: none;
+            background: rgba(91, 91, 91, 0.7);
+            width: 100%;
+            line-height: 3;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 15px;
+            color: #000000;
+        }
+
+        .means {
+            color: #ccc;
+            font-size: 12px;
+            padding: 30px 14px 30px;
+        }
+
+        .method {
+            margin-top: 10px;
+            border-top: 1px solid rgba(153, 146, 182, 0.7);
+            padding: 16px 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .method .h3 {
+            font-size: 16px;
+            padding: 10px 0 15px;
+            color: #000000;
+        }
+
+        .method .lt .p {
+            /* color: #ccc; */
+        }
+
+        .method .rt .p {
+            text-align: center;
+            padding: 14px 0;
+            color: #a692f1;
+        }
+
+        .method .btm {
+            font-size: 18px;
+            width: 6em;
+            border: 1px solid;
+            border-radius: 3em;
+            text-align: center;
+            line-height: 2;
+            background: #000000;
+            color: #fff;
+        }
+
+        .means-font {
+            font-weight: bold;
+            color: #333333 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-bg">
+        <div class="js-girl">
+
+            <div class="content">
+                <p class="h2">请填写邀请码</p>
+                <p>向会员用户获取邀请码，即该获取更多特权</p>
+                <input class="man_input" type="text" placeholder="输入邀请码"
+                    onkeyup="value=value.replace(/[\u4E00-\u9FA5]|[\uFE30-\uFFA0]/g,'')">
+            </div>
+            <div class="btn">
+                <button class="js-btn" style="outline: none;" onclick="txBtn()">
+                    确定
+                </button>
+            </div>
+        </div>
+        <section class="means">
+            <p class="means-font js-girl">没有邀请码？您可通过以下方式注册</p>
+            <div class="method">
+                <div class="lt">
+                    <p class="means-font js-girl">方式1</p>
+                    <p class="h3">免费注册</p>
+                    <p class="p means-font">您只需完善下个人资料即可免费注册</p>
+                </div>
+                <div class="rt">
+                    <div class="btm"
+                        onclick="_url({url:'frame0/she_zhi_ji_ben_zi_liao_frame', title:'完善资料', phone:phone, password:password})">
+                        马上注册</div>
+                </div>
+            </div>
+            <!-- <div class="method">
+            <div class="lt">
+                <p>方式1</p>
+                <p class="h3">免费申请</p>
+                <p class="p">您需要填写一些个人资料，审核通过后<br>会给你发送邀请码。</p>
+            </div>
+            <div class="rt">
+                <div class="btm js-appeal"  onclick="_url({url:'user/invitation_frame', title:'申请邀请码'})">马上申请</div>
+                <p class="p js-seecode">查收邀请码</p>
+            </div>
+        </div> -->
+            <div class="method js-girl">
+                <div class="lt">
+                    <p class="means-font">方式2</p>
+                    <p class="h3">开通会员</p>
+                    <p class="p means-font">开通会员可享受各种特权,包括无<br>需邀请码注册。</p>
+                </div>
+                <div class="rt">
+                    <div class="btm js-openShopping" onclick="openVip()">我要开通</div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script>
+    var phone;
+    var password;
+    var sex;
+    apiready = function () {
+        phone = api.pageParam['phone'];
+        password = api.pageParam['password'];
+        sex = $api.getStorage('sex');
+        if (sex == '女') {
+            $('.js-girl').hide();
+            $('.method').css({
+                'border-top': 'none'
+            })
+        }
+    };
+
+    //我要开通
+    function openVip() {
+        _url({
+            url: 'frame4',
+            title: '开通会员',
+            phone: phone,
+            password: password,
+            type: 'register'
+        })
+    }
+
+    //提交确定
+    function txBtn() {
+        var send_code = $.trim($('.man_input').val());
+        if (!send_code) {
+            _msg('请输入邀请码');
+            return;
+        }
+        _ajax('Home/User/invite', function (ret, err) {
+            if (ret.code == 200) {
+                $api.setStorage('userid', ret.user_id);
+                _url({ url: 'frame0/she_zhi_ji_ben_zi_liao_frame', title: '完善资料', phone: phone, password: password, send_code: send_code })
+            } else {
+                _msg(ret.msg)
+            }
+        }, {
+            code: send_code,
+            phone: phone
+        })
+    }
+
+    // 获取邀请码
+    function getInviteCode() {
+        _ajax('Home/User/seecode', function (ret, err) {
+            if (ret.code == '200') {
+                api.alert({
+                    title: '申请成功',
+                    msg: ret.invite,
+                });
+            } else {
+                _msg(ret.msg);
+            }
+        }, {
+            phone: phone
+        })
+    }
+</script>
+
+</html>

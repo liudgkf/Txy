@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>Document</title>
+	<link rel="stylesheet" href="../../css/api.css">
+	<link rel="stylesheet" href="../../css/news.css">
+	<style>
+		/* 支付方式 */
+        .p-list {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            margin: 0 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            color: #555555;
+        }
+
+        .p-list:last-child {
+            border-bottom: none;
+        }
+
+        .p-list.active {
+            background-image: url('../../image/select2.png');
+            background-repeat: no-repeat;
+            background-size: 20px 20px;
+            background-position: 100% center;
+        }
+
+        .p-list img {
+            width: 20px;
+            margin-right: 10px;
+		}
+		html, body {
+			background: #eee;
+		}
+		.money {
+			border-top: 1px solid #eee;
+			border-bottom: 1px solid #eee;
+		}
+	</style>
+</head>
+<body>
+	<div class="wrap" id="view" v-cloak>
+		<div class="top-wrap w-bg new-padding-10">
+			<div class="my-money font-n new-padding-tb-10"> 你可提现的金额为: {{myMoney}}元 </div>
+			<div class="flex-bt font-n new-padding-tb-10 money">
+				<input type="text" placeholder="请输入提现金额">
+				<span>元</span>
+			</div>
+			<div class="tip font-s new-margin-t-10">
+				提现处理时间为周一到周五09:00-18:00,1-3个工作日到账。将遇到问题可联系客服：
+				<span>客服微信：mimijietuo </span>
+			</div>
+		</div>
+		
+		<p class="title new-padding-10 font-s">我的提现账号</p>
+        <ul class="pay-wrap w-bg">
+			<li class="p-list zfb flex-bt" data-type=1 tapmode onclick="changePay()">
+				<div class="flex">
+					<img src="../../image/pay/zfb.png" alt="">
+					<span>支付宝</span>
+				</div>
+				<span>{{ffInfo.zhifucount}}</span>
+            </li>
+        </ul>
+		<p class="title new-padding-10 font-s">提现方式</p>
+        <ul class="pay-wrap w-bg">
+            <li class="p-list zfb active" data-type=1 >
+                <img src="../../image/pay/zfb.png" alt="">
+                <span>支付宝</span>
+            </li>
+            <!-- <li class="p-list" data-type=2  onclick="selectPay(this)">
+                <img src="../../image/pay/wx.png" alt="">
+                <span>微信</span>
+            </li> -->
+		</ul>
+		<button class="new-submit" tapmode onclick="submit()">提现</button>
+	</div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script>
+	var view = new Vue({
+        el: '#view',
+        data: {
+            imgurl: imgurl,
+            ffList: [],
+			ffInfo: {},
+			myMoney: 0
+        },
+        methods: {
+            _url: function(param, url){
+                _url(param, url);
+            },
+        }
+    })
+
+    apiready = function(){
+		getMyMoney();
+		// 提现/充值后 刷新用户余额
+        _listener('money_get', function(ret){
+            getMyMoney();
+        })
+		
+        // 刷新用户信息 重新获取提现信息
+        _listener('pay_refresh', function () {
+            getMyMoney();
+        })
+	}
+	
+	// 获取余额
+    function getMyMoney() {
+        _ajax('user_volley.php', function (ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret && ret.code == 200) {
+                view.myMoney = ret.volley;
+                getUserInfo();
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+        })
+    }
+	
+	// 获取提现账号信息
+    function getUserInfo() {
+        _ajax('user_info.php', function (ret, err) {
+            if (ret && ret.code == 200) {
+                view.ffInfo = ret.result;
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+            longitude: $api.getStorage('lon'),
+            latitude: $api.getStorage('lat')
+        })
+	}
+	
+	// 提现
+	function submit(){
+		var money = $.trim($('.money input').val());
+        if(isNaN(Number(money)) || Number(money) <= 0){
+            _msg('请输入充值金额');
+            return;
+		}
+		if(Number(money) > view.myMoney){
+			_msg('超出余额');
+			return;
+		}
+		showDetail('frame4/go_pay', {money:money});
+	}
+	
+	// 修改提现信息
+    function changePay() {
+        if (!parseInt(view.ffInfo.paypwd)) {
+            showDetail('frame4/paypwd', {
+                phone: view.ffInfo.phone
+            });
+        } else {
+            showDetail('frame4/change_pay', {
+                zhifuname: view.ffInfo.zhifuname,
+                zhifucount: view.ffInfo.zhifucount
+            });
+        }
+	}
+</script>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/mobiscroll.css">
+    <link rel="stylesheet" href="../../css/mobiscroll_date.css">
+    <link rel="stylesheet" href="../../css/iosSelect.css">
+    <link rel="stylesheet" href="../../css/api.css">
+    <link rel="stylesheet" href="../../css/aui_font.css">
+    <link rel="stylesheet" href="../../css/news.css">
+    <style>
+        * {
+            touch-action: pan-y;
+        }
+
+        html,
+        body {
+            background-color: #eee;
+        }
+
+        .dy-wrap .list {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .dy-wrap .list .content {
+            width: 100%;
+        }
+
+        .dy-wrap .list .content input {
+            width: 100%;
+            text-align: right;
+        }
+
+        .dy-wrap .list .title {
+            font-weight: bold;
+            margin-right: 10px;
+            color: #222;
+            word-break: keep-all;
+        }
+
+        .dy-wrap .list .yuan {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1px solid #eee;
+        }
+
+        .dy-wrap .list.select .yuan {
+            background-image: url('../../image/select3.png');
+            background-size: 20px 20px;
+            background-repeat: no-repeat;
+            border: 1px solid #fff;
+        }
+
+        .new-submit {
+            font-size: 14px;
+        }
+
+        /* 配图 */
+        .dy-wrap .list.tu {
+            align-items: flex-start;
+        }
+
+        .dy-wrap .list.tu .i-list {
+            position: relative;
+            margin-top: 15px;
+            margin-right: 15px;
+        }
+
+        .dy-wrap .list.tu .img {
+            height: 80px;
+            width: 80px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dy-wrap .list.tu .img.img-w img {
+            width: 80px;
+        }
+
+        .dy-wrap .list.tu .img.img-h img {
+            height: 80px;
+        }
+
+        .dy-wrap .list.tu .aui-icon-close {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #fff;
+            border: 1px dashed #aaa;
+            border-radius: 50%;
+            padding: 2px;
+        }
+
+        .tip {
+            font-size: 12px;
+            padding: 10px;
+        }
+
+        .text {
+            font-size: 14px;
+            background: #fff;
+            line-height: 20px;
+            margin-bottom: 20px;
+        }
+
+        .content textarea {
+            margin-top: 10px;
+            resize: none;
+            width: 100%;
+            height: 100px;
+            line-height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="view">
+        <div class="text new-padding-10 ">
+            客服职责是为用户服务和维护平台秩序，如果你碰到了不负责任甚至以权谋私的情况，欢迎在此提交投诉！<br />
+            只要情况属实，陌觅一定秉公办理，所举报情节严重者将酌情给予现金奖励。
+        </div>
+        <ul class="wrap dy-wrap">
+            <li class="list time new-margin-b-10">
+                <div class="title">沟通时间</div>
+                <div class="content">
+                    <input type="text" placeholder="请选择你与被投诉客服的最近沟通时间" readonly id="activeTime">
+                </div>
+            </li>
+            <p class="tip">请选择投诉原因</p>
+            <li class="list" :class="{'select':m.id == selectId}" v-for="(m, index) in ffList" @click="select(m.id)">
+                <div class="title">{{m.title}}</div>
+                <div class="yuan"></div>
+            </li>
+            <!-- <li class="list ">
+                <div class="title">沟通态度恶劣</div>
+                <div class="yuan"></div>
+            </li> -->
+
+            <p class="tip">请提供相关证据，以便我们跟进核实</p>
+            <li class="list tu flex-col">
+                <div class="title">相关截图</div>
+                <div class="content">
+                    <ul class="img-wrap flex-w">
+                        <!-- <li class="i-list">
+                            <div class="img img-h">
+                                <img src="../../image/test/01.jpg" alt="">
+                            </div>
+                            <i class="aui-iconfont aui-icon-close"></i>
+                        </li> -->
+                        <li id="pic" class="i-list" onclick="selectFile();">
+                            <div class="img img-h">
+                                <img src="../../image/add.jpg" alt="">
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="list tu flex-col">
+                <div class="title">补充描述</div>
+                <div class="content">
+                    <textarea name="" id="" placeholder="选填" id="content"></textarea>
+                </div>
+            </li>
+        </ul>
+        <button class="new-submit" onclick="submit()">提交</button>
+    </div>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/vue.js"></script>
+<script src="../../script/wximg.js"></script>
+<script src="../../script/mobiscroll_time.js" charset="UTF-8"></script>
+<script src="../../script/mobiscroll.js"></script>
+<script>
+    var view = new Vue({
+        el: '#view',
+        data: {
+            ffList: [],
+            selectId: 0
+        },
+        methods: {
+            select: function (id) {
+                var _this = this;
+                _this.selectId = id;
+            }
+        }
+    })
+    var imgArr = []; // 选中的图片
+    apiready = function () {
+        getTheme();
+    }
+
+    $(function () {
+        var opt = {};
+        opt.datetime = {
+            preset: 'datetime'
+        };
+        var currYear = (new Date()).getFullYear();
+        opt.default = {
+            theme: 'android-ics light', //皮肤样式
+            display: 'modal', //显示方式 
+            mode: 'scroller', //日期选择模式
+            dateFormat: 'yyyy-mm-dd',
+            lang: 'zh',
+            showNow: true,
+            nowText: "今天",
+            startYear: currYear, //开始年份
+            endYear: currYear, //结束年份
+        };
+        $("#activeTime").mobiscroll($.extend(opt['datetime'], opt['default'])); //显示日期
+    })
+
+    // 获取投诉原因
+    function getTheme() {
+        _ajax('api/Member/complainCate', function (ret, err) {
+            if (ret && ret.code == 200 && ret.data && ret.data.length > 0) {
+                view.selectId = ret.data[0].id;
+                view.ffList = ret.data;
+            }
+        })
+    }
+
+    // 选择图片
+    function selectFile() {
+        openPic(function (ret) {
+            if (ret && ret.data) {
+                imgArr.push(ret.data);
+                imgCss(ret.data, function (w, h) {
+                    var wh = w < h ? 'img-w' : 'img-h';
+                    var html = `
+                        <li class="i-list">
+                            <div class="img ${wh}">
+                                <img src="${ret.data}" alt="">
+                            </div>
+                            <i class="aui-iconfont aui-icon-close" onclick="delImg(this)"></i>
+                        </li>`;
+                    $('#pic').before(html);
+                })
+            }
+        })
+    }
+
+    // 删除图片
+    function delImg(obj) {
+        var index = $(obj).parent().index();
+        $('.img-wrap .i-list').eq(index).remove();
+        imgArr.splice(index, 1);
+    }
+
+    // 确定
+    function submit() {
+        var time = $('.time input').val();
+        var content = $('#content').val();
+        if (!time) {
+            _msg('请选择最近聊天时间');
+            return;
+        }
+        if(new Date(time).getTime() > new Date().getTime()){
+            _msg('时间选择错误');
+            return;
+        }
+        if (imgArr.length == 0) {
+            _msg('请选择相应截图');
+            return;
+        }
+        imgUp(imgArr[0]);
+    }
+
+    var diskImgArr = [];
+    // 上传图片
+    function imgUp(img) {
+        _ajaxFile('api/Tool/imagesUpload', function (ret, err) {
+            if (ret && ret.ret) {
+                diskImgArr.push(ret.ret);
+                if (diskImgArr.length == imgArr.length) {
+                    putData();
+                } else {
+                    imgUp(imgArr[diskImgArr.length - 1]);
+                }
+            }
+        }, {}, {
+            image: img
+        })
+    }
+
+    // 提交给后台
+    function putData() {
+        var time = $('.time input').val();
+        var currYear = (new Date()).getFullYear();
+        time = time.replace(currYear + '-', '');
+        var content = $('#content').val();
+        if (!time) {
+            _msg('请选择最近聊天时间');
+            return;
+        }
+        if(new Date(time).getTime() > new Date().getTime()){
+            _msg('时间选择错误');
+            return;
+        }
+        if (imgArr.length == 0) {
+            _msg('请选择相应截图');
+            return;
+        }
+		_loading();
+        _ajax('api/Member/complain', function (ret, err) {
+            console.log(JSON.stringify(ret))
+            console.log(JSON.stringify(err))
+            var msg = ret.code == 200 ? '提交成功' : ret.msg;
+			_loadingClose();
+            _msg(ret.msg);
+            if(ret && ret.code == 200){
+                timerWin();
+            }
+        }, {
+            user_id: $api.getStorage('userid'),
+            communicate_time: time,
+            cate_id: view.selectId,
+            images: diskImgArr.join(','),
+            description: content
+        })
+    }
+</script>
+
+</html>

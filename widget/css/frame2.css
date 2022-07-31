@@ -1,0 +1,76 @@
+.wrap .tx {
+    width: 50px;
+    height: 50px;
+    position: relative;
+    border-radius: 7px;
+    overflow: hidden;
+    margin-right: 10px;
+}
+
+.wrap .tx.img-w img {
+    width: 50px;
+}
+
+.wrap .tx.img-h,
+.wrap .tx.img-w {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wrap .tx.img-h img {
+    height: 50px;
+}
+.wrap .u-wrap .list-wrap{
+    background: red;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.wrap .u-wrap .list {
+    padding: 10px;
+    font-size: 12px;
+    color: #757575;
+    display: flex;
+    background: #fff;
+}
+
+.wrap .u-wrap .list .name {
+    font-size: 15px;
+    font-weight: bold;
+    color: #222;
+}
+
+.wrap .u-wrap .list .yuan {
+    /* width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: red;
+    position: absolute;
+    top: 0;
+    right: -5px; */
+    border-radius: 10px;
+    background: red;
+    /* position: absolute;
+    bottom: 0;
+    right: 0; */
+    color: #fff;
+    font-size: 10px;
+    transform: scale(0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* padding: 2px 7px; */
+    width: 30px;
+    height: 16px;
+    text-align: center;
+}
+.wrap .u-wrap .list .content {
+    width: calc(100vw - 20px - 50px - 10px);
+    position: relative;
+}
+
+.wrap .u-wrap .list .msg {
+    /* margin-top: 7px; */
+}

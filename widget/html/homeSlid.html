@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/api.css">
+    <link rel="stylesheet" href="../css/news.css">
+    <link rel="stylesheet" href="../css/aui_font.css">
+    <link rel="stylesheet" href="../css/base_icon.css">
+    <style>
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            border-top: 1px solid #eee;
+        }
+
+
+        .h-list.hide {
+            display: none;
+        }
+
+        .f-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 25vw;
+            font-size: 12px;
+            padding: 7px 0;
+            color: #757575;
+            position: relative;
+        }
+
+        .f-list .num {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            background: #000000;
+            color: #fff;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .f-list.active {
+            color: #000000;
+        }
+
+        .f-list img {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* 第一个头部 */
+        .one {
+            color: #222;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .one .location .aui-iconfont {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .one .location .city {
+            margin: 0 2px;
+        }
+
+        .one .title {
+            width: 35vw;
+            border: 1px solid #eee;
+            padding: 5px 15px;
+            border-radius: 15px;
+        }
+
+        .one .title .line {
+            width: 1px;
+            height: 20px;
+            background: #eee;
+        }
+
+        .one .online-tag {
+            font-size: 12px;
+            border: 1px solid #aaa;
+            color: #aaa;
+            border-radius: 3px;
+            font-weight: normal;
+            padding: 2px;
+            position: absolute;
+            right: 10px;;
+        }
+
+        .one .online-tag.active {
+            border: 1px solid #8962d0;
+            color: #8962d0;
+        }   
+        .one .search-wrap {
+            position: absolute;
+            left: 10px;;
+        }
+        .wrap {
+            background: #fff;
+            color: #000;
+            border-bottom: 1px solid #eee;
+        }
+
+        .wrap .list {
+            padding: 10px 0;
+            font-size: 14px;
+            /* border-bottom: 1px solid #eee; */
+            color: #757575;
+        }
+
+        .wrap .list.active {
+            border-bottom: 2px solid #000000;
+            color: #000000;
+        }
+
+        /* 第二个头部 */
+        .two {
+            /* color: #9763fc;
+            font-size: 16px; */
+            color: #222;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 52px;
+        }
+
+        .two span {
+            width: 20vw;
+            font-size: 14px;
+            color: #555555;
+            font-weight: normal;
+        }
+
+        /* 第三个头部 */
+        .com .title,
+        .tri .title,
+        .for .title {
+            /* color: #9763fc;
+            font-size: 16px; */
+            color: #222;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 52px;
+        }
+
+        /* 第四个头部 */
+        .for {
+            line-height: 52px;
+            color: #000000;
+        }
+
+        .for .edit {
+            font-size: 14px;
+            width: 20vw;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header id="view">
+        <ul class="h-wrap">
+            <!-- 第一个头部 -->
+            <li class="h-list one">
+                <div class="flex-c new-padding-10" style="overflow: hidden;" id="index-nav">
+                    <div class="flex search-wrap">
+                        <div id="search" class="flex" onclick="_url({}, 'frame0/search_win')">
+                            <i class="base-icon index-search-icon"></i>
+                        </div>
+                        <!-- <div id="sex" class="flex" style="margin-left: 10px;" onclick="changeSex();">
+                            <i class="base-icon nav-male-icon"></i>
+                        </div> -->
+                    </div>
+                    <div id="city">
+                        <span class="city-name" onclick="_url({cityLen:1, event: 'index_city', type:1}, 'frame1/city_win')">附近</span>
+                        <i class="aui-iconfont aui-icon-down"></i>
+                    </div>
+                    <div class="online-tag" tapmode onclick="onlineFirst()">在线优先</div>
+                </div>
+                <ul class="wrap flex-a one1 new-hide">
+                    <li class="list active" tapmode onclick="randomSwitchBtn(0, 'one1')">附近</li>
+                    <li class="list" tapmode onclick="randomSwitchBtn(1, 'one1')">会员</li>
+                </ul>
+                <ul class="wrap flex-a one2">
+                    <li class="list active" tapmode onclick="randomSwitchBtn(0, 'one2')">附近</li>
+                    <li class="list" tapmode onclick="randomSwitchBtn(1, 'one2')">新注册</li>
+                    <li class="list" tapmode onclick="randomSwitchBtn(2, 'one2')">认证</li>
+                </ul>
+            </li>
+            <!-- 第二个头部 -->
+            <li class="h-list hide">
+                <div class="two flex-bt">
+                    <!-- <span class="flex-c new new-invisible" tapmode onclick="showNew(1);">最新发布</span> -->
+                    <span class="flex-c new new-invisible">最新发布</span>
+                    <div class="title">电台</div>
+                    <!-- <span class="flex-c select-sex" tapmode onclick="showNew(2);">不限性别</span> -->
+                    <span class="flex-c select-sex" tapmode onclick="selectPost()">发布</span>
+                </div>
+            </li>
+            <!-- 第三个头部 -->
+            <li class="h-list hide">
+                <div class="tri">
+                    <div class="flex-bt new-padding-lr-10">
+                        <div class="new-invisible">占位占位</div>
+                        <div class="title flex-c">消息中心</div>
+                        <div tapmode onclick="_url({url:'frame2/set_notice', title:'推送设置'})" class="title flex-c"
+                            style="color: #000000;">推送设置</div>
+                    </div>
+                    <ul class="wrap flex-a">
+                        <li class="list active" tapmode onclick="randomSwitchBtn(0, 'tri')">私聊</li>
+                        <li class="list" tapmode onclick="randomSwitchBtn(1, 'tri')">系统消息</li>
+                    </ul>
+                </div>
+            </li>
+            <!-- 第四个头部 -->
+            <li class="h-list hide">
+                <div class="for flex-bt">
+                    <div class="edit" style="visibility: hidden;">占位占位</div>
+                    <div class="title flex-c"></div>
+                    <span class="edit" tapmode
+                        onclick="_url({url:'frame4/user', title:'个人资料', moreTitle: '保存'})">编辑资料</span>
+                </div>
+            </li>
+        </ul>
+    </header>
+    <!-- 脚部 -->
+    <footer>
+        <ul class="f-wrap flex">
+            <li class="f-list active" tapmode onclick="changeFrame(0)">
+                <img src="../image/index_images/button01.png" alt="">
+                <span>首页</span>
+            </li>
+            <li class="f-list" tapmode onclick="changeFrame(1)">
+                <img src="../image/index_images/button2.png" alt="">
+                <span>电台</span>
+            </li>
+            <li class="f-list" tapmode onclick="changeFrame(2)">
+                <img src="../image/index_images/button3.png" alt="">
+                <span>消息</span>
+                <span class="num new-hide"></span>
+            </li>
+            <li class="f-list" tapmode onclick="changeFrame(3)">
+                <img src="../image/index_images/button4.png" alt="">
+                <span>我的</span>
+            </li>
+        </ul>
+    </footer>
+</body>
+<script src="../script/jquery_min.js"></script>
+<script src="../script/api.js"></script>
+<script src="../script/ffkj.js"></script>
+<script src="../script/group.js"></script>
+<script src="../script/map.js"></script>
+<script>
+    var index_sex = $api.getStorage('sex');
+    var _footerIndex = 100;
+    apiready = function () {
+        _heibai(1)
+        keyback();
+
+        changeSex()
+
+        // 设置城市
+        $('.city-name').text($api.getStorage('index_city') || '附近');
+
+
+        // 获取在线优先状态
+        if ($api.getStorage('online') == 1) {
+            $('.online-tag').addClass('active');
+        } else {
+            $('.online-tag').removeClass('active');
+        }
+
+        // 监听切换城市
+        _listener('index_city', function (ret) {
+            if (ret && ret.value.city) {
+                var city = ret.value.city[0];
+                $('.city-name').text(city);
+                $api.setStorage('index_city', city);
+            }
+        })
+        // 监听私信消息数量
+        // _listener('my_msg', function (ret) {
+        //     if (ret && ret.value && ret.value.num > 0) {
+        //         $('footer .num').text(ret.value.num);
+        //         $('footer .num').removeClass('new-hide');
+        //     } else {
+        //         $('footer .num').addClass('new-hide');
+        //     }
+        // })
+        // 监听名字更新
+        _listener('my_name', function (ret) {
+            if (ret && ret.value.name) {
+                $('.for .title').text(ret.value.name)
+            }
+        })
+
+        // 进入前台
+        _listener('resume', function (ret) {
+            setOnline(1)
+        })
+        // 进入后台
+        _listener('pause', function (ret) {
+            setOnline(0)
+        })
+        // // 监听切换城市
+        // _listener('city', function(ret){
+        //     var cityObj = ret.value.cityObj;
+        //     if(cityObj.type == 0){
+        //         var city = cityObj.cityArr[0];
+        //         $('.city').text(city);
+        //         _send('roam', {city:city})
+        //     }
+        // })
+        getNewMsg(); // 获取公告消息
+        getMsgCount(); // 获取新消息
+
+        // 获取经纬度
+        var map = new Map();
+        map.getLocation(function (ret) {
+            // var lon = 39;
+            // var lat = 116;
+            var lon = 113.320234;
+            var lat = 23.022241;
+            if (ret && ret.status) {
+                lon = ret.lon;
+                lat = ret.lat;
+            }
+            $api.setStorage('lon', lon);
+            $api.setStorage('lat', lat);
+            var obj = {
+                userid: $api.getStorage('userid'),
+                longitude: lon,
+                latitude: lat
+            };
+            console.log(JSON.stringify(obj))
+            // alert(JSON.stringify(obj))
+            _ajax('Home/User/setJW', function (rets, errs) {
+                console.log(JSON.stringify(rets))
+                console.log(JSON.stringify(errs))
+            }, {
+                userid: $api.getStorage('userid'),
+                longitude: lon,
+                latitude: lat
+            })
+        })
+    }
+
+    // 点击分类栏目时，设置 frame 组当前可见 frame
+    function randomSwitchBtn(index, gName) {
+        active(index, '.' + gName + ' .list'); // cls 使用与组名一致，便于复用
+        var reload = gName == 'tri' ? false : true;
+        api.setFrameGroupIndex({
+            name: gName,
+            index: index,
+            scroll: true, //是否平滑滚动至目标窗口，即是否带有动画
+            reload: false, // 刷新
+        });
+        judgeFrameType();
+    }
+
+    // 切换
+    function changeFrame(index) {
+        if(_footerIndex == index){
+            return;
+        }
+        _footerIndex = index;
+        showTab(index);
+        $api.fixStatusBar($api.dom('header'));
+        var h = $api.offset($api.dom('header')).h;
+        $api.fixTabBar($api.dom('footer'));
+        var fh = $api.offset($api.dom('footer')).h;
+        var oneName = index_sex == '女' ? 'one2' : 'one1';
+        var frameArr = [{ name: oneName, type: 1 }, { name: 'frame1', type: 0 }, { name: 'tri', type: 1 }, { name: 'frame3', type: 0 }]; // type: 1为frame group, 0为frame
+        switch (frameArr[index].name) {
+            // 首页
+            case oneName:
+                var fArr = index_sex == '女' ? ['frame0', 'frame0', 'frame0'] : ['frame0', 'frame0']
+                var pageParam = index_sex == '女' ? [{ hot: 1, sex: '女' }, { new: 1, sex: '女' }, { real: 1, sex: '女' }] : [{ hot: 1, sex: '男' }, { vip: 1, sex: '男' }];
+                groupInit(oneName, fArr, h, fh, 0, '.' + oneName + ' .list', pageParam, {
+                    pre: 3
+                });
+                randomSwitchBtn(0, oneName); // 打开组后 设置打开第一个tag 避免选择女性第三个tag后切换回男性出错
+                break;
+                // 消息
+            case 'tri':
+                var pageParam = [];
+                groupInit('tri', ['frame2/frame2-1', 'frame2/frame2-2'], h, fh, 0, '.tri .list', pageParam, {
+                    scrollEnabled: 0
+                });
+                break;
+                // 单页
+            default:
+                _openFrame(frameArr[index].name, '', '', '', 0);
+                break;
+        }
+        hideFrame(frameArr, index);
+        judgeFrameType();
+    }
+
+    // 隐藏所有frame
+    function hideFrame(arr, index) {
+        var len = $('.h-list').length;
+        for (var i = 0; i < len; i++) {
+            var hide = i == index ? false : true;
+            if(i != index){
+                if (arr[i].type == 1) { // frame组
+                    // api.setFrameGroupAttr({
+                    //     name: arr[i].name,
+                    //     hidden: hide
+                    // });
+                    api.closeFrameGroup({
+                        name: arr[i].name
+                    });
+                } else { // frame
+                    // api.setFrameAttr({
+                    //     name: arr[i].name,
+                    //     hidden: hide
+                    // });
+                    api.closeFrame({name: arr[i].name,})
+                }
+            }
+        }
+    }
+
+
+
+    // 切换性别列表 frame0
+    function changeSex() {
+        _footerIndex = 100;
+        index_sex = index_sex == '女' ? '男' : '女';
+        if (index_sex == '女') {
+            // $('#sex .base-icon').addClass('nav-female-icon').removeClass('nav-male-icon');
+            $('.one .wrap').eq(0).addClass('new-hide');
+            $('.one .wrap').eq(1).removeClass('new-hide');
+        } else {
+            // $('#sex .base-icon').addClass('nav-male-icon').removeClass('nav-female-icon');
+            $('.one .wrap').eq(0).removeClass('new-hide');
+            $('.one .wrap').eq(1).addClass('new-hide');
+        }
+        changeFrame(0)
+    }
+
+    // 最新发布 frame1
+    function showNew(type) {
+        if (type == 1) {
+            var buttons = ['最新发布', '最近约会'];
+            _action('请选择排序条件', buttons, function (index) {
+                console.log(index);
+                if (index != 3) {
+                    $('.two .new').text(buttons[index - 1]);
+                    _send('new', {
+                        index: index
+                    });
+                }
+            })
+        } else {
+            var buttons = ['不限性别', '只看男性', '只看女性'];
+            _action('请选择用户类型', buttons, function (index) {
+                console.log(index);
+                if (index != 4) {
+                    $('.two .select-sex').text(buttons[index - 1]);
+                    _send('select-sex', {
+                        index: index
+                    });
+                }
+            })
+        }
+    }
+
+
+    // 显示 底部图标及头部
+    function showTab(index) {
+        var len = $('.h-list').length;
+        for (var i = 0; i < len; i++) {
+            if (i != index) {
+                $('.h-list').eq(i).addClass('hide');
+                $('.f-list').eq(i).find('img').attr('src', '../image/index_images/button' + (i + 1) + '.png');
+            } else {
+                $('.h-list').eq(i).removeClass('hide');
+                $('.f-list').eq(i).find('img').attr('src', '../image/index_images/button0' + (index + 1) + '.png');
+            }
+        }
+        $('.f-list').eq(index).addClass('active').siblings().removeClass('active');
+    }
+
+    // 获取公告消息
+    function getNewMsg() {
+        _ajax('Home/User/getNewMsg', function (ret, err) {
+            // console.log(JSON.stringify(ret))
+            if (ret && ret.code == 200 && ret.result.length > 0) {
+                _send('index_notice', {
+                    notice: ret.result
+                });
+            }
+            var dt = setTimeout(function () {
+                clearTimeout(dt);
+                dt = null;
+                getNewMsg();
+            }, 3000)
+        }, {
+            time: 60
+        })
+    }
+
+    // 推送 获取消息数量
+    function getMsgCount() {
+        if (!$api.getStorage('userid')) {
+            var dt = setTimeout(function () {
+                clearTimeout(dt);
+                dt = null;
+                getMsgCount();
+            }, 3000);
+            return;
+        }
+        _ajax('Home/Privatechat/getreadcount', function (ret, err) {
+            console.log(JSON.stringify(ret))
+            // console.log(JSON.stringify(err))
+            api.setAppIconBadge({ //桌面红点
+                badge: ret[0]['count'],
+            });
+            changeMsgNum(ret[0]['count'])
+            if (ret[0]['message'] == 1) {
+                setWarnning();
+            }
+            // 设置为已读
+            _ajax('Home/Privatechat/changeread', function (rets, errs) {
+                var dt = setTimeout(function () {
+                    clearTimeout(dt);
+                    dt = null;
+                    getMsgCount();
+                }, 3000);
+            }, {
+                touserid: $api.getStorage('userid')
+            })
+        }, {
+            user_id: $api.getStorage('userid'),
+        })
+    }
+
+
+    // 选择发布的类型
+    function selectPost() {
+        var buttons = ['发动态', '发活动'];
+        var urlArr = ['frame1/fa_dong_tai', 'frame1/fa_bu_yue_hui']
+        _action('', buttons, function (index) {
+            if (index != (buttons.length + 1)) {
+                _url({
+                    type: index - 1,
+                    url: urlArr[index - 1],
+                    title: '发布'
+                });
+            }
+        })
+    }
+
+
+    // 设置上线优先
+    function onlineFirst() {
+        var status = $api.getStorage('online');
+        var online = status == 1 ? 0 : 1;
+        $api.setStorage('online', online)
+        if (online == 1) {
+            $('.online-tag').addClass('active');
+        } else {
+            $('.online-tag').removeClass('active');
+        }
+        _send('onlineFirst');
+    }
+
+
+    // 更新消息数量
+    function changeMsgNum(num) {
+        if (num && num > 0) {
+            $('footer .num').text(num);
+            $('footer .num').removeClass('new-hide');
+        } else {
+            $('footer .num').addClass('new-hide');
+        }
+    }
+
+
+    // 判断当前显示的是否是消息中心
+    function judgeFrameType(){
+        var fIndex = $('.f-list.active').index();
+        console.log(fIndex);
+        var msgIndex = $('.tri .active').index();
+        console.log(msgIndex);
+        if(fIndex == 2){
+            if(msgIndex == 0){
+                _send('sysMsgDisappear');
+                _send('myMsgAppear');
+            }else{
+                _send('myMsgDisappear');
+                _send('sysMsgAppear');
+            }
+        }else{
+            _send('myMsgDisappear');
+            _send('sysMsgDisappear');
+        }
+    }
+</script>
+
+</html>

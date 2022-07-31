@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../css/news.css">
+</head>
+<body>
+    <header></header>
+</body>
+<script src="../../script/api.js"></script>
+<script src="../../script/jquery_min.js"></script>
+<script src="../../script/ffkj.js"></script>
+<script src="../../script/group.js"></script>
+<script>
+    apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+        var h = $api.offset($api.dom('header'));
+        var imgArr = api.pageParam['imgArr'];
+        console.log(JSON.stringify(imgArr))
+        var frameArr = [];
+        var pageParam = [];
+        for(var i=0,len=imgArr.length;i<len;i++){
+            frameArr.push('frame1/dy_img');
+            pageParam.push({img:imgArr[i]});
+        }
+        groupInit('qzImg', frameArr, h, 0, api.pageParam['iIndex'], '', pageParam);
+    }
+</script>
+</html>
